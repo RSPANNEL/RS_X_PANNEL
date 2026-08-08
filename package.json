@@ -1,0 +1,18 @@
+{
+  "name": "rsx-pannel",
+  "version": "3.0.0",
+  "description": "RS X PANNEL Admin Console",
+  "main": "index.html",
+  "scripts": {
+    "start": "vercel dev",
+    "deploy": "vercel --prod",
+    "build": "echo 'Static deployment'"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  },
+  "keywords": ["firebase", "admin", "console", "management"],
+  "author": "RS X PANNEL",
+  "license": "MIT"
+}
