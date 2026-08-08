@@ -263,9 +263,10 @@ a{color:inherit;text-decoration:none}
 import { initializeApp, getApps, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue, off, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// ─── ADMIN CONFIG ──────────────────────────────────────────────────────
+// ─── ADMIN FIREBASE CONFIG ──────────────────────────────────────────────
+// 🔥 REPLACE WITH YOUR FIREBASE CONFIG
 const ADMIN_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBQh-8qwQJqU2D3MjKxFlgY1rK2yVZMcT4", // REPLACE WITH YOUR FIREBASE CONFIG
+  apiKey: "AIzaSyBQh-8qwQJqU2D3MjKxFlgY1rK2yVZMcT4",
   authDomain: "your-project.firebaseapp.com",
   databaseURL: "https://your-project-default-rtdb.firebaseio.com",
   projectId: "your-project",
@@ -639,16 +640,3 @@ window.refreshConnection = () => {
 };
 
 // ─── RECORD RENDERING ──────────────────────────────────────────────────
-let currentFilter = "all";
-let sortAscending = false;
-
-window.setFilter = (el, filter) => {
-  currentFilter = filter;
-  document.querySelectorAll(".filter").forEach(x => x.classList.remove("active"));
-  el.classList.add("active");
-  renderRecords();
-};
-
-window.sortRecords = () => {
-  sortAscending = !sortAscending;
-  document.querySelector(".sort").textContent = sortAscending ? "Sort ▼" : "
