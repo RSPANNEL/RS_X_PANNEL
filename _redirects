@@ -1,0 +1,15 @@
+# Handle 404s and routing for SPA
+/*    /index.html   200
+
+# Redirect all Firebase config requests to main app
+/firebase/*    /index.html   200
+/api/*         /index.html   200
+
+# Block access to sensitive paths
+/.env          403
+/.git/*        403
+/config/*      403
+/credentials/* 403
+
+# Security headers
+# Vercel handles this via vercel.json
