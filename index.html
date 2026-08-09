@@ -435,7 +435,11 @@
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  RS X PANEL — FINAL FIX (stats, IST time, hidden firebase, bank filter)
+        //  RS X PANEL — FINAL FIXED VERSION
+        //  - Connection errors handled
+        //  - OTP detection fixed
+        //  - URLs hidden (only label shown)
+        //  - Stats update properly
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         // ─── STATE ──────────────────────────────────────────────────────────
@@ -735,7 +739,7 @@
             startPolling();
         }
 
-        // ─── CONNECTIONS (URL hidden) ────────────────────────────────────
+        // ─── CONNECTIONS (URL hidden, only label + date) ──────────────────
         function renderConnections() {
             if (!connectionsList) return;
             if (CONNECTIONS.length === 0) {
@@ -749,10 +753,12 @@
                 const encoded = encodeFirebaseConn(c.url, c.key || '');
                 const link = window.location.origin + window.location.pathname + '?s=' + encoded;
                 const displayLabel = c.label || c.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
+                // If label is longer than 15 chars, truncate
+                const shortLabel = displayLabel.length > 15 ? displayLabel.substring(0, 15) + '…' : displayLabel;
                 return `
                     <div class="conn-item">
                         <div class="info">
-                            <div class="name">${esc(displayLabel)}</div>
+                            <div class="name">${esc(shortLabel)}</div>
                             <div class="date">${c.date || ''}</div>
                         </div>
                         <button class="copy-link" data-link="${link}" title="Copy share link">🔗</button>
@@ -810,18 +816,28 @@
             const auth = activeConn.key ? '?auth=' + activeConn.key : '';
             return base + '/' + path + '.json' + auth;
         }
+
         async function fbGet(path) {
-            const res = await fetch(fbUrl(path));
-            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const url = fbUrl(path);
+            const res = await fetch(url);
+            if (!res.ok) {
+                const msg = await res.text();
+                throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
+            }
             return res.json();
         }
+
         async function fbSet(path, data) {
-            const res = await fetch(fbUrl(path), {
+            const url = fbUrl(path);
+            const res = await fetch(url, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
+            if (!res.ok) {
+                const msg = await res.text();
+                throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
+            }
             return res.json();
         }
 
