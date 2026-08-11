@@ -298,6 +298,7 @@
         }
     </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -680,27 +681,33 @@
             const s = params.get('s');
             if (s) {
                 const decoded = decodeFirebaseConn(s);
-                if (decoded.url) {
-                    const existing = CONNECTIONS.find(c => c.url === decoded.url);
-                    if (!existing) {
+                if (decoded.url && decoded.key) {
+                    const existingIdx = CONNECTIONS.findIndex(c => c.url === decoded.url);
+                    let conn;
+                    if (existingIdx === -1) {
                         const label = decoded.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
-                        const conn = {
+                        conn = {
                             label: label,
                             url: decoded.url,
                             key: decoded.key,
                             date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
                         };
                         CONNECTIONS.push(conn);
-                        localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
+                    } else {
+                        // Update key in case it changed
+                        CONNECTIONS[existingIdx].key = decoded.key;
+                        conn = CONNECTIONS[existingIdx];
                     }
-                    const found = CONNECTIONS.find(c => c.url === decoded.url);
-                    if (found) {
-                        activeConn = found;
-                        renderConnections();
-                        showDashboard();
-                        toast('Auto‑connected from shared link', 'success');
-                        return true;
+                    localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
+                    activeConn = conn;
+                    renderConnections();
+                    showDashboard();
+                    toast('Auto‑connected from shared link', 'success');
+                    // Clean URL so refresh doesn't duplicate
+                    if (window.history.replaceState) {
+                        window.history.replaceState({}, document.title, window.location.pathname);
                     }
+                    return true;
                 }
             }
             return false;
@@ -1364,21 +1371,7 @@
             reader.readAsArrayBuffer(file);
         });
 
-        async function testFirebase(url, key) {
-            try {
-                const base = url.replace(/\/+$/, '');
-                const auth = key ? '?auth=' + encodeURIComponent(key) : '';
-                const res = await fetch(base + '/.json' + auth, { method: 'GET' });
-                if (res.status === 401 || res.status === 403) return { ok: false, err: 'API Key galat hai ya permission nahi hai' };
-                if (res.status === 404) return { ok: false, err: 'Database URL galat hai (404 Not Found)' };
-                if (res.status >= 200 && res.status < 300) return { ok: true };
-                return { ok: false, err: 'HTTP ' + res.status };
-            } catch (e) {
-                return { ok: false, err: 'Network error: ' + e.message };
-            }
-        }
-
-        saveAccountBtn.addEventListener('click', async () => {
+        saveAccountBtn.addEventListener('click', () => {
             const label = accLabel.value.trim() || accUrl.value.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
             const url = accUrl.value.trim();
             const key = accKey.value.trim();
@@ -1387,32 +1380,12 @@
                 setupError.classList.remove('hidden');
                 return;
             }
-            if (!url.match(/^https:\/\/.+\.firebaseio\.com\/?$/)) {
-                setupError.textContent = 'URL sahi format mein hona chahiye: https://project.firebaseio.com';
-                setupError.classList.remove('hidden');
-                return;
-            }
             if (!key) {
                 setupError.textContent = 'API Key bhi zaroori hai bhai';
                 setupError.classList.remove('hidden');
                 return;
             }
-            setupError.textContent = 'Connection check ho raha hai…';
-            setupError.style.color = 'var(--cyan)';
-            setupError.classList.remove('hidden');
-            saveAccountBtn.disabled = true;
-
-            const test = await testFirebase(url, key);
-            saveAccountBtn.disabled = false;
-
-            if (!test.ok) {
-                setupError.textContent = test.err;
-                setupError.style.color = 'var(--red)';
-                setupError.classList.remove('hidden');
-                return;
-            }
             setupError.classList.add('hidden');
-            setupError.style.color = '';
             const conn = {
                 label: label,
                 url: url,
