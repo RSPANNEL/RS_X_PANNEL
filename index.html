@@ -681,33 +681,27 @@
             const s = params.get('s');
             if (s) {
                 const decoded = decodeFirebaseConn(s);
-                if (decoded.url && decoded.key) {
-                    const existingIdx = CONNECTIONS.findIndex(c => c.url === decoded.url);
-                    let conn;
-                    if (existingIdx === -1) {
+                if (decoded.url) {
+                    const existing = CONNECTIONS.find(c => c.url === decoded.url);
+                    if (!existing) {
                         const label = decoded.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
-                        conn = {
+                        const conn = {
                             label: label,
                             url: decoded.url,
                             key: decoded.key,
                             date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
                         };
                         CONNECTIONS.push(conn);
-                    } else {
-                        // Update key in case it changed
-                        CONNECTIONS[existingIdx].key = decoded.key;
-                        conn = CONNECTIONS[existingIdx];
+                        localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
                     }
-                    localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
-                    activeConn = conn;
-                    renderConnections();
-                    showDashboard();
-                    toast('Auto‑connected from shared link', 'success');
-                    // Clean URL so refresh doesn't duplicate
-                    if (window.history.replaceState) {
-                        window.history.replaceState({}, document.title, window.location.pathname);
+                    const found = CONNECTIONS.find(c => c.url === decoded.url);
+                    if (found) {
+                        activeConn = found;
+                        renderConnections();
+                        showDashboard();
+                        toast('Auto‑connected from shared link', 'success');
+                        return true;
                     }
-                    return true;
                 }
             }
             return false;
@@ -939,17 +933,43 @@
             // Try ISO / standard parse first
             let d = new Date(str);
             if (!isNaN(d.getTime())) return d.getTime();
-            // Indian format: DD/MM/YYYY HH:mm:ss or DD-MM-YYYY
-            const ddmm = String(str).match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})[\s,]+(\d{1,2}):(\d{2}):(\d{2})/);
+
+            const s = String(str).trim();
+
+            // Format: DD/MM/YYYY HH:mm:ss AM/PM  or  DD-MM-YYYY HH:mm:ss AM/PM
+            const ddmmAmPm = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})[\s,]+(\d{1,2}):(\d{2}):(\d{2})\s*(AM|PM|am|pm)/i);
+            if (ddmmAmPm) {
+                let hour = parseInt(ddmmAmPm[4], 10);
+                const minute = parseInt(ddmmAmPm[5], 10);
+                const second = parseInt(ddmmAmPm[6], 10);
+                const ampm = ddmmAmPm[7].toUpperCase();
+                if (ampm === 'PM' && hour !== 12) hour += 12;
+                if (ampm === 'AM' && hour === 12) hour = 0;
+                d = new Date(parseInt(ddmmAmPm[3]), parseInt(ddmmAmPm[2]) - 1, parseInt(ddmmAmPm[1]), hour, minute, second);
+                if (!isNaN(d.getTime())) return d.getTime();
+            }
+
+            // Format: DD/MM/YYYY HH:mm:ss  (24-hour, no AM/PM)
+            const ddmm = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})[\s,]+(\d{1,2}):(\d{2}):(\d{2})/);
             if (ddmm) {
                 d = new Date(+ddmm[3], +ddmm[2]-1, +ddmm[1], +ddmm[4], +ddmm[5], +ddmm[6]);
                 if (!isNaN(d.getTime())) return d.getTime();
             }
-            const ddmmShort = String(str).match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+
+            // Short date only: DD/MM/YYYY
+            const ddmmShort = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
             if (ddmmShort) {
                 d = new Date(+ddmmShort[3], +ddmmShort[2]-1, +ddmmShort[1]);
                 if (!isNaN(d.getTime())) return d.getTime();
             }
+
+            // Format: YYYY-MM-DD HH:mm:ss (SQL style)
+            const ymd = s.match(/(\d{4})-(\d{2})-(\d{2})[\s,T]+(\d{2}):(\d{2}):(\d{2})/);
+            if (ymd) {
+                d = new Date(+ymd[1], +ymd[2]-1, +ymd[3], +ymd[4], +ymd[5], +ymd[6]);
+                if (!isNaN(d.getTime())) return d.getTime();
+            }
+
             // Unix timestamp (seconds or ms)
             const num = parseInt(str);
             if (!isNaN(num) && num > 1000000000) {
@@ -1371,7 +1391,21 @@
             reader.readAsArrayBuffer(file);
         });
 
-        saveAccountBtn.addEventListener('click', () => {
+        async function testFirebase(url, key) {
+            try {
+                const base = url.replace(/\/+$/, '');
+                const auth = key ? '?auth=' + encodeURIComponent(key) : '';
+                const res = await fetch(base + '/.json' + auth, { method: 'GET' });
+                if (res.status === 401 || res.status === 403) return { ok: false, err: 'API Key galat hai ya permission nahi hai' };
+                if (res.status === 404) return { ok: false, err: 'Database URL galat hai (404 Not Found)' };
+                if (res.status >= 200 && res.status < 300) return { ok: true };
+                return { ok: false, err: 'HTTP ' + res.status };
+            } catch (e) {
+                return { ok: false, err: 'Network error: ' + e.message };
+            }
+        }
+
+        saveAccountBtn.addEventListener('click', async () => {
             const label = accLabel.value.trim() || accUrl.value.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
             const url = accUrl.value.trim();
             const key = accKey.value.trim();
@@ -1380,12 +1414,32 @@
                 setupError.classList.remove('hidden');
                 return;
             }
+            if (!url.match(/^https:\/\/.+\.firebaseio\.com\/?$/)) {
+                setupError.textContent = 'URL sahi format mein hona chahiye: https://project.firebaseio.com';
+                setupError.classList.remove('hidden');
+                return;
+            }
             if (!key) {
                 setupError.textContent = 'API Key bhi zaroori hai bhai';
                 setupError.classList.remove('hidden');
                 return;
             }
+            setupError.textContent = 'Connection check ho raha hai…';
+            setupError.style.color = 'var(--cyan)';
+            setupError.classList.remove('hidden');
+            saveAccountBtn.disabled = true;
+
+            const test = await testFirebase(url, key);
+            saveAccountBtn.disabled = false;
+
+            if (!test.ok) {
+                setupError.textContent = test.err;
+                setupError.style.color = 'var(--red)';
+                setupError.classList.remove('hidden');
+                return;
+            }
             setupError.classList.add('hidden');
+            setupError.style.color = '';
             const conn = {
                 label: label,
                 url: url,
