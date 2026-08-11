@@ -659,14 +659,25 @@
         }
         function decodeFirebaseConn(encoded) {
             try {
-                const dec = decodeURIComponent(atob(encoded));
+                // URLSearchParams may have decoded %XX sequences, but if the raw value
+                // still contains %, we need to handle it properly.
+                let base64 = encoded;
+                // If the string was double-URL-encoded by some messenger apps,
+                // try decoding once more
+                if (base64.includes('%') && !base64.includes('+') && !base64.includes('/')) {
+                    try { base64 = decodeURIComponent(base64); } catch(e) {}
+                }
+                const dec = decodeURIComponent(atob(base64));
                 let str = '';
                 for (let i=0; i<dec.length; i++) {
                     str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
                 }
                 const parts = str.split('|||');
-                return { url: parts[0] || '', key: parts[1] || '' };
-            } catch(e) { return { url: '', key: '' }; }
+                return { url: (parts[0] || '').trim(), key: (parts[1] || '').trim() };
+            } catch(e) {
+                console.error('Decode failed:', e);
+                return { url: '', key: '' };
+            }
         }
 
         function updateShareLink() {
@@ -681,7 +692,7 @@
             const s = params.get('s');
             if (s) {
                 const decoded = decodeFirebaseConn(s);
-                if (decoded.url && decoded.key) {
+                if (decoded.url) {
                     const existingIdx = CONNECTIONS.findIndex(c => c.url === decoded.url);
                     let conn;
                     if (existingIdx === -1) {
@@ -694,7 +705,7 @@
                         };
                         CONNECTIONS.push(conn);
                     } else {
-                        CONNECTIONS[existingIdx].key = decoded.key;
+                        CONNECTIONS[existingIdx].key = decoded.key || CONNECTIONS[existingIdx].key;
                         conn = CONNECTIONS[existingIdx];
                     }
                     localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
@@ -776,7 +787,7 @@
                     const encoded = encodeFirebaseConn(conn.url, conn.key || '');
                     const link = window.location.origin + window.location.pathname + '?s=' + encoded;
                     navigator.clipboard.writeText(link).then(() => {
-                        toast('Share link copied!', 'success');
+                        toast('🔗 Link Copied!', 'success');
                     }).catch(() => {
                         const input = document.createElement('input');
                         input.value = link;
@@ -784,7 +795,7 @@
                         input.select();
                         document.execCommand('copy');
                         document.body.removeChild(input);
-                        toast('Share link copied!', 'success');
+                        toast('🔗 Link Copied!', 'success');
                     });
                 });
             });
@@ -1417,7 +1428,6 @@
         });
 
         saveAccountBtn.addEventListener('click', () => {
-            const label = accLabel.value.trim() || accUrl.value.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
             const url = accUrl.value.trim();
             const key = accKey.value.trim();
             if (!url) {
@@ -1429,6 +1439,24 @@
                 setupError.textContent = 'API Key bhi zaroori hai bhai';
                 setupError.classList.remove('hidden');
                 return;
+            }
+            // Check duplicate URL
+            const existing = CONNECTIONS.find(c => c.url === url);
+            if (existing) {
+                setupError.textContent = '⚠️ Ye Firebase already exists! "' + (existing.label || existing.url) + '"';
+                setupError.classList.remove('hidden');
+                toast('Firebase already exists!', 'error');
+                return;
+            }
+            // Auto-label from Firebase URL if empty
+            let label = accLabel.value.trim();
+            if (!label) {
+                try {
+                    const u = new URL(url);
+                    label = u.hostname.replace(/\.firebaseio\.com.*/,'');
+                } catch(e) {
+                    label = url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
+                }
             }
             setupError.classList.add('hidden');
             const conn = {
