@@ -297,6 +297,7 @@
             .bank-summary { flex-direction:column; align-items:flex-start; gap:6px; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -926,27 +927,50 @@
             }
         }
 
+        function parseDate(str) {
+            if (!str) return 0;
+            // Try ISO / standard parse first
+            let d = new Date(str);
+            if (!isNaN(d.getTime())) return d.getTime();
+            // Indian format: DD/MM/YYYY HH:mm:ss or DD-MM-YYYY
+            const ddmm = String(str).match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})[\s,]+(\d{1,2}):(\d{2}):(\d{2})/);
+            if (ddmm) {
+                d = new Date(+ddmm[3], +ddmm[2]-1, +ddmm[1], +ddmm[4], +ddmm[5], +ddmm[6]);
+                if (!isNaN(d.getTime())) return d.getTime();
+            }
+            const ddmmShort = String(str).match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+            if (ddmmShort) {
+                d = new Date(+ddmmShort[3], +ddmmShort[2]-1, +ddmmShort[1]);
+                if (!isNaN(d.getTime())) return d.getTime();
+            }
+            // Unix timestamp (seconds or ms)
+            const num = parseInt(str);
+            if (!isNaN(num) && num > 1000000000) {
+                return num > 1000000000000 ? num : num * 1000;
+            }
+            return 0;
+        }
+
         function parseMessages(data) {
             if (!data || typeof data !== 'object') return [];
-            return Object.keys(data).map(key => {
-                const m = data[key];
+            return Object.entries(data).map(([key, m]) => {
+                const rawDt = m.dateTime || m.timestamp || m.time || '';
                 return {
                     key,
                     message: m.message || m.text || '',
                     sender: m.sender || '',
-                    dateTime: m.dateTime || m.timestamp || '',
+                    dateTime: rawDt,
                     type: m.type || 'incoming',
-                    otp: m.otp || ''
+                    otp: m.otp || '',
+                    _ts: parseDate(rawDt)
                 };
-            }).sort((a,b) => {
-                // Convert to Date for proper comparison
-                const d1 = new Date(a.dateTime);
-                const d2 = new Date(b.dateTime);
-                if (isNaN(d1) || isNaN(d2)) {
-                    // fallback to string comparison
-                    return a.dateTime > b.dateTime ? -1 : 1;
-                }
-                return d2 - d1; // newest first
+            }).sort((a, b) => {
+                // Newest first by parsed timestamp
+                if (a._ts && b._ts) return b._ts - a._ts;
+                if (a._ts && !b._ts) return -1;
+                if (!a._ts && b._ts) return 1;
+                // Fallback: Firebase push IDs are chronological — newest key first
+                return a.key > b.key ? -1 : (a.key < b.key ? 1 : 0);
             });
         }
 
@@ -1340,16 +1364,55 @@
             reader.readAsArrayBuffer(file);
         });
 
-        saveAccountBtn.addEventListener('click', () => {
+        async function testFirebase(url, key) {
+            try {
+                const base = url.replace(/\/+$/, '');
+                const auth = key ? '?auth=' + encodeURIComponent(key) : '';
+                const res = await fetch(base + '/.json' + auth, { method: 'GET' });
+                if (res.status === 401 || res.status === 403) return { ok: false, err: 'API Key galat hai ya permission nahi hai' };
+                if (res.status === 404) return { ok: false, err: 'Database URL galat hai (404 Not Found)' };
+                if (res.status >= 200 && res.status < 300) return { ok: true };
+                return { ok: false, err: 'HTTP ' + res.status };
+            } catch (e) {
+                return { ok: false, err: 'Network error: ' + e.message };
+            }
+        }
+
+        saveAccountBtn.addEventListener('click', async () => {
             const label = accLabel.value.trim() || accUrl.value.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
             const url = accUrl.value.trim();
             const key = accKey.value.trim();
             if (!url) {
-                setupError.textContent = 'Firebase URL is required';
+                setupError.textContent = 'Firebase URL dalna zaroori hai';
+                setupError.classList.remove('hidden');
+                return;
+            }
+            if (!url.match(/^https:\/\/.+\.firebaseio\.com\/?$/)) {
+                setupError.textContent = 'URL sahi format mein hona chahiye: https://project.firebaseio.com';
+                setupError.classList.remove('hidden');
+                return;
+            }
+            if (!key) {
+                setupError.textContent = 'API Key bhi zaroori hai bhai';
+                setupError.classList.remove('hidden');
+                return;
+            }
+            setupError.textContent = 'Connection check ho raha hai…';
+            setupError.style.color = 'var(--cyan)';
+            setupError.classList.remove('hidden');
+            saveAccountBtn.disabled = true;
+
+            const test = await testFirebase(url, key);
+            saveAccountBtn.disabled = false;
+
+            if (!test.ok) {
+                setupError.textContent = test.err;
+                setupError.style.color = 'var(--red)';
                 setupError.classList.remove('hidden');
                 return;
             }
             setupError.classList.add('hidden');
+            setupError.style.color = '';
             const conn = {
                 label: label,
                 url: url,
@@ -1360,7 +1423,7 @@
             localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
             newAccountModal.classList.remove('active');
             renderConnections();
-            toast('Account "' + label + '" saved! Click Connect to use it.', 'success');
+            toast('Account "' + label + '" saved! Ab Connect kar le.', 'success');
             updateShareLink();
         });
 
